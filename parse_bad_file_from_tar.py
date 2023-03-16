@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.4
+#       jupytext_version: 1.13.5
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -49,15 +49,16 @@ def pre_format(text):
         .replace(')}', ') }')
         .replace(')$', ') $')
     )
-    clean_lines = []
-    for line in source_text.splitlines(False):
-        cleanline = line.strip()
-        if cleanline.startswith(r'\newcommand'):
-            cleanline = r'%' + cleanline
-        elif cleanline.startswith(r'\def'):
-            cleanline = r'%' + cleanline
-        clean_lines.append(cleanline)
-    return '\n'.join(clean_lines)
+    return source_text
+    #clean_lines = []
+    #for line in source_text.splitlines(False):
+    #    cleanline = line.strip()
+    #    if cleanline.startswith(r'\newcommand'):
+    #        cleanline = r'%' + cleanline
+    #    elif cleanline.startswith(r'\def'):
+    #        cleanline = r'%' + cleanline
+    #    clean_lines.append(cleanline)
+    #return '\n'.join(clean_lines)
 
 
 # + tags=[]
@@ -169,15 +170,15 @@ with tqdm(total=files_count, desc="errors") as err_prog:
 
 # + tags=[]
 print(f"{files_count} processed, {len(err_files)} failures.")
-print(f"UTF8: {utf_count}; Latin1:{latin_count}")
+print(f"UTF8: {utf_count}; Latin1: {latin_count}")
 err_files
 
+# + [markdown] tags=[]
+# ## Scratch below here
+
+
 # + tags=[]
-
-
-
-# + tags=[]
-infile_path = "./data/2201_samp/2201.00042v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+infile_path = "./data/2201_samp/2201.00092v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 soup = soup_from_tar(infile_path)
 
@@ -289,32 +290,16 @@ TS.TexSoup(r'\def\be{\foo{equation}}')
 # + tags=[]
 TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
 # -
+r"In practice, the matrix $\left [\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n$"
 
 
 
 # + tags=[]
 min_example=r"""
-\documentclass{article}
-\title{Foo}
-
-\begin{document}
-
-\renewcommand{\shorttitle}{Avoiding Catastrophe}
-
-\maketitle
-
-\begin{abstract}
- A key challenge for AI is to build embodied systems.
-\end{abstract}
-
-\section{Introduction}
-
-Creating embodied systems that thrive in dynamically changing environments is a fundamental challenge for building intelligent systems. 
-
-\end{document}
+In practice, the matrix $\left[\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n$ 
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
-#TS.TexSoup(pre_format(min_example))
-TS.TexSoup(min_example)
+TS.TexSoup(pre_format(min_example))
+#TS.TexSoup(min_example)
 #print(min_example)
 # + tags=[]
 print(pre_format(min_example))
