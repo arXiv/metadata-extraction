@@ -7,7 +7,7 @@
 
 ```
 texsoup
-
+tqdm
 ```
 
 ### Jupyter Extensions
