@@ -23,6 +23,7 @@ import importlib
 import os
 import regex as re
 import glob
+import pandas as pd
 
 # + tags=[]
 from tqdm.auto import tqdm
@@ -35,9 +36,6 @@ InteractiveShell.ast_node_interactivity = "all"
 # + tags=[]
 import TexSoup as TS
 #importlib.reload(TS)
-# -
-
-
 
 # + tags=[]
 LOCAL_DATA_PATH = './data/2201_samp/'
@@ -125,18 +123,6 @@ def soup_from_tar(tar_path, encoding='utf-8'):
         source_text = pre_format(wrapped_file.read())
         soup = TS.TexSoup(source_text)
         return soup
-# -
-
-
-
-# + tags=[]
-def source_from_tar(tar_path, encoding='utf-8'):
-    tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
-    with tarfile.open(tar_path, 'r') as in_tar:
-        fp = in_tar.extractfile(tex_main)
-        wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
-        source_text = pre_format(wrapped_file.read())
-        return source_text
 
 
 # -
@@ -195,18 +181,13 @@ err_files
 # + tags=[]
 infile_path = "./data/2201_samp/2201.00092v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
-text = source_from_tar(infile_path)
 soup = soup_from_tar(infile_path)
+
 
 title = soup.find('title')
 print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
-# -
-
-
-
-
 
 # + tags=[]
 tar_path = "./data/2201_samp/2201.00008v2.tar.gz"
@@ -310,22 +291,63 @@ TS.TexSoup(r'\def\be{\foo{equation}}')
 # + tags=[]
 TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
 # + tags=[]
-r"In practice, the matrix $\left [\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n$"
+min_example = r"In practice, the matrix $\left [ 4 \right]\Inv\M{D}^{(1)}_n $"
+
+
+cats = TS.category.categorize(min_example)
+tokens = list(TS.tokens.tokenize(cats))
+
+char_codes = list(TS.category.categorize(min_example))
+
+print(tokens)
+print(char_codes)
+
+
+
+
 # + tags=[]
-In practice, the matrix $\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra\right]\Inv\M{D}^{(1) }_n$ is pre-computed and cached for repeated use.
+with pd.option_context('display.max.columns', None, 'display.max_colwidth', 0):
+    pd.DataFrame({'char':char_codes, 'code':(x.category for x in char_codes)}).transpose()
+    pd.DataFrame({'tokens':tokens})
 
-
+# + tags=[]
+min_example = r"In practice, the matrix $\left [\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n $"
+print(min_example)
+TS.TexSoup(pre_format(min_example))
+TS.TexSoup(min_example)
 
 # + tags=[]
 min_example=r"""
-
-$\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra \right] $
+\documentclass{article}
+\begin{document}
+% \renewcommand{\shorttitle}{Avoiding Catastrophe}
+\end{document}
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
-#TS.TexSoup(min_example)
 #print(min_example)
+
+# + tags=[]
+min_example=r"""
+In practice, the matrix $\left[\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n$ 
+""".strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example))
+TS.TexSoup(min_example)
+print(min_example)
 # + tags=[]
 print(pre_format(min_example))
+# + tags=[]
+BRACKETS_DELIMITERS = {
+    '(', ')', '<', '>', '[', ']', '{', '}', r'\{', r'\}', '.' '|', r'\langle',
+    r'\rangle', r'\lfloor', r'\rfloor', r'\lceil', r'\rceil', r'\ulcorner',
+    r'\urcorner', r'\lbrack', r'\rbrack'
+}
+# TODO: looks like left-right do have to match
+SIZE_PREFIX = ('left', 'right', 'big', 'Big', 'bigg', 'Bigg')
+PUNCTUATION_COMMANDS = {command + bracket
+                        for command in SIZE_PREFIX
+                        for bracket in BRACKETS_DELIMITERS.union({'|', '.'})}
+PUNCTUATION_COMMANDS
 # -
-print()
+
+
 
