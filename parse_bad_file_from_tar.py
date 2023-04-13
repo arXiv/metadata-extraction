@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.4
+#       jupytext_version: 1.13.5
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -40,7 +40,7 @@ import TexSoup as TS
 
 
 # + tags=[]
-LOCAL_DATA_PATH = './data/2201_samp/'
+LOCAL_DATA_PATH = './data/2201_01_all'
 
 
 # + tags=[]
@@ -116,17 +116,24 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
         return(max(main_files, key=main_files.get))
 
 
+# -
+
+MATH_ENV_NAMES = (
+    'align', 'align*', 'alignat', 'array', 'displaymath', 'eqnarray',
+    'eqnarray*', 'equation', 'equation*', 'flalign', 'flalign*', 'gather',
+    'gather*', 'math', 'multline', 'multline*', 'split'
+)
+
+
 # + tags=[]
-def soup_from_tar(tar_path, encoding='utf-8'):
+def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
         fp = in_tar.extractfile(tex_main)
         wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
         source_text = pre_format(wrapped_file.read())
-        soup = TS.TexSoup(source_text)
+        soup = TS.TexSoup(source_text, tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
         return soup
-# -
-
 
 
 # + tags=[]
@@ -143,18 +150,46 @@ def source_from_tar(tar_path, encoding='utf-8'):
 
 # ## Quick check a folder of tar files
 
+os.path.join(LOCAL_DATA_PATH, '*.tar.gz')
+
 # + tags=[]
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
+# -
+
+
+err_files = {}
+if 'err_files' in locals():
+    if err_files: print('\n'.join(err_files.keys()))
+    files = """
+        ./data/2201_01_all/2201.01576v2.tar.gz
+        ./data/2201_01_all/2201.01664v2.tar.gz
+        ./data/2201_01_all/2201.01050v1.tar.gz
+        ./data/2201_01_all/2201.01445v1.tar.gz
+        ./data/2201_01_all/2201.01073v1.tar.gz
+        ./data/2201_01_all/2201.01782v1.tar.gz
+        ./data/2201_01_all/2201.01576v1.tar.gz
+        ./data/2201_01_all/2201.01647v3.tar.gz
+        ./data/2201_01_all/2201.01207v1.tar.gz
+        ./data/2201_01_all/2201.01664v1.tar.gz
+        ./data/2201_01_all/2201.01980v1.tar.gz
+        ./data/2201_01_all/2201.01445v2.tar.gz
+    """.strip().split()
+
+
+
+# + tags=[]
 files_count = len(files)
 utf_count = 0
 latin_count = 0 
 err_files = {}
 
+TOLERANCE = 1
+
 with tqdm(total=files_count, desc="errors") as err_prog:
     for tar_file in tqdm(files, desc="Progress", display=True):
         # Is it unicode?
         try:
-            soup = soup_from_tar(tar_file, encoding='utf-8')
+            soup = soup_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
             utf_count += 1
             continue
         except EOFError as eof:
@@ -172,7 +207,7 @@ with tqdm(total=files_count, desc="errors") as err_prog:
 
         # Is it something else?
         try:
-            soup = soup_from_tar(tar_file, encoding='latin-1')
+            soup = soup_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
             latin_count += 1
             continue
         except KeyboardInterrupt as KB_err:
@@ -318,7 +353,6 @@ In practice, the matrix $\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra\right]\Inv\M{
 
 # + tags=[]
 min_example=r"""
-
 $\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra \right] $
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
@@ -328,4 +362,18 @@ TS.TexSoup(pre_format(min_example))
 print(pre_format(min_example))
 # -
 print()
+
+
+# + tags=[]
+min_example=r"""
+\documentclass{article}
+\begin{document}
+\catcode\day\month
+\end{document}
+""".strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example))
+#print(min_example)
+# -
+TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
+
 
