@@ -1,0 +1,967 @@
+
+Fast ultrametric matrix-vector multiplication
+
+Tobias Hofmann1, Andy Oertel2
+
+Chemnitz University of Technology
+
+1tobias.hofmann@math.tu-chemnitz.de,
+
+Lund University
+
+2andy.oertel@cs.lth.se
+
+Abstract. We study the properties of ultrametric matrices aiming to
+design methods for fast ultrametric matrix-vector multiplication. We
+show how to encode such a matrix as a tree structure in quadratic
+time and demonstrate how to use the resulting representation to per-
+form matrix-vector multiplications in linear time. Accompanying this
+article, we provide an implementation of the proposed algorithms and
+present empirical results on their practical performance.
+
+Keywords. ultrametric matrices, tree representations, fast matrix-
+vector multiplication
+
+MSC Subject classification. 05-08, 15-04, 15B99, 68R10, 05C50
+
+1 Introduction
+
+Ultrametricity is a remarkable, occasionally a little counterintuitive, but often nat-
+ural and interesting property. Examples in which ultrametric distances arise range
+from the p-adic number system to phylogenetic trees, which is illustrated nicely
+by Holly [10]. Accordingly, ultrametric matrices appear in various mathematical
+fields. The monograph of Dellacherie, Martínez, and Martín [2] describes how
+ultrametric matrices are related to M-matrices and underlines their relevance in
+discrete potential theory or the analysis of Markov chains. Another remarkable
+property, established by Martínez, Michon, and San Martín in [13], is that ultra-
+metric matrices are nonsingular and their inverses are strictly diagonally dominant
+Stieltjes matrices. We learned about their rich properties while investigating edge-
+connectivity matrices, whose off-diagonal entries satisfy an ultrametric inequality.
+This is a classical result of Gomory and Hu [7], which links ultrametricity with
+
+1
+
+topics from combinatorics and spectral graph theory, as is discussed in Hofmann
+and Schwerdtfeger [9]. Furthermore, ultrametric matrices play a role in statistics
+and data analysis. Chehreghani [1] develops a machine learning framework that
+builds on minimax, and herewith ultrametric, distance measures. Lauritzen, Uh-
+ler, and Zwiernik [11] show that ultrametric matrices are relevant in maximum
+likelihood estimation problems for specific Gaussian distributions. Another exam-
+ple is an ultrametric spectral clustering approach developed by Little, Maggioni,
+and Murphy [12].
+
+As interest in applications involving ultrametric matrices grows, the question of
+how to perform efficient ultrametric matrix computations arises. This is the focus
+of this article. Building on the well-known fact that ultrametric matrices are
+completely reducible, our main contributions are explicit algorithmic ideas how to
+encode an ultrametric matrix as its associated tree structure and how to use this
+data structure to perform fast ultrametric matrix-vector multiplications.
+
+Outline. We review basic facts about ultrametric matrices and point out how
+these matrices are related to tree structures in Section 2. Section 3 is about
+utilizing these data structures to perform fast matrix-vector multiplications. In
+Section 4, we summarize results about the performance of the methods we propose.
+Accompanying our computational insights, we provide an implementation of our
+algorithms.
+
+We conclude this section with certain concepts and notations that are particularly
+important for our investigation. We use 1 to denote the all ones column vector
+of appropriate dimensions. The symbol ei represents the standard column basis
+vector of appropriate dimensions, whose entries are defined via (ei)j := 1 if i = j
+and (ei)j := 0 if i 6= j. For a matrix A ∈ Rn×n, we use index sets I, J ⊂ {1, . . . , n}
+to specify AIJ as the submatrix that contains those rows of A that belong to the
+indices in I and those columns of A that belong to indices in J. If I = J, we
+may use the shorthand AI instead of AII = AIJ. We denote diagonal matrices
+whose entries are given by a sequence (ai)n
+i=1 by diag(ai : i = 1, . . . , n). For graph
+theoretical terminology, we refer to the monograph of Diestel [3].
+
+2 Basic Properties of ultrametric matrices
+
+The investigation of ultrametric matrices gained in importance with the article by
+Martínez, Michon, and San Martín [13] who give in essence the following definition.
+
+2
+
+Definition 2.1. A nonnegative symmetric matrix A = [aij] ∈ Rn×n is said to be
+ultrametric if it satisfies the inequalities
+
+(a) aij ≥ min{aik, akj}
+
+for all i 6= j 6= k 6= i,
+
+(b) aii ≥ max{aij : j ∈ {1, . . . , n} \ {i}} for all i.
+
+The inequalities in (a) are known as ultrametric inequalities and a matrix that sat-
+isfies (b) is referred to as column pointwise diagonal dominant. If A satisfies (a),
+but not necessarily (b), we call A essentially ultrametric.
+If A satisfies the in-
+equalities in (b) with equality, we call A special ultrametric, and if A satisfies the
+inequalities in (b) strictly, we call A strictly ultrametric. A matrix of size n = 1 is
+strictly ultrametric only if its entry is positive, whereas there is no such convention
+for special or essentially ultrametric matrices.
+
+The focus in the article of Martínez, Michon, and San Martín [13] is on strictly ul-
+trametric matrices, whereas Fiedler [4] studied special ultrametric matrices, which
+can be seen as extremal matrices in the boundary of the set of ultrametric matri-
+ces. The term essentially ultrametric is to emphasize situations in which specific
+diagonal entries are not of interest. For example, this is the case for the edge-
+connectivity matrices in [9]. A central property of strictly ultrametric matrices is
+that they are nonsingular and their inverses are diagonally dominant M-matrices.
+Martínez, Michon, and San Martín prove this fact in [13] by probabilistic argu-
+ments. A linear algebra proof is given by Nabben and Varga [14]. Their arguments
+essentially rely on the fact that ultrametric matrices are completely reducible, which
+is what they state in the following way.
+
+Theorem 2.2. Let A = [aij] be a nonnegative symmetric matrix in Rn×n. If n > 1,
+then A is essentially ultrametric if and only if there is an integer k with 1 ≤ k < n
+and a suitable permutation matrix P ∈ Rn×n such that
+
+P(cid:16)A − min{aij : i 6= j} 11⊤(cid:17)P ⊤ = "B 0
+0 C#,
+
+where B and C are essentially ultrametric matrices in Rk×k and R(n−k)×(n−k),
+respectively.
+
+Note that in [14] the above statement is formulated for a strictly ultrametric ma-
+trix A.
+In this case, the matrices B and C follow to be strictly ultrametric as
+well. However, the idea of the proof presented in [14] actually does not require
+any particular diagonal entries. Fiedler [4], for example, follows the same line of
+reasoning to obtain Theorem 2.2 except that A, B, and C are special ultrametric.
+In our statement above, we simply ignore the diagonal entries of A and accord-
+ingly claim nothing about the diagonal entries of B and C. Also note that whereas
+
+3
+
+Theorem 2.2 only states the existence of a suitable integer k and a permutation
+matrix P , the focus of this article is on algorithms to determine P explicitly. The
+following simple but useful observation is our first step in that direction.
+
+Lemma 2.3. In each row and column of an essentially ultrametric matrix A = [aij]
+there is an entry equal to min{aij : i 6= j}.
+
+Proof. Theorem 2.2 tells us that there is an entry equal to zero in each row and
+
+column of P(cid:16)A − min{aij : i 6= j} 11⊤(cid:17)P ⊤, where P is some permutation matrix.
+
+Permuting rows and columns, however, preserves this property. So there is an
+entry equal to zero in each row and column of A − min{aij : i 6= j} 11⊤. In other
+words, there is an entry equal to min{aij : i 6= j} in each row and column of A.
+
+Theorem 2.2 essentially is a decomposition statement showing that there is a tree
+structure inherent in an ultrametric matrix. Lemma 2.3 emphasizes the fact that
+we can find the global minimum of the off-diagonal entries of an ultrametric matrix
+in each of its rows or columns. This is the reason why we may process such a
+matrix row by row when asking for its underlying tree structure. For the explicit
+
+Algorithm 1 Ultrametric Tree Construction
+Input: essentially ultrametric matrix A = [aij] ∈ Rn×n
+Output: ultrametric tree (V, E) associated with A
+
+1: V ← {r}
+2: E ← ∅
+3: I(r) ← {1, . . . , n}
+4: TreeRecursion(r)
+
+f (u) ← aii
+
+else
+
+i ← min(I(u))
+if I(u) = 1 then
+
+5: procedure TreeRecursion(u)
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+
+f (u) ← min{aij : j ∈ I(u) \ {i}}
+V ← V ∪ {v, w}
+E ← E ∪ {(u, v), (u, w)}
+I(v) ← {j ∈ I(u) : aij > f (u)} ∪ {i}
+I(w) ← {j ∈ I(u) \ {i} : aij = f (u)}
+TreeRecursion(v)
+TreeRecursion(w)
+
+4
+
+I(r) = {1, 2, 3, 4}
+
+f (r) = 1
+
+r
+
+A = 
+
+
+0 1 3 1
+1 3 1 2
+3 1 5 1
+1 2 1 1
+
+
+
+
+I(u) = {1, 3}
+
+f (u) = 3
+
+u
+
+I(a) = {2, 4}
+
+f (a) = 2
+
+a
+
+v
+
+I(v) = {1}
+f (v) = 0
+
+w
+
+I(w) = {3}
+f (w) = 5
+
+b
+
+I(b) = {2}
+f (b) = 3
+
+c
+
+I(c) = {4}
+f (c) = 1
+
+Figure 1: An essentially ultrametric matrix A and its associated tree constructed
+by Algorithm 1
+
+computation of a tree (V, E) associated with an ultrametric matrix, we propose
+Algorithm 1. Here, an edge ij ∈ E is to be understood as directed and we address i
+as parent and j is its child. Furthermore, each vertex u ∈ V takes an index set I(u)
+and a value f (u). For an example of how Algorithm 1 works, we may take a
+look at Figure 1. It shows an essentially ultrametric matrix A and the tree that
+results when applying Algorithm 1 to it. It is indeed possible to go on pruning the
+resulting tree while retaining all the information about the matrix A by contracting
+a vertex v and its parent u if f (u) = f (v). This may be useful in some situations
+and is an option our implementation supports. In general, however, pruning may
+not be possible at all and as it would otherwise overcomplicate our notation, we
+consider unpruned trees when analyzing the characteristics of Algorithm 1.
+
+Theorem 2.4. Algorithm 1 that has been given an essentially ultrametric ma-
+trix A = [aij] ∈ Rn×n as input terminates after 2n−1 recursion calls and its output
+is a rooted directed tree (V, E) in which each vertex can be reached from the root r
+by a unique directed path. Moreover, the tree (V, E) has the following properties.
+
+(i) A submatrix AI(u) is essentially ultrametric for each u ∈ V .
+
+(ii) For each i ∈ {1, . . . , n}, there is a leaf u ∈ V with I(u) = {i} and f (u) = aii.
+
+(iii) If u has a child v, then f (u) = aij for all i ∈ I(v) and all j ∈ I(u) \ I(v).
+
+Proof. At first, we examine that for a vertex u with index set I(u) of size I(u) ≥ 2
+a recursion step of Algorithm 1 sets i = min(I(u)), f (u) = min{aij : j ∈ I(u)\{i}},
+and divides the set I(u) into two subsets
+
+I(v) = {j ∈ I(u) : aij > f (u)} ∪ {i} and
+I(w) = {j ∈ I(u) \ {i} : aij = f (u)}.
+
+5
+
+So we conclude that I(v) 6= ∅, I(w) 6= ∅, I(v) ∩ I(w) = ∅, and I(u) = I(v) ∪ I(w).
+This means that subsequent recursion steps operate on a nonempty, but smaller
+index set. This also implies that Algorithm 1, initializing I(u) = {1, . . . , n} in
+Line 3, has to process n − 1 recursion steps that run through their else case to
+decompose the initial index set completely and eventually, the recursion is called
+with input u for which I(u) = {i} for each i ∈ {1, . . . , n} at some point. This
+leads into the recursion's if case and thus causes the respective recursion branch to
+terminate. In such a case, the algorithm assigns f (u) = aii by Line 8, which proves
+Statement (ii). Since this happens n times, we count a total of 2n − 1 recursion
+steps.
+
+The graph (V, E) that Algorithm 1 constructs is initialized by V = {r} and E = ∅
+in Lines 1 and 2. This graph gets assigned new vertices and edges only in the else
+case of our recursion and there we always append two vertices by two edges to
+the graph constructed up to that point. This provides us with a connected graph
+that contains 2n − 1 vertices and 2n − 2 edges. So Algorithm 1 outputs a tree and
+since the direction in which the edges are included follows exactly the layout of
+the recursion tree, we find the vertex r that is initialized in line 1 to be the root,
+from which all other vertices can be reached by a unique directed path.
+
+To prove Statement (i), we proceed inductively. We are given that AI(r) = A is
+essentially ultrametric. So let us consider a recursion step with input u for which
+we suppose that I(u) ≥ 2 and AI(u) is essentially ultrametric. Denoting ℓ := I(u)
+as well as I(v) = {i1, . . . , ik} and I(w) = {ik+1, . . . , iℓ}, we define the permutation
+matrix
+
+an consider
+
+P ⊤ = [ei1, . . . , eik, eik+1, . . . , eiℓ]
+
+P AI(u)P ⊤ = " AI(v)
+
+AI(w)I(v)
+
+AI(v)I(w)
+
+AI(w) #.
+
+Since the algorithm sets i = min(I(u)) and I(w) = {j ∈ I(u) \ {i} : aij = f (u)},
+all the entries in row i of AI(v)I(w) are equal to f (u) = min{aij : j ∈ I(u) \ {i}}.
+We already observed in Lemma 2.3 that in this way we find the smallest global off-
+diagonal entry f (u) = {aij : i 6= j}. Theorem 2.2 thus tells us that indeed all the
+entries in AI(v)I(w) are equal to f (u). Consequently, we observe that f (u) = aij
+for all i ∈ I(v) and all j ∈ I(u) \ I(v) and, by symmetry, that f (u) = aij for
+all i ∈ I(w) and all j ∈ I(u) \ I(w). This proves Statement (iii) since we have
+chosen u to be an arbitrary vertex among those that have children. Furthermore,
+Theorem 2.2 implies that AI(v) and AI(w) are again essentially ultrametric, which
+was to be shown for Statement (i).
+
+6
+
+Corollary 2.5. Algorithm 1 requires O(n2) floating-point operations to encode
+an essentially ultrametric matrix A ∈ Rn×n as its associated tree structure.
+
+Proof. The algorithm terminates after 2n−1 recursion calls by Theorem 2.4. Each
+recursion step requires O(n) floating-point operations to determine f (u), I(v),
+and I(w), as for each of them at most n comparisons have to be performed. So in
+total we count O(n2) floating-point operations.
+
+3 Fast matrix-vector multiplication
+
+The following algorithm is designed to perform fast matrix-vector multiplications
+for a matrix that is given in its ultrametric tree representation (V, E) constructed
+by Algorithm 1. As before, each vertex u ∈ V is provided with an index set I(u)
+and a value f (u). In addition, we assign values s(u), t(u) and p(u) in what follows.
+
+Algorithm 2 Ultrametric Multiplication
+
+Input: ultrametric tree (V, E) with root vertex r constructed by Algorithm 1 for
+
+an essentially ultrametric matrix A ∈ Rn×n, vector x ∈ Rn
+
+Output: product y = Ax
+
+1: PartialProduct(r, 0)
+2: TotalProduct(r, 0)
+
+if I(u) = 1 then
+
+3: procedure PartialProduct(u, z)
+4:
+5:
+6:
+7:
+
+s(u) ← xi where i ∈ I(u)
+
+else
+
+s(u) ← Xv∈V :(u,v)∈E
+
+PartialProduct(v, f (u))
+
+8:
+9:
+
+t(u) ← (f (u) − z) s(u)
+return s(u)
+
+p(u) ← q + t(u)
+if I(u) = 1 then
+
+10: procedure TotalProduct(u, q)
+11:
+12:
+13:
+14:
+15:
+16:
+
+for all v ∈ V : (u, v) ∈ E do
+TotalProduct(v, p(u))
+
+yi ← p(u) where i ∈ I(u)
+
+else
+
+7
+
+0 1 3 1
+1 3 1 2
+3 1 5 1
+1 2 1 1
+
+
+
+
+1
+−1
+0
+2
+
+
+
+
+
+
+
+
+
+
+=
+
+
+1
+2
+4
+1
+
+
+
+
+A
+
+x = y
+
+I(r) = {1, 2, 3, 4}
+
+f (r) = 1
+
+r
+
+I(u) = {1, 3}
+
+f (u) = 3
+
+u
+
+s(r) = 2
+t(r) = 2
+p(r) = 2
+
+I(a) = {2, 4}
+
+f (a) = 2
+
+a
+
+s(u) = 1
+t(u) = 2
+p(u) = 4
+
+v
+
+w
+
+b
+
+s(a) = 1
+t(a) = 1
+p(a) = 3
+
+c
+
+I(v) = {1}
+f (v) = 0
+x1 = s(v) = 1
+
+t(v) = −3
+
+y1 = p(v) = 1
+
+I(w) = {3}
+f (w) = 5
+x3 = s(w) = 0
+t(w) = 0
+y3 = p(w) = 4
+
+I(b) = {2}
+f (b) = 3
+
+x2 = s(b) = −1
+t(b) = −1
+
+I(c) = {4}
+f (c) = 1
+x4 = s(c) = 2
+
+t(c) = −2
+
+y2 = p(b) = 2
+
+y4 = p(c) = 1
+
+Figure 2: An ultrametric matrix-vector multiplication Ax = y performed by Algo-
+rithm 2. The annotations in gray belong to the input generated by Algorithm 1,
+those in black are the values Algorithm 2 determines.
+
+Theorem 3.1. Let (V, E) be an ultrametric tree with root vertex r constructed by
+Algorithm 1 for an essentially ultrametric matrix A ∈ Rn×n and let x be a vector
+in Rn. Then Algorithm 2 with input (V, E) and x terminates with output y = Ax.
+
+Proof. In case n = 1, both procedures of Algorithm 2 only activate their if case.
+So they terminate after their first iteration and sequentially assign s(r) = x1 in
+Line 5, t(r) = f (r)s(r) = a11x1 in Line 8, p(r) = t(r) = a11x1 in Line 11, and
+eventually y1 = p(r) = a11x1 in Line 13, which shows the correctness of Algorithm 2
+for n = 1.
+
+By Theorem 2.4, each vertex in V can be reached from the root r by a unique
+directed path. So each vertex in V is either a leaf or has outgoing edges to child
+vertices and each vertex except the root r has a uniquely determined parent.
+Both procedures of Algorithm 2 initially get the root r as input. A recursion step
+receiving a vertex u calls, in case u is not a leaf, recursion procedures for all children
+of u, due to Lines 7, 15 and 16. This causes the algorithm to terminate and also
+shows that both procedures of Algorithm 2 are called for each vertex in V at some
+point and thus that the assignments in Lines 5 and 13 eventually are realized for
+each i ∈ {1, . . . , n}. So the algorithm's output y is well-defined. Recall for this
+conclusion that Theorem 2.4 ensures that there is a leaf u ∈ V with I(u) = {i}
+for each i ∈ {1, . . . , n}. In view of Lines 5 and 7, this also implies that
+
+s(u) = Xv∈V :(u,v)∈E
+
+s(v) = . . . = Xj∈I(u)
+
+xj.
+
+8
+
+We use this relationship in the following steps whose purpose is to show that
+indeed y = Ax holds for n ≥ 2. Let us consider an arbitrary i ∈ {1, . . . , n} and
+let u0, . . . , um be the vertices on the unique directed path in (V, E) that leads
+from the root r = u0 to the vertex um with I(um) = {i}. Since we discussed
+the case n = 1, we can assume that m ≥ 1 and we know that f (um) = aii by
+Statement (ii) of Theorem 2.4. Line 13 tells us that yi = p(um).
+In view of
+Lines 11 and 8, this provides us with
+
+yi = p(um) = p(um−1) + t(um) = . . . =
+
+t(uk)
+
+m
+
+Xk=0
+
+m
+
+= (cid:20)
+= (cid:20) m
+= f (um)Xj∈I(um)
+
+Xk=1(cid:16)f (uk) − f (uk−1)(cid:17)s(uk)(cid:21) + f (u0) s(u0)
+xj(cid:21) + f (u0)Xj∈I(u0)
+Xk=1(cid:16)(f (uk) − f (uk−1)(cid:17)Xj∈I(uk)
+xj(cid:21)
+xj − Xj∈I(uk)
+
+f (uk−1)(cid:20)Xj∈I(uk−1)
+
+Xk=1
+
+xj +
+
+xj
+
+m
+
+m
+
+= f (um) xi +
+
+m
+
+= aii xi +
+
+f (uk−1) xj
+
+Xk=1 Xj∈I(uk−1)\I(uk)
+Xj=1
+
+Xk=1 Xj∈I(uk−1)\I(uk)
+
+aij xj =
+
+n
+
+aij xj.
+
+which is the relation to be shown. Note for the second to last equality that i ∈ I(uk)
+for all k ∈ {0, . . . , m} and therefore Statement (iii) of Theorem 2.4 tells us
+that f (uk−1) = aij for j ∈ I(uk−1) \ I(uk).
+
+Corollary 3.2. Algorithm 2 requires O(n) floating-point operations to multiply
+an essentially ultrametric matrix A ∈ Rn×n given in its tree representation (V, E)
+by a vector x ∈ Rn.
+
+Proof. Both procedures of Algorithm 2 are called exactly once per vertex in V .
+We know that V  = 2n − 1 by the proof of Theorem 2.4. Since each call of one
+of the procedures involves O(1) floating-point operations, Algorithm 2 requires a
+total of O(n) floating-point operations.
+
+Note that whereas the running time of Algorithm 2 is linear, it requires a matrix
+that has been encoded as an ultrametric tree. By Corollary 2.5, this can be done
+in quadratic time using Algorithm 1.
+
+9
+
+4 Empirical Insights
+
+This section is intended to evaluate the practical performance of the algorithms
+discussed in the previous sections. We begin by presenting computation times
+for constructing ultrametric trees by Algorithm 1 as well as times that matrix-
+vector multiplications require when using Algorithm 2. We compare this to the
+effort involved in standard matrix-vector multiplications. By the term standard
+we refer to a routine that determines the matrix-vector product y = Ax simply by
+j=1 aijxj for each i ∈ {1, . . . , n}. The second half of this section
+
+extends this investigation to scenarios in which we want to multiply repeatedly.
+
+computing yi = Pn
+
+Our experiments are conducted on randomly generated matrices for whose gener-
+ation we rely on the following characterization by Fiedler [5].
+
+Theorem 4.1. Up to a simultaneous permutation of rows and columns, each
+special ultrametric matrix A = [aij] ∈ Rn×n with n ≥ 2 can be obtained by
+choosing n − 1 numbers a12, a23, . . . , an−1,n and setting
+
+a11 = a12,
+
+aii = max{ai−1,i, ai,i+1} for i = 2, . . . , n − 1,
+aik = min{ai,k−1, ai+1,k} for all i, k where 1 ≤ i < k − 1 ≤ n − 1,
+aki = aik for all i, k where i > k.
+
+ann = an−1,n,
+
+In our tests, the numbers a12, a23, . . . , an−1,n are taken uniformly at random from
+{1, . . . , n − 1} and all the other matrix entries are determined as described in The-
+orem 4.1. Having generated such a matrix, we randomly perform a simultaneous
+permutation of its rows and columns. This is to avoid unintended advantages for
+our algorithms, which is to be expected when the entries of the input matrices are
+already presorted. As well, the entries of the vectors to be multiplied are chosen
+uniformly at random from {1, . . . , n − 1}. The source code used to generate the
+data as well as implementations of Algorithms 1 and 2 are available under Hofmann
+and Oertel [8]. Figure 4 shows computation times for a single multiplication of an
+ultrametric matrix by a vector. We compare the time a standard multiplication
+takes with the time for multiplying by Algorithm 2. The latter algorithm requires
+that the input matrix is given in its tree representation. So we additionally con-
+sider the time that Algorithm 1 needs to construct a corresponding ultrametric
+tree. All the computation times are averaged over 10 runs with varied matrices
+and vectors.
+
+For very small matrices, the standard routine is faster than the tree multiplication
+by Algorithm 2, even without counting the effort for encoding an ultrametric ma-
+trix as its associated tree structure. For matrices up to a size of about n = 27, the
+tree multiplication may be faster than the standard method. However, counting
+
+10
+
+Ultrametric Tree Construction
+Ultrametric Tree Construction
+Ultrametric Multiplication
+Ultrametric Multiplication
+Ultrametric Tree Construction and Multiplication
+Ultrametric Tree Construction and Multiplication
+Standard Multiplication
+Standard Multiplication
+
+102
+
+101
+
+100
+
+10−1
+
+10−2
+
+10−3
+
+10−4
+
+10−5
+
+10−6
+
+10−7
+
+s
+d
+n
+o
+c
+e
+s
+
+102
+
+101
+
+100
+
+10−1
+
+10−2
+
+10−3
+
+10−4
+
+10−5
+
+10−6
+
+10−7
+
+23
+23
+
+25
+25
+
+27
+27
+
+29
+29
+
+211
+211
+
+213
+213
+
+215
+215
+
+matrix size n
+matrix size n
+
+Figure 3: Computation times for matrix-vector products. The results in this chart
+are averaged over 10 runs with random ultrametric matrices as input.
+
+the total duration, including the time required to encode the given matrix as its
+ultrametric tree, the standard routine is still to be preferred. For larger matrix
+sizes, the methods we propose consume considerably less time than a standard rou-
+tine. For example, multiplying a matrix of size n = 215 by a vector is about 780
+times faster compared to using a standard multiplication. Within our methods,
+the largest portion of the computation time is required by the tree construction.
+So applying the proposed methods may especially pay off in situations where we
+want to multiply repeatedly. To demonstrate this, we conclude this section with
+an example in which our ultrametric multiplication techniques are used as part of
+an iterative matrix method.
+
+Suppose we want to compute an approximate solution x ∈ Rn to a system of linear
+equations Ax = b with b ∈ Rn where A = [aij] ∈ Rn×n is a diagonal dominant
+ultrametric matrix. A classical iterative scheme to solve such a system is the
+Jacobi method, presented by Golub and Van Loan [6, Chapter 11], for example.
+The basic idea behind this method is to compute a sequence (xk) that, under
+certain conditions, converges to x = A−1b by iterating
+
+xk+1 = D−1(cid:16)b − Bxk(cid:17) ,
+
+11
+
+s
+d
+n
+o
+c
+e
+s
+
+103
+
+102
+
+101
+
+100
+
+10−1
+
+10−2
+
+10−3
+
+10−4
+
+10−5
+
+10−6
+
+Ultrametric Tree Construction
+Ultrametric Tree Construction
+Jacobi Method using Ultrametric Multiplication
+Jacobi Method using Ultrametric Multiplication
+Ultrametric Tree Construction and Jacobi
+Ultrametric Tree Construction and Jacobi
+Method using Ultrametric Multiplication
+Method using Ultrametric Multiplication
+Jacobi Method using Standard Multiplication
+Jacobi Method using Standard Multiplication
+
+23
+23
+
+25
+25
+
+27
+27
+
+29
+29
+
+211
+211
+
+213
+213
+
+215
+215
+
+matrix size n
+matrix size n
+
+103
+
+102
+
+101
+
+100
+
+10−1
+
+10−2
+
+10−3
+
+10−4
+
+10−5
+
+10−6
+
+Figure 4: Computation times for solving linear systems. The results in this chart
+are averaged over 10 runs with random ultrametric matrices as input.
+
+where D := diag(aii : i = 1, . . . , n) contains the diagonal of A and B := A − D
+contains the off-diagonal elements of A. Since here the inversion of the diagonal
+matrix D is computationally simple, the effort of an iteration is largely determined
+by the cost of the matrix-vector multiplication Bxk, for which we propose our
+ultrametric multiplication techniques. Since a lot of iterative matrix methods
+rely on repeated matrix-vector multiplications, our techniques may be of use in
+many of them, provided that the ultrametric structure is preserved throughout the
+iterations to be performed.
+
+Figure 4 shows empirical results on the performance of our methods when us-
+ing them as a subroutine within the Jacobi method to solve a system of linear
+equations Ax = b. The matrices on which our tests are based are constructed
+as described above with the only exception that we now require them to be
+strictly diagonal dominant. More precisely, we choose the diagonal elements aii
+j=1 aij,
+
+for i ∈ {1, . . . , n} uniformly at random from {d + 1, . . . , d2} where d = Pn
+
+which guarantees a reasonable convergence rate of the Jacobi method.
+
+As with the results described in Figure 4, the initial effort involved in the tree
+construction begins to pay off already for relatively small matrix sizes. For the
+
+12
+
+scenario at hand, the breakpoint is reached at a size of about n = 26, which is
+earlier than in the experiments illustrated in Figure 4. Also, compared to using
+naive matrix multiplication within an iterative scheme, the difference in perfor-
+mance becomes considerably larger. For example, for a system of size n = 215,
+using our methods within the Jacobi method is about 2750 times faster than the
+standard version. This underlines the potential of the proposed methods for large
+scale computations.
+
+Acknowledgments
+
+Our research was partially funded by the Deutsche Forschungsgemeinschaft (DFG,
+German Research Foundation)  --  Project-ID 416228727  --  SFB 1410 and by the
+Wallenberg AI, Autonomous Systems and Software Program (WASP) funded by
+the Knut and Alice Wallenberg Foundation.
+
+References
+
+[1] Morteza H. Chehreghani. Unsupervised representation learning with minimax
+
+distance measures. Machine Learning, 109(11):2063 -- 2097, 2020.
+
+[2] Claude Dellacherie, Servet Martínez, and Jaime S. Martín.
+
+Inverse M-
+Matrices and Ultrametric Matrices. Lecture Notes in Mathematics. Springer,
+2014.
+
+[3] Reinhard Diestel. Graph Theory. Springer, 2017.
+
+[4] Miroslav Fiedler. Special ultrametric matrices and graphs. SIAM Journal on
+
+Matrix Analysis and Applications, 22(1):106 -- 113, 2000.
+
+[5] Miroslav Fiedler. Remarks on monge matrices. Mathematica Bohemica,
+
+127(1):27 -- 32, 2002.
+
+[6] Gene H. Golub and Charles F. Van Loan. Matrix Computations. Johns
+
+Hopkins University Press, 2013.
+
+[7] Ralph E. Gomory and Tien Chung Hu. Multi-terminal network flows. SIAM
+
+Journal, 9(4):551 -- 570, 1961.
+
+[8] Tobias Hofmann and Andy Oertel. Ultrametric matrix tools, 2021. Version:
+
+0.1.1. url: https://doi.org/10.5281/zenodo.5809300.
+
+[9] Tobias Hofmann and Uwe Schwerdtfeger. Edge-connectivity matrices and
+
+their spectra. arXiv:2102.04541, 2021.
+
+13
+
+[10] Jan E. Holly. Pictures of ultrametric spaces, the p-adic numbers, and valued
+
+fields. The American Mathematical Monthly, 108(8):721 -- 728, 2001.
+
+[11] Steffen Lauritzen, Caroline Uhler, and Piotr Zwiernik. Maximum likelihood
+estimation in gaussian models under total positivity. The Annals of Statistics,
+47(4):1835 -- 1863, 2019.
+
+[12] Anna V. Little, Mauro Maggioni, and James M. Murphy. Path-based spectral
+clustering: guarantees, robustness to outliers, and fast algorithms. Journal of
+Machine Learning Research, 21, 2020.
+
+[13] Servet Martínez, Gérard Michon, and Jaime S. Martín.
+
+Inverse of strictly
+ultrametric matrices are of Stieltjes type. SIAM Journal on Matrix Analysis
+and Applications, 15(1):98 -- 106, 1994.
+
+[14] Reinhard Nabben and Richard S. Varga. A linear algebra proof that the in-
+verse of a strictly ultrametric matrix is a strictly diagonally dominant Stieltjes
+matrix. SIAM Journal on Matrix Analysis and Applications, 15(1):107 -- 113,
+1994.
+
+14
+
+

@@ -1,0 +1,1627 @@
+
+Simulating local fields in carbon nanotube
+
+reinforced composites for infinite strip with voids
+
+Mohamed Nassera, El Mostafa Kalmounb, Vladimir Mityushevc,
+
+and Natalia Rylkoc
+
+aMathematics Program, Department of Mathematics, Statistics and Physics,
+
+College of Arts and Sciences, Qatar University, Doha, Qatar
+
+bSchool of Science and Engineering, Al Akhawayn University in Ifrane,
+
+PO Box 104, Ifrane 53000, Morocco
+
+cFaculty of Computer Science and Telecommunications,
+
+Cracow University of Technology, Krak´ow, Poland
+
+Abstract
+
+We consider the steady heat conduction problem within a thermal isotropic
+and homogeneous infinite strip composite reinforced by uniformly and ran-
+domly distributed non-overlapping carbon nanotubes (CNTs) and containing
+voids. We treat the CNTs as thin perfectly conducting elliptic inclusions and
+assume the voids to be of circular shape and act as barriers to heat flow. We
+also impose isothermal conditions on the external boundaries by assuming the
+lower infinite wall to be a heater under a given temperature, and the upper
+wall to be a cooler that can be held at a lower fixed temperature. The equa-
+tions for the temperature distribution are governed by the two-dimensional
+Laplace equation with mixed Dirichlet-Neumann boundary conditions. The
+resulting boundary value problem is solved using the boundary integral equa-
+tion with the generalized Neumann kernel. We illustrate the performance of
+the proposed method through several numerical examples including the case
+of the presence a large number of CNTs and voids.
+
+Keywords. Local fields in 2D composites, Boundary integral equation,
+Carbon nanotube composites
+
+1
+
+Introduction
+
+Nanofibers embedded in polymer matrices have attracted attention as one of the
+reinforcements for composite materials. Carbon nanotubes (CNTs) reinforced poly-
+mer nanocomposites are considered as conventional micro- and macro-composites
+[1]. Their thermal, mechanical, and electric properties are determined by experi-
+mental and theoretical investigations [2, 3, 4]. CNTs are considered as perfectly
+conducting inclusions, which suggests imposing Dirichlet boundary conditions on
+the boundary of CNTs. On the other hand, the classical problems for materials
+with holes in porous media and materials with voids and insulting inclusions are
+modeled by the Neumann boundary condition [5, 6].
+
+The present paper is devoted to the heat conduction within a 2D (two-dimensional)
+
+thermal isotropic and homogeneous nanocomposite, which takes the form of an infi-
+nite strip, when it is reinforced by non-overlapping and randomly distributed CNTs
+
+1
+
+2
+
+and contains defects and voids.
+In particular, we are interested in studying the
+effect of CNTs as well as of the presence of voids on the macroscopic conductive and
+mechanical properties of this composite. Owing to the superconductivity of CNTs
+and the extremely low conductivity of voids, we can assume that the conductiv-
+ity of CNTs, of the polymer host and of voids to be governed by the inequalities
+λc (cid:29) λ (cid:29) λ0. Such an assumption leads to a mixed boundary value problem
+where the latter inequality becomes +∞ (cid:29) λ (cid:29) 0. The host conductivity can be
+normalized to unity, i.e., λ = 1.
+
+Theoretical investigation of mixed boundary value problems by integral equa-
+tions can be found in [7, 8]. In the same time, implementation of numerical methods
+for large number of inclusions and holes is still a challenging problem of applied and
+computational mathematics. We propose in this work a fast and effective algorithm
+for the numerical solution of the formulated mixed boundary value problem. The
+method is based on the boundary integral equation with the generalized Neumann
+kernel. The integral equation has been used in [8] to solve a similar mixed bound-
+ary value problem related to the capacity of generalized condensers. The proposed
+method can be even employed when the number of perfectly conducting inclusions
+and holes is very large.
+
+As a result of simulations, we first study the 2D local fields for three types of me-
+dia. In the first type, we consider the case of pure m void cracks with m = 5, 30, 50.
+The second type consists of pure (cid:96) CNT inclusions with (cid:96) = 5 and 200. Finally, we
+treat the case of a large number of combined inclusions and holes by considering
+either 2000 of one of the two or 1000 of each. Afterward, we take up the systematic
+investigation of the effective conductivity of the considered composites. It is im-
+portant in applications to predict the macroscopic properties of composites which
+depend on the concentration of perfectly conducting CNTs as well as on the concen-
+tration of holes and voids. It is worth noting that the notation of concentration are
+different for slit shapes of CNTs and circular shapes of holes. The performed sim-
+ulations of local fields and computation of their averaged conductivities for various
+concentrations allows to establish the dependence of the macroscopic conductivity
+on the main geometrical parameters.
+
+2 Problem formulation
+
+Let us consider a channel medium embedding m inhomogeneities in the form of (cid:96)
+nanofillers and p = m − (cid:96) holes (voids). As many nanofillers (e.g, carbon nanon-
+tubes [9]) have cross sections of elliptical shapes, we model them as ellipses C1, . . . , C(cid:96).
+Furthermore, we represent the non-conducting holes by inner circles C(cid:96)+1, . . . , Cm.
+The top and bottom infinite walls of the channel are denoted respectively by C(cid:48)
+0
+and C(cid:48)(cid:48)
+0 , which yields a multiply connected domain Ω of connectivity m + 1 with a
+0 . An example of this domain for the
+
+boundary set C =(cid:83)m
+
+case of (cid:96) = 4 and m = 7 is illustrated in Figure 1.
+
+k=0 Ck where C0 = C(cid:48)
+
+0 ∪ C(cid:48)(cid:48)
+
+The medium matrix without inhomogeneities is supposed to be homogeneous
+and isotropic with a constant thermal conductivity λ = 1. We also assume that
+conduction is the only dominating mechanism of heat transfer in the medium. Ex-
+cept being non-overlapping, no other restriction is imposed on the inhomogeneities
+as they can be placed at random orientation and position.
+
+The nanofillers are treated as heat superconductors with an almost uniform tem-
+perature distribution within each one. Therefore the temperature T is assumed to
+
+3
+
+be fixed to an indeterminate constant value δk along each ellipse Ck for k = 1 . . . , (cid:96).
+This assumption is consistent with the numerical results reported in [10] for CNT
+reinforced polymer composites. Furthermore, by the law of energy conservation in
+steady-state heat conduction, there should be no net thermal flow through each
+nanofiller. This constraint is written by means of the net heat flux boundary con-
+dition (1e).
+
+On the other hand, the curves C(cid:96)+1, . . . , Cm are assumed to be perfect insulators
+and therefore they act as barriers to heat flow. Henceforth, the Neumann boundary
+condition (1f) is imposed along the holes contours. Finally, isothermal conditions
+are imposed on the external boundaries by assuming that the lower infinite wall is
+a heater of temperature T1, and the upper wall acts as a heat sink, which can be
+held at a fixed temperature T0 < T1. Thee two values T0 and T1 of the temperature
+on the external boundaries are normalized to 0 and 1, respectively.
+
+Under steady-state conditions, Fourier's law of heat conduction and the above
+specified heat boundaries conditions yield the temperature distribution T governed
+by the following mixed Dirichlet-Neumann boundary value problem:
+
+(cid:90)
+
+Ck
+
+∆T = 0 in Ω,
+T = 0 on C(cid:48)
+0,
+T = 1 on C(cid:48)(cid:48)
+0 ,
+T = δk
+on Ck,
+
+k = 1, 2, . . . , (cid:96),
+
+∂T
+∂n
+
+ds = 0 k = 1, 2, . . . , (cid:96),
+
+∂T
+∂n
+
+= 0 on Ck,
+
+k = (cid:96) + 1, (cid:96) + 2, . . . , m,
+
+(1a)
+(1b)
+(1c)
+(1d)
+
+(1e)
+
+(1f)
+
+where ∂T /∂n denotes the normal derivative of T , and δ1, . . . , δm are undetermined
+real constants that need to be found alongside the distribution temperature T .
+
+Figure 1: Geometry of the problem (for (cid:96) = 4 and m = 7).
+
+3 The integral equation method
+
+The boundary integral equation with the generalized Neumann kernel is not di-
+rectly applicable to the above boundary value problem (1) because of the external
+boundary component. However, the boundary value problem (1) is invariant under
+
+conformal mapping. The mapping function
+
+z = Φ(ζ) =
+
+1
+π
+
+log
+
+1 + ζ
+1 − ζ
+
++
+
+i
+2
+
+4
+
+conformally maps the unit disk ζ < 1 onto the infinite strip 0 < Im z < 1. Thus,
+the inverse mapping
+
+ζ = Φ−1(z) = tanh
+
+(cid:18) πz
+
+2
+
+(cid:19)
+
+− πi
+4
+
+conformally maps the infinite strip 0 < Im z < 1 onto the unit disk ζ < 1, the real
+axis onto the lower half of the unit circle, the line Im z = 1 onto the upper half of
+the unit circle, and satisfies Φ−1(±∞ + 0i) = ±1. Consequently, the function Φ−1
+maps the multiply connected domain Ω in the z-plane (the physical domain) onto a
+multiply connected domain G in the ζ-plane interior of the unit circle and exterior
+of m smooth Jordan curves (the computational domain). In Figure 2, we display
+the result of the conformal mapping of the example shown in Figure 1.
+
+Figure 2: The computational domain G corresponding to the physical domain in
+Figure 1.
+
+It follows that the harmonic function T can be written as
+
+T (z) = U (Φ−1(z))
+
+in which the function U is the solution of the following boundary value problem in
+the ζ-plane:
+
+(cid:90)
+
+Γk
+
+∆U = 0 in G,
+U = 0 on Γ(cid:48)
+0,
+U = 1 on Γ(cid:48)(cid:48)
+0,
+U = δk
+on Γk,
+
+k = 1, 2, . . . , (cid:96),
+
+∂U
+∂n
+
+ds = 0 k = 1, 2, . . . , (cid:96),
+
+∂U
+∂n
+
+= 0 on Γk,
+
+k = (cid:96) + 1, (cid:96) + 2, . . . , m,
+
+(2a)
+(2b)
+(2c)
+(2d)
+
+(2e)
+
+(2f)
+
+5
+
+0 = Φ−1(C(cid:48)
+
+0 ), and Γk = Φ−1(Ck) for k = 1, 2, . . . , m. Note
+where Γ(cid:48)
+that the restriction of the function U (ζ) on the external boundary is discontinuous
+at ζ = ±1. However, the function U can be cast into the form
+
+0 = Φ−1(C(cid:48)(cid:48)
+
+0), Γ(cid:48)(cid:48)
+
+where u(ζ) is a harmonic function in G, and
+
+U (ζ) = u0(ζ) + u(ζ)
+
+u0(ζ) =
+
+1
+π
+
+Im log
+
+1 − ζ
+1 + ζ
+
++
+
+1
+2
+
+.
+
+The function u0(ζ) is harmonic in G with u0(ζ) = 0 on the upper half of the unit
+circle and u0(ζ) = 1 on the lower part. The function u(ζ) is the solution of the
+boundary value problem
+
+if ζ ∈ G,
+if ζ ∈ Γ0,
+
+(cid:90)
+
+Γk
+
+∆u(ζ) = 0
+u(ζ) = 0
+u(ζ) = δk − 1
+π
+∂u
+∂n
+∂u
+∂n
+
+= − ∂u0
+∂n
+
+(cid:12)(cid:12)(cid:12)(cid:12)ζ
+
+(cid:12)(cid:12)(cid:12)(cid:12)ζ
+
+ds = 0 k = 1, 2, . . . , (cid:96),
+
+Im log
+
+1 − ζ
+1 + ζ
+
+− 1
+2
+
+if ζ ∈ Γk,
+
+k = 1, 2, . . . , (cid:96),
+
+if ζ ∈ Γk,
+
+k = (cid:96) + 1, (cid:96) + 2, . . . , m,
+
+(3a)
+(3b)
+
+(3c)
+
+(3d)
+
+(3e)
+
+where Γ0 is the unit circle.
+
+For the orientation of the boundary components of G, we assume that Γ0 is
+oriented counterclockwise and the other curves Γ1, . . . , Γm are oriented clockwise.
+We assume that each boundary component Γk, k = 0, 1, . . . , m, is parametrized by a
+2π-periodic function ηk(t), t ∈ Jk := [0, 2π] such that η(cid:48)
+k(t) (cid:54)= 0. Let J be the disjoint
+union of the m + 1 intervals J0, . . . , Jm, the whole boundary Γ is parametrized by
+the complex function η defined on J by [11, 12]
+
+
+
+η0(t),
+η1(t),
+...
+ηm(t),
+
+t ∈ J0,
+t ∈ J1,
+
+t ∈ Jm.
+
+η(t) =
+
+Note that the unit circle Γ0 is parametrized by η0(t) = eit, t ∈ J0 = [0, 2π].
+Let n(ζ) be the unit outward normal vector at ζ ∈ Γ and let ν(ζ) be the angle
+between the normal vector n(ζ) and the positive real axis. Then, for ζ = η(t) ∈ Γ,
+
+n(ζ) = eiν(ζ) = −i
+
+η(cid:48)(t)
+η(cid:48)(t) .
+
+Thus
+
+∂u0
+∂n
+
+= ∇u0 · n = cos ν
+
+∂u0
+∂x
+
++ sin ν
+
+∂u0
+∂y
+
+= Re
+
+(cid:20)
+
+eiν
+
+(cid:18) ∂u0
+
+∂x
+
+− i
+
+∂u0
+∂y
+
+(cid:19)(cid:21)
+
+(4)
+
+.
+
+(5)
+
+The harmonic function u0(ζ) is the real part of a single-valued analytic function
+
+f0(ζ), i.e., u0(ζ) = Re[f0(ζ)], where
+
+f0(ζ) =
+
+1
+πi
+
+log
+
+1 − ζ
+1 + ζ
+
++
+
+1
+2
+
+,
+
+(6)
+
+and the branch of the logarithm function is chosen such that log 1 = 0. Then by the
+Cauchy-Riemann equations, we have
+
+6
+
+which, in view of (4) and (5), implies that
+
+(cid:12)(cid:12)(cid:12)(cid:12)η(t)
+
+η(cid:48)(t) ∂u0
+∂n
+
+Since
+
+f(cid:48)
+0(ζ) =
+
+∂u0(ζ)
+
+∂x
+
+− i
+
+∂u0(ζ)
+
+∂y
+
+,
+
+(cid:18) 1
+
+(cid:19)
+
+f(cid:48)
+0(ζ) =
+
+i
+π
+
+1
+
+1 − ζ
+
++
+
+1 + ζ
+
+,
+
+= Re [−iη(cid:48)(t) f(cid:48)
+
+0(η(t))] ,
+
+η(t) ∈ Γk,
+
+k = (cid:96) + 1, . . . , m.
+
+(7)
+
+it follows that for η(t) ∈ Γk and k = (cid:96) + 1, . . . , m,
+
+(cid:12)(cid:12)(cid:12)(cid:12)ζ=η(t)
+
+η(cid:48)(t) ∂u0
+∂n
+
+=
+
+1
+π
+
+Re
+
+(cid:20) η(cid:48)(t)
+
+1 − η(t)
+
+η(cid:48)(t)
+1 + η(t)
+
++
+
+(cid:21)
+
+.
+
+(8)
+
+The harmonic function u can be assumed to be a real part of an analytic function
+f (ζ), ζ ∈ G. The boundary conditions (3b) and (3c) give the real parts of the
+function f (ζ) on Γk for k = 0, 1, . . . , (cid:96). Specifically, we have
+
+Re[f (η(t))] = 0,
+
+η(t) ∈ Γ0
+
+(9)
+
+and
+
+Re[f (η(t))] = δk − 1
+π
+
+Im log
+
+1 − η(t)
+1 + η(t)
+
+− 1
+2
+
+if η(t) ∈ Γk,
+
+k = 1, . . . , (cid:96).
+
+(10)
+
+For the remaining boundary components Γk for k = (cid:96) + 1, . . . , m, we use the con-
+dition (3e) to determine the boundary condition on f (η). By the Cauchy-Riemann
+equations, we can show using the same arguments as in (7) that
+
+= Re [−iη(cid:48)(t) f(cid:48)(η(t))]
+
+(11)
+
+(cid:12)(cid:12)(cid:12)(cid:12)η(t)
+
+η(cid:48)(t) ∂u
+∂n
+
+Thus, for η(t) ∈ Γk for k = (cid:96) + 1, . . . , m, it follows from (3e), (8), and (11) that
+
+Re [−iη(cid:48)(t) f(cid:48)(η(t))] = − 1
+π
+
+Re
+
+Re [−if (η(t))] =
+
+1
+π
+
+log
+
+(cid:21)
+
+.
+
+1 − η(t)
+
+(cid:20) η(cid:48)(t)
+(cid:12)(cid:12)(cid:12)(cid:12)1 − η(t)
+
+1 + η(t)
+
+η(cid:48)(t)
+1 + η(t)
+
++
+
+(cid:12)(cid:12)(cid:12)(cid:12) + δk,
+
+Integrating with respect to the parameter t for t ∈ Jk, k = (cid:96) + 1, . . . , m, we obtain
+
+where the integration constants δk are undetermined. The constants δk, k = 1, . . . , m
+in (10) and (12) are determined so that f (z) is a single-valued analytic function.
+
+Since we are interested in the function u, the real part of f , we may assume that
+c = f (α) is real for some given point α in G. Define an analytic function g(ζ) in
+the domain G through
+
+f (ζ) = (ζ − α)g(ζ) + c.
+
+(12)
+
+(13)
+
+Define also
+
+A(t) = e−iθ(t)(η(t) − α),
+where θ(t) is the piecewise constant function given by
+
+
+
+0,
+...
+0,
+π/2,
+...
+π/2,
+
+t ∈ J0,
+
+t ∈ J(cid:96),
+t ∈ J(cid:96)+1,
+
+t ∈ Jm.
+
+θ(t) =
+
+7
+
+(14)
+
+(15)
+
+Thus
+
+which implies that
+
+e−iθ(t)f (η(t)) = A(t)g(η(t)) + e−iθ(t)c,
+
+Re[A(t)g(η(t))] = Re[e−iθ(t)f (η(t))] − c cos θ(t).
+
+On the basis of the conditions (9), (10), and (12), the function g(z) satisfies the
+
+Riemann-Hilbert problem
+
+Re[A(t)g(η(t))] = γ(t) + h(t),
+
+where
+
+h(t) =
+
+
+
+2 − c,
+2 − c,
+
+−c,
+δ1 − 1
+...
+δ(cid:96) − 1
+δ(cid:96)+1,
+...
+δm,
+
+t ∈ J0,
+t ∈ J1,
+
+t ∈ J(cid:96),
+t ∈ J(cid:96)+1,
+
+t ∈ Jl+p.
+
+,
+
+γ(t) =
+
+
+
+0,
+− 1
+π Im log 1−η(t)
+1+η(t) ,
+...
+− 1
+π Im log 1−η(t)
+1+η(t) ,
+1
+π log
+...
+1
+π log
+
+(cid:12)(cid:12)(cid:12) 1−η(t)
+(cid:12)(cid:12)(cid:12) 1−η(t)
+
+(cid:12)(cid:12)(cid:12) ,
+(cid:12)(cid:12)(cid:12) ,
+
+1+η(t)
+
+1+η(t)
+
+(16)
+
+(17)
+
+t ∈ J0,
+t ∈ J1,
+
+t ∈ Jl,
+t ∈ J(cid:96)+1,
+
+t ∈ Jm.
+
+It is clear that the function γ is known and the piecewise constant function h is
+unknown and should be determined. Let µ(t) = Im[A(t)g(η(t))], i.e., the boundary
+values of an analytic function g are given by
+
+g(η(t)) =
+
+γ(t) + h(t) + iµ(t)
+
+A(t)
+
+t ∈ J.
+
+,
+
+(18)
+
+Thus, in order to find the boundary values of the analytic function g, we need to
+determine the two unknown functions µ and h. These two functions can be computed
+using the boundary integral equation with the generalized Neumann kernel [11, 12,
+13].
+
+Let H be the space of all real Holder continuous functions on Γ, let I be the
+
+identity operator, and let the integral operators N and M are defined on H by
+
+(cid:90)
+(cid:90)
+
+J
+
+J
+
+1
+π
+1
+π
+
+Im
+
+Re
+
+(cid:18) A(s)
+(cid:18) A(s)
+
+A(t)
+
+η(t) − η(s)
+
+η(cid:48)(t)
+
+η(cid:48)(t)
+
+η(t) − η(s)
+
+A(t)
+
+(cid:19)
+(cid:19)
+
+µ(t)dt,
+
+µ(t)dt,
+
+s ∈ J,
+
+s ∈ J.
+
+Nµ(s) =
+
+Mµ(s) =
+
+The kernel of the operator N is known as the generalized Neumann kernel. For
+more details, see [11, 12, 13]. On account of [13], we have µ is the unique solution
+of the integral equation
+
+(I − N)µ = −Mγ.
+
+8
+
+(19)
+
+(20)
+
+Additionally, the piecewise constant function h is given by
+
+h = [Mµ − (I − N)γ]/2.
+
+We compute approximations to the functions µ in (19) and h in (20) by the
+MATLAB function fbie from [12]. This function employs a discretization of the
+integral equation (19) by the Nystrom method using the trapezoidal rule [14] to
+obtain an algebraic linear system of size (m+1)n×(m+1)n where n is the number of
+discretization points in each boundary component. The resulting system is solved by
+applying the generalized minimal residual method through the MATLAB function
+gmres. The matrix-vector multiplication in gmres is computed using the MATLAB
+function zfmm2dpart from the FMMLIB2D MATLAB toolbox [15]. The values of the
+other parameters in the function fbie are chosen as in [16]. For more details, we
+refer the reader to [12].
+
+4 Computing the temperature distribution and
+
+the heat flux
+
+By computing µ and h, we obtain the boundary values of the function g through (18).
+The values of the function g(ζ) for ζ ∈ G can be computed by the Cauchy integral
+formula. For the numerical computation of g(ζ) for ζ ∈ G, we use the MATLAB
+function fcau from [12]. Then, the values of f (ζ) can be computed by (13) and
+hence the values of the solution of the boundary value problem (2) is given for
+ζ ∈ G by
+
+We deduce the values of the temperature distribution T (z) for any z ∈ Ω by
+
+U (ζ) = Re [f (ζ) + f0(ζ)] .
+
+T (z) = Re(cid:2)f (Φ−1(z)) + f0(Φ−1(z))(cid:3) .
+
+Moreover, by computing the piecewise constant function h, we can compute as well
+the values of the undetermined real constants c, δ1, . . . , δm from (16).
+
+The function T (z) is the real part of the function
+F (z) = f (Φ−1(z)) + f0(Φ−1(z)),
+
+z ∈ Ω.
+
+According to the Cauchy-Riemann equations, it follows that the derivative of the
+complex potential F (z) on Ω is given by
+
+F (cid:48)(z) =
+
+∂T
+∂x
+
+− i
+
+∂T
+∂y
+
+.
+
+One the other hand,
+
+F (cid:48)(z) =
+
+f(cid:48)(Φ−1(z))
+Φ(cid:48)(Φ−1(z))
+
+f(cid:48)
+0(Φ−1(z))
+Φ(cid:48)(Φ−1(z))
+
+,
+
++
+
+z ∈ Ω,
+
+(21)
+
+where the denominator does not vanish in the domain Ω since Φ is a conformal
+mapping. Therefore the heat flux can be expressed for z ∈ D in terms of F (cid:48)(z) by
+the formula
+
+(cid:18) ∂T
+
+∂x
+
+,
+
+∂T
+∂y
+
+(cid:19)(cid:12)(cid:12)(cid:12)(cid:12)z
+
+q(z) = −
+
+≡ −F (cid:48)(z).
+
+9
+
+(22)
+
+Hence
+
+= − Im F (cid:48)(z).
+
+∂T
+∂y
+
+The derivatives f(cid:48)
+
+(23)
+0(Φ−1(z) and Φ(cid:48)(Φ−1(z)) in (21) can be computed analytically.
+So, the values of the heat flux q can be estimated on the domain Ω by first approx-
+imating the derivatives of the boundary values of the analytic function f on each
+boundary components. This can be done by approximating the function f (η(t))
+using trigonometric interpolating polynomials then differentiating. The values of
+f(cid:48)(Φ−1(z)), in the right-hand side of (21), can be then computed for z ∈ Ω using
+the Cauchy integral formula.
+
+5 Computing the effective thermal conductivity
+
+The medium matrix without inhomogeneities is assumed to be homogeneous and
+isotropic. We will assume that the CNTs and the circular voids are in the part of
+the domain between x = −1 and x = 1. Thus, the effective conductivity of a layer
+in the y-direction λy is calculated by the formula (3.2.33) from the book [6, p. 53],
+which in our case on account of (23) becomes
+
+(cid:20)(cid:90) 1
+
+−1
+
+(cid:21)
+
+∂T
+∂y
+
+(x, 0) dx =
+
+1
+2
+
+Im
+
+F (cid:48)(x) dx
+
+.
+
+(24)
+
+(cid:90) 1
+
+−1
+
+λy = −1
+2
+
+Since
+
+ξ0(t) = Φ(η0(t)) = Φ(eit) =
+
+1
+π
+
+log
+
+1 + eit
+1 − eit +
+
+i
+2
+
+,
+
+0 ≤ t ≤ 2π,
+
+(cid:12)(cid:12)(cid:12)(cid:12)cot
+
+(cid:12)(cid:12)(cid:12)(cid:12) .
+
+t
+2
+
+where for 0 < t < π, ξ0(t) is on the line y = 1 and for π < t < 2π, ξ0(t) is on the
+real line. Thus, for π < t < 2π, we have
+
+1
+π
+Since −1 = ξ0(t1) and 1 = ξ0(t2) where
+
+ξ0(t) =
+
+log
+
+π < t1 = 2π − 2 tan−1 (eπ) < t2 = 2π − 2 tan−1(cid:0)e−π(cid:1) < 2π.
+
+Consequently, (24) can be written as
+
+(cid:20)(cid:90) t2
+
+t1
+
+(cid:21)
+
+F (cid:48)(ξ0(t))ξ(cid:48)
+
+0(t) dt
+
+.
+
+λy =
+
+1
+2
+
+Im
+
+In combining (21) with the fact that ξ(cid:48)
+
+F (cid:48)(ξ0(t)) =
+
+f(cid:48)(Φ−1(ξ0(t)))
+Φ(cid:48)(Φ−1(ξ0(t)))
+
++
+
+0(t) = ieitΦ(cid:48)(eit), we can see that
+f(cid:48)
+f(cid:48)
+0(Φ−1(ξ0(t)))
+0(eit)
+Φ(cid:48)(Φ−1(ξ0(t)))
+Φ(cid:48)(eit)
+
+f(cid:48)(eit)
+Φ(cid:48)(eit)
+
+=
+
++
+
+(25)
+
+(26)
+
+.
+
+Hence,
+
+λy =
+
+which implies that
+
+λy =
+
+1
+2
+
+Im(cid:2)f (eit2) − f (eit1)(cid:3) +
+
+1
+2
+
+(cid:20)(cid:90) t2
+
+Im
+
+t1
+
+1
+2
+
+(cid:2)ieit(cid:0)f(cid:48)(eit) + f(cid:48)
+
+(cid:21)
+
+0(eit)(cid:1)(cid:3) dt
+Im(cid:2)f0(eit2) − f0(eit1)(cid:3) .
+
+,
+
+The second term in the right-hand side of (27) does not depend on the CNTs or the
+voids. In view of (6) and (25), we have
+
+10
+
+(27)
+
+(28)
+
+(29)
+
+1
+2
+
+and hence
+
+Im(cid:2)f0(eit2) − f0(eit1)(cid:3) = 1,
+Im(cid:2)f (eit2) − f (eit1)(cid:3) .
+
+λy = 1 +
+
+1
+2
+
+Since eit1 and eit2 are on the unit circle Γ0, the external boundary of G, and taking
+into account (13), (14), (15), and (18), Equation (29) can be written as
+
+λy = 1 +
+
+[µ(t2) − µ(t1)] .
+
+1
+2
+
+(30)
+
+By solving the integral equation (19), we obtain approximate values of µ at the
+discretization points. These values are employed to interpolate the approximate
+solution µ on J0 by a trigonometric interpolation polynomial, which is then used to
+approximate the values of µ(t1) and µ(t2).
+
+6 Numerical results
+
+The above proposed method with n = 211 is applied to compute the temperature
+field T and the heat flux q for several examples. We will choose the CNTs and the
+circular voids within the part of the domain between x = −1 and x = 1. To compute
+the values of the temperature distribution T and the heat flux q, we discretize part
+of the domain Ω, namely for −1.5 ≤ x ≤ 1.5 and 0.0001 ≤ y ≤ 0.9999. Afterwards,
+we compute the values of the temperature distribution T and the heat flux q at
+these points as described in Section 4.
+
+6.1 The domain Ω with only circular voids
+
+In this subsection, we consider the domain Ω with m non-overlapping circular holes
+and without any CNT (i.e., (cid:96) = 0). We also assume that all circular holes have the
+same radius r with the parametrization
+
+ηj(t) = zj + re−it,
+
+0 ≤ t ≤ 2π,
+
+j = 1, 2, . . . , m,
+
+where z1, z2, . . . , zm are the centers of the circular holes. As these circular holes
+are chosen in the part of the domain Ω between x = −1 and x = 1, we define the
+concentration c(m, r) of these voids to be the area of these circular holes over the
+area of the rectangle {(x, y) : −1 ≤ x ≤ 1, 0 ≤ y ≤ 1}, i.e.,
+
+c(m, r) =
+
+mr2π
+
+2
+
+.
+
+(31)
+
+11
+
+The Clausius-Mossotti approximation (CMA) also known as Maxwel's formula
+can be applied for dilute composites when the concentration (31) is sufficiently small.
+Below, we write this formula for a macroscopically isotropic media with insulators
+of identical circular holes within the precisely established precision in [17]
+
+1 − c
+1 + c
+
+λe =
+
++ O(c3).
+
+(32)
+
+Example 1 We consider m = 5 circular holes with the radius r for 0 < r < 0.2.
+For Case I, we assume the centers of the holes to be set to −0.8 + 0.5i, −0.4 + 0.5i,
+0.5i, 0.4 + 0.5i, and 0.8 + 0.5i. The contour plot of T and q for r = 0.1 are shown
+in Figure 3 (first row). The approximate value of the effective thermal conductivity
+for r = 0.1 is
+
+λy = 0.8533491.
+
+When r is close to 0.2, the circular holes become adjacent to each other. To show
+the effects of the radius r on the effective thermal conductivity λy, we compute the
+values of λy for several values of r, 0.00001 ≤ r ≤ 0.19999. The obtained results
+are presented in Figure 4 where, by (31), the concentration of these 5 holes is
+c = c(5, r) = 5r2π/2 ≈ 7.854r2 for 0 < c < π/10 and 0 < r < 0.2. The values of
+the estimated effective conductivity λe is given also in Figure 4. As one can expect,
+there is a good agreement between λy and λe for small values of c. In the same time,
+the divergence of λy and λe is observed for the concentrations greater than 0.1.
+For Case II, the centers of the holes become −0.8+0.5i, −0.4+0.3i, 0.5i, 0.4+0.7i,
+and 0.8 + 0.5i, which means the centers are not anymore horizontally aligned as the
+second and fourth centers are now shifted by 0.2 up and down, respectively. This is
+displayed in Figure 3 (second row). The curve showing the obtained values of λy as
+a function of the concentration is depicted in Figure 4.
+
+Figure 4 illustrates that the values of λy depend on the position of the circular
+holes centers while the values of λe are the same for both cases since it depends only
+on the concentration of the circular holes and not on their positions. We notice a
+better agreement between λy and λe in Cases II when comparing to Case I.
+
+Example 2 We consider m = 30 circular holes with centers xk + 0.25i, xk + 0.5i,
+and xk + 0.75i, where xk = −0.9 + 0.2(k − 1) for k = 1, 2, . . . , 10, and with radius r
+for 0 < r < 0.1. The contour plot of T and q for r = 0.099 are shown in Figure 5.
+The approximate value of the effective thermal conductivity for r = 0.099 is
+
+λy = 0.1519156.
+
+When r is close to 0.1, the circular holes become adjacent to each other. We
+compute the values of λy for several values of r, 0.00001 ≤ r ≤ 0.09999. The
+obtained results are depicted in Figure 6 (left) where, by (31), the concentration of
+these 30 holes is c = c(30, r) = 30r2π/2 ≈ 47.124r2. Note that 0 < c < 3π/20 for
+0 < r < 0.1.
+
+Example 3 We take up here the case of m = 50 circular holes with centers xk +0.1i,
+xk + 0.3i, xk + 0.5i, xk + 0.7i, and xk + 0.9i, where xk = −0.9 + 0.2(k − 1) for
+k = 1, 2, . . . , 10, and with radius r for 0 < r < 0.1. On the basis of (31), the
+concentration of these 50 holes is c = c(50, r) = 50r2π/2 ≈ 78.54r2. For 0 < r < 0.1,
+
+12
+
+Figure 3: A contour plot of the temperature distribution T and the heat flux q for
+the domain Ω with m = 5 circular holes (Example 1 for r = 0.1). First row for Case
+I and second row for Case II.
+
+Figure 4: The effective thermal conductivity λy and the estimated effective con-
+ductivity λe in (32) vs. the concentration c(m, r) = 5r2π/2 for the domain Ω with
+m = 5 circular holes for 0.00001 ≤ r ≤ 0.19999. The vertical dotted line is c = π/10.
+
+we have 0 < c < π/4. When r is close to 0.1, the circular holes become adjacent
+to each other, and the concentration is almost equal to π/4. The obtained results
+showing the behavior of λy as a function of the radius r, for 0.001 ≤ r ≤ 0.099, are
+presented in Figure 6 (right).
+
+6.2 The domain Ω with only CNTs
+
+In this subsection, we consider the domain Ω with m non-overlapping elliptic CNTs
+without any circular holes (i.e., m = (cid:96)). We assume that all CNTs have equal sizes
+and are of elliptic shape where the ellipses have the parametrization
+
+ηj(t) = zj + a cos t − ib sin t,
+
+0 ≤ t ≤ 2π,
+
+j = 1, 2, . . . , m,
+
+(33)
+
+where zj is the center of the ellipse, 2a and 2b are the length of the ellipses axes
+in the x and y-directions, respectively. If a/b > 1, the major axis of the ellipses is
+
+13
+
+Figure 5: A contour plot of the temperature distribution T and the heat flux q for
+the domain Ω with 30 circular holes (r = 0.099).
+
+Figure 6: The effective thermal conductivity λy vs. the concentration c(m, r) =
+mr2π/2. On the left, the domain Ω with m = 30 circular holes (Example 2) and
+0.00001 ≤ r ≤ 0.09999. The vertical dotted line is c = 3π/20. On the right, the
+domain Ω with m = 50 circular holes (Example 3) and 0.001 ≤ r ≤ 0.099. The
+vertical dotted line is c = π/4.
+
+horizontal, if a/b < 1, the major axis of the ellipses is vertical, and if a/b = 1, the
+ellipses reduced to circles. Here, we choose a and b such that their ratio satisfies
+0.1 ≤ a/b ≤ 10. These elliptic shape CNTs are chosen in the part of the domain
+Ω between x = −1 and x = 1. So, we define the concentration c(m, a, b) of these
+CNTs to be
+
+c(m, a, b) =
+
+.
+
+(34)
+
+mabπ
+
+2
+
+b (cid:28) 1, instead of (34) the plane slits density is considered in the theory of
+
+If a
+composites and porous media
+
+φ =
+
+mb2
+Ω =
+
+mb2
+
+2
+
+,
+
+(35)
+
+For a macroscopically isotropic media with only perfectly conducting identical
+circular inclusions (CNTs), an approximation of the effective conductivity λe is given
+by the inverse to (32) value (see [17])
+
+λe =
+
+1 + c
+1 − c
+
++ O(c3).
+
+(36)
+
+Example 4 We consider m = 5 elliptic CNTs with centers −0.8 + 0.5i, −0.4 + 0.5i,
+0.5i, 0.4 + 0.5i, and 0.8 + 0.5i, and where 0 < a < 0.2 and 0 < b < 0.5. Figure 7
+
+14
+
+(first row) presents the contour plot of T and q for a = 0.19 and b = 0.019 (the
+ellipses are horizontal). For these values of a and b, the approximate value of the
+effective thermal conductivity is
+
+λy = 1.0272480.
+
+For a = 0.019 and b = 0.19, the contour plot of T and q are shown in Figure 7
+(second row). The approximate value of the effective thermal conductivity for these
+values of a and b is
+
+λy = 1.2804116.
+
+The CNTs in Figure 7 have the same concentration. However, the value of λy is
+larger for the vertical ellipses case.
+
+When a approaches 0.2, the ellipses get adjacent to each other. On the other
+hand, they come close to the upper and lower walls when b approaches 0.5. We
+compute the values of λy for several values of a, 0.0001 ≤ a ≤ 0.1999, with b =
+0.1a. The obtained results are presented in Figure 8 (left) where, by (34), the
+concentration of these 5 ellipses is c = c(5, a, b) = 5abπ/2 = a2π/4 ≈ 0.7854a2.
+Note that, for 0 < a < 0.2 and b = 0.1a, we have 0 < c < π/100.
+The values of λy are also computed for several values of b for 0.001 ≤ b ≤ 0.499
+with a = 0.1b. Since a/b = 0.1 is small, the obtained values of λy are plotted versus
+the values of φ = 2.5b2, given by (35), where 0 < φ < 5/8 for 0 < b < 0.5. The
+obtained results are presented in Figure 8 (right).
+
+Figure 7: A contour plot of the temperature distribution T and the heat flux q for
+the domain Ω with m = 5 elliptic CNTs (Example 4), where a = 0.19 and b = 0.019
+for the first row and a = 0.019 and b = 0.19 for the second row.
+
+Example 5 We consider m = 200 elliptic CNTs with centers xk + iyj for k =
+1, 2, . . . , 20 and j = 1, 2, . . . , 10 where xk = −0.95 + (k − 1)/10 and yj = 0.05 + (j −
+1)/10, and with 0 < a < 0.05 and 0 < b < 0.05.
+We compute the values of λy for several values of a, 0.0002 ≤ a ≤ 0.0498,
+and a/b = 10 (i.e., the ellipses are horizontal) where the ellipses become close to
+each other when a approaches 0.05. The obtained results are presented in Figure 9
+
+15
+
+Figure 8: The effective thermal conductivity λy for the domain Ω with m = 5
+elliptic CNTs (Example 4). On the left, the effective thermal conductivity λy vs.
+the concentration c = a2π/4 for 0.0001 ≤ a ≤ 0.1999 and a/b = 10. The vertical
+dotted line is c = π/100. On the right, the effective thermal conductivity λy vs.
+the plane slits density φ = 2.5b2 for 0.001 ≤ b ≤ 0.499 and a/b = 0.1. The vertical
+dotted line is φ = 0.625.
+
+(left) where the concentration of these 200 ellipses is c = 10a2π ≈ 31.416a2. For
+0 < a < 0.05 and a/b = 10, we have 0 < c < π/40. Then, we compute the values
+of λy for several values of b, 0.0002 ≤ b ≤ 0.0498, and a/b = 0.1. The obtained
+results for λy versus the the plane slits density φ = mb2/2 = 100b2 are presented in
+Figure 9 (right) where 0 < φ < 1/4 for 0 < b < 0.05 and a/b = 0.1.
+When a/b = 1, the ellipses reduce to circles. We compute the values of λy for
+several values of a, 0.0002 ≤ a ≤ 0.0498. The obtained results are presented in
+Figure 10 where the concentration of these 200 ellipses is c = 100a2π ≈ 314.16a2.
+For 0 < a < 0.05 and a/b = 1, we have 0 < c < π/4. Figure 10 presents also the
+values of the estimated effective conductivity λe given by (36).
+
+Figure 9: The effective thermal conductivity λy for the domain Ω with m = 200
+elliptic CNTs (Example 5). On the left, the effective thermal conductivity λy vs.
+the concentration c = 10a2π for 0.0002 ≤ a ≤ 0.0498 with a/b = 10. The vertical
+dotted line is c = π/40. On the right, the effective thermal conductivity λy vs. the
+plane slits density φ = 100b2 for 0.0002 ≤ b ≤ 0.0498, with a/b = 0.1. The vertical
+dotted line is φ = 1/4. The vertical dotted line is c = 1/4.
+
+16
+
+Figure 10: The effective thermal conductivity λy (for the domain Ω with m = 200
+circular CNTs obtained by setting b = a in Example 5) and the estimated effective
+conductivity λe in (36) vs. the concentration c = 100a2π for 0.0002 ≤ a ≤ 0.0498.
+The vertical dotted line is c = π/4.
+
+6.3 The domain Ω with 2000 CNTs and/or circular voids
+
+We are concerned in this section with the study of a large number of perfect con-
+ductors and/or insulators. We consider two example where in the first both perfect
+conductors and insulators have the same circular shape, while in the second, con-
+ductors have an elliptic shape and insulators have a circular shape. The present
+investigation is useful when studying the impact of geometric shapes on the macro-
+scopic properties of three-phases high contrast media.
+
+Example 6 We take m = 2000 circular holes of equal size with radius r = 0.0075.
+In this example, the concentration c = c(m, r) = 1000r2π ≈ 0.1767 is constant
+and the locations of these holes are chosen randomly. In this case, the following
+extension of CMA may be used
+
+λe =
+
+1 + c1 − c2
+1 − c1 + c2
+
++ O(c3),
+
+(37)
+
+where c1 denotes the conductor concentration, c2 the insulator concentration, and
+c = c1 + c2. Three cases are considered:
+
+Case I: We assume that half of the holes are CNTs and the other half are voids (see
+Figure 11). For this case, c1 and c2 are given by c1 = c2 = 500r2π ≈ 0.0884.
+
+Case II: All holes are voids, and hence c1 = 0 while c2 = 1000r2π ≈ 0.1767.
+Case III: All holes are CNTs, and hence c1 = 1000r2π ≈ 0.1767 while c2 = 0.
+
+For each case, we run the code for 20 times, so that to get 20 different locations
+for these circular holes. In each of these 20 experiments, we compute the value of
+the effective thermal conductivity λy by the presented method and the values of the
+estimated effective conductivity λe by (32). As we can see from Figure 12, λe is a
+constant and the values of λy depend on the locations of the holes.
+
+17
+
+Figure 11: The domain Ω with m = 2000 circular holes. Case I: We have p = 1000
+voids (blue circles) and (cid:96) = 1000 CNTs (red circles).
+
+Example 7 We consider m = 2000 elliptic and circular holes with (cid:96) = 1000 elliptic
+perfect conductors and p = 1000 circular insulators of equal area πr2 (see Figure 13).
+The radius r is chosen to be the same as in the previous example, i.e., r = 0.0075.
+The locations of both elliptic and circular holes are chosen randomly. For the ellipses,
+we assume that the ratio between the length of the major axis and the minor axis
+is 4, and the angles between the major axis and the x-axis are chosen randomly.
+As in the previous example, we run the code for 20 times.
+In each of these 20
+experiments, we compute the value of the effective thermal conductivity λy by the
+presented method. The computed values are shown in Figure 13 (left).
+
+Since we have the same number of elliptic perfect conductors and circular insu-
+lators of equal area πr2, the conductor concentration c1 and the insulator concen-
+tration c2 are equal and given by c1 = c2 = 500r2π ≈ 0.0884. Although c1 and c2
+here are the same as in Case I of the previous example, it is clear from Figures 12
+(first row) and 13 (right) that the values λy in this example (elliptic conductors) are
+larger than those in the previous example (circular conductors).
+
+18
+
+Figure 12: The values of the effective thermal conductivity λy and the estimated
+effective conductivity λe in (37) (for the domain Ω with m = 2000 circular holes in
+Example 6) vs. the number of the experiment for Case I (first row), Case II (second
+row, left), and Case III (second row, right).
+
+Figure 13: On the left, the domain Ω in Example 7 with m = p + (cid:96) = 2000 holes,
+p = 1000 circular voids (blue) and (cid:96) = 1000 elliptic CNTs (red). On the right, the
+values of the effective thermal conductivity λy vs. the number of the experiment.
+
+19
+
+6.4 The dependence of λy on φ and c
+
+We consider now a domain domain Ω with m = (cid:96) = 276 non-overlapping elliptic
+CNTs without any void. We assume that all CNTs are of equal size and elliptic
+shape. The ellipses are parametrized by (33) with a < b, which means they are
+taken to be vertical.
+First we assume that the concentration c = c(m, a, b) is constant and we choose
+the values of the parameters a and b such that the plane slits density φ = φ(m, a, b) ∈
+[0.4, 1.3]. The domain Ω for c = 0.5 and φ = 1.3 is shown in Figure 14. We consider
+as well five values of the concentration, c = 0.1, 0.2, 0.3, 0.4, 0.5. Then, for each of
+these values, we compute and show in Figure 15 (left) the values of λy = λy(φ).
+
+Afterwards, we take up the plane slits density φ = φ(m, a, b) to be constant
+and we choose the values of the parameters a and b such that the concentration
+c = c(m, a, b) ∈ [0.1, 0.5]. We consider four values of φ, φ = 0.4, 0.7, 1, 1.3, and
+compute again λy = λy(c) for each case. The obtained results are presented in
+Figure 15 (right).
+
+Figure 14: The domain Ω with m = 276 elliptic CNTs for c = 0.5 and φ = 1.3.
+
+Figure 15: The effective thermal conductivity λy for the domain Ω with m = 276
+elliptic CNTs. On the left, the values of λy = λy(φ) for φ ∈ [0.4, 1.3] and for several
+values of c. On the right, the values of λy = λy(c) for c ∈ [0.1, 0.5] and for several
+values of φ.
+
+20
+
+7 Conclusion
+
+A systematic estimation of the local fields and the effective conductivity properties
+of 2D composites reinforced by uniformly and randomly distributed CNTs is car-
+ried out. It is assumed that the medium may contains voids as well. The CNTs
+are considered as perfectly conducting elliptic inclusions and the voids as circular
+insulators. For definiteness, a composite strip is considered with the given constant
+external field passing through the strip. The local field is governed by the Laplace
+equation in the multiply connected domain formed by the strip without two types
+of holes, CNTs and voids. The Dirichlet boundary condition is imposed on the
+CNTs boundary and the Neumann boundary condition governs the void boundary.
+A numerical method is developed to solve the mixed problem for a large number
+of CNTs and voids. The method is based on using the boundary integral equation
+with the generalized Neumann kernel [11, 12]. One key feature of this method is
+that it can be employed for domains with complex geometry as it provides accurate
+results even when the boundaries are close together. To solve the integral equation,
+the Fast Multipole Method has been employed, which enables to treat the case of
+thousands of CNTs and voids. With the help of conformal mappings, the presented
+method can be extended to include the case when CNTs and voids are rectilinear
+slits as done in [16] for example.
+
+The computational study has shown a dependence of the local fields and the
+effective conductivity λy on the concentration of voids c given by (34) as well as
+on the density φ of CNTs given by (35). Besides the opposite conductive proper-
+ties, voids and CNTs have also different types of the geometric parameters c and
+φ that are not reduced to each other. Hence, the present study is concerned ad-
+ditionally with the case of three-phase composites of high contrast conductivity.
+It is demonstrated that our simulations are covered with the classical lower order
+approximations (Clausius-Mossotti, Maxwell) for dilute composites. The high or-
+der concentrations and densities led to different results from the classical ones. It
+is worth noting that the huge number of numerical experiments for uniformly dis-
+tributed inclusions yield the graphical dependencies of λy on c and φ, which can be
+used in practical applications.
+
+Acknowledgments
+
+References
+
+[1] Mostafizur Rahaman, Dipak Khastgir, and Ali Kanakhir Aldalbahi. Carbon-
+
+containing polymer composites. Springer, 2019.
+
+[2] Lichao Feng, Ning Xie, and Jing Zhong. Carbon nanofibers and their compos-
+ites: a review of synthesizing, properties and applications. Materials, 7(5):3919 -- 
+3945, 2014.
+
+[3] Marcio Loos. Carbon nanotube reinforced composites: CNT Polymer Science
+
+and Technology. Elsevier, 2014.
+
+[4] Ronald L Poveda and Nikhil Gupta. Carbon nanofiber reinforced polymer com-
+
+posites. Springer, 2016.
+
+21
+
+[5] Pierre M Adler, Jean-Fran¸cois Thovert, and Valeri V Mourzenko. Fractured
+
+porous media. Oxford University Press, 2013.
+
+[6] S. Gluzman, V. Mityushev, and W. Nawalaniec. Computational analysis of
+
+structured Media. Academic Press, London, 2017.
+
+[7] Mohamed Nasser, Ali HM Murid, and Samer AA Al-Hatemi. A boundary
+integral equation with the generalized neumann kernel for a certain class of
+mixed boundary value problem. J. Appl. Math., 2012, 2012.
+
+[8] Mohamed MS Nasser and Matti Vuorinen. Numerical computation of the ca-
+
+pacity of generalized condensers. J. Comput. Appl. Math., 377:112865, 2020.
+
+[9] S Malekie and F Ziaie. Study on a novel dosimeter based on polyethylene -- 
+carbon nanotube composite. Nuclear Instruments and Methods in Physics Re-
+search Section A: Accelerators, Spectrometers, Detectors and Associated Equip-
+ment, 791:1 -- 5, 2015.
+
+[10] Jianming Zhang, Masataka Tanaka, and Toshiro Matsumoto. A simplified ap-
+proach for heat conduction analysis of cnt-based nano-composites. Computer
+methods in applied mechanics and engineering, 193(52):5597 -- 5609, 2004.
+
+[11] R. Wegmann and M.M.S. Nasser. The Riemann-Hilbert problem and the gener-
+alized Neumann kernel on multiply connected regions. J. Comput. Appl. Math.,
+214:36 -- 57, 2008.
+
+[12] M.M.S. Nasser. Fast solution of boundary integral equations with the general-
+
+ized Neumann kernel. Electron. Trans. Numer. Anal., 44:189 -- 229, 2015.
+
+[13] M.M.S. Nasser. Numerical conformal mapping of multiply connected regions
+onto the second, third and fourth categories of Koebe canonical slit domains.
+J. Math. Anal. Appl., 382:47 -- 56, 2011.
+
+[14] K.E. Atkinson. The Numerical Solution of Integral Equations of the Second
+
+Kind. Cambridge University Press, Cambridge, 1997.
+
+[15] L. Greengard and Z. Gimbutas. FMMLIB2D: A MATLAB toolbox for fast
+multipole method in two dimensions, version 1.2. edition, 2012. http://www.
+cims.nyu.edu/cmcl/fmm2dlib/fmm2dlib.html. Accessed 1 Jan 2018.
+
+[16] M.M.S. Nasser and E. Kalmoun. Application of integral equations to simulat-
+ing local fields in carbon nanotube reinforced composites. In R. Mcphedran,
+S. Gluzman, V. Mityushev, and N. Rylko, editors, 2D and Quasi-2D Compos-
+ite and Nanocomposite Materials: Properties and Photonic Applications, pages
+233 -- 248. Elsevier, Amsterdam, 2020.
+
+[17] V Mityushev and N Rylko. Maxwell's approach to effective conductivity and
+its limitations. Quarterly Journal of Mechanics and Applied Mathematics,
+66(2):241 -- 251, 2013.
+
+

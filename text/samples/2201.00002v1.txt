@@ -1,0 +1,2202 @@
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE
+
+CONSERVATION AND DISSIPATION LAWS
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+ABSTRACT. The time dependent spectral renormalization (TDSR) method was introduced by Cole and Musslimani as
+a novel way to numerically solve initial boundary value problems. An important and novel aspect of the TDSR scheme
+is its ability to incorporate physics in the form of conservation laws or dissipation rate equations. However, the method
+was limited to include a single conserved or dissipative quantity.
+
+The present work significantly extends the computational features of the method with the (i) incorporation of multiple
+conservation laws and/or dissipation rate equations, (ii) ability to enforce versatile boundary conditions, and (iii) higher
+order time integration strategy. The TDSR method is applied on several prototypical evolution equations of physical
+significance. Examples include the Korteweg-de Vries (KdV), multi-dimensional nonlinear Schrodinger (NLS) and the
+Allen-Cahn equations.
+
+Keywords: Renormalization method, initial boundary value problems, partial differential equations, Duhamel's
+
+principle, nonlinear waves, soliton equations, Hamiltonian and dissipative systems.
+
+1. INTRODUCTION
+
+Numerical simulation of initial boundary value problems is of utmost importance in several engineering and
+scientific disciplines. Over the last few decades, several time-stepping methods have been developed and proposed
+to achieve this goal. Among them are the class of implicit/explicit Runge-Kutta methods [35], exponential time-
+differencing [12, 25, 37, 43] and the split-step operator splitting [40] to name a few. For evolution equations that
+arise in physical applications, it is highly desirable to devise time-stepping schemes that reflect the underlying
+physics at hand. Such structure preserving numerical schemes are of paramount importance for long-time integra-
+tion, where either it is necessary to ensure numerical stability (e.g., if the numerics could conserve the L2 norm of
+the solution for the KdV/NLS), or preserve other features (such as capturing the correct shock speed in the con-
+text of systems of hyperbolic partial differential equations).To date, there are various ways to input some physics
+into the numerical time-integration. For example, the geometric/symplectic integrators that preserve the Hamil-
+tonian and symplectic structure [18], the operator splitting method that was used for the NLS equation to preserve
+the power and the non-linear dispersion relation [40], the multi-symplectic schemes designed for the generalized
+Schrodinger equations [21 -- 23], the Taha-Ablowitz [38], the Ablowitz-Ladik [6], and the Ablowitz-Musslimani
+[2, 4] schemes that preserve the integrable structure of the KdV, NLS and class of nonlocal NLS equations, re-
+spectively. Other relevant works correspond to the conservative finite volume Godunov schemes [16, 19, 28],
+finite difference schemes that preserve the energy or dissipation property of the underlying model equation (see,
+e.g.,[15, 36]), as well as a finite volume scheme that conserve mass and momentum of the KdV equation (see, e.g.,
+[13]). Recently, Cole and Musslimani [11] proposed an alternative method to simulate dynamical systems that
+enables the inclusion of physics "on-demand". The core idea is to make use of the Duhamel's principle to recast
+the underlying evolution equation as a space-time integral equation. The resulting system is then solved iteratively
+using a novel time-dependent renormalization process that controls both the numerical convergence properties of
+the scheme while at the same time preserving a single physical law.
+
+In this paper, we extend the time-dependent spectral renormalization method to allow for multiple conserva-
+tion laws or dissipation rates to be simultaneously incorporated in the simulation. This is achieved by introducing
+as many time-dependent renormalization factors as the number of conservation/dissipation laws being enforced.
+The solution sought is then written as a linear superposition of finite number of space-time dependent auxiliary
+wave functions with the time-dependent renormalization factors envisioned to play the role of "expansion coeffi-
+cients". When inserted into the corresponding Duhamel's formula, a finite set of "sub-Duhamel" integral equations
+
+1
+
+2
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+are obtained governing the space-time dynamics of each individual auxiliary function. These integral equations
+are then numerically solved using a novel space-time fixed point iteration. The importance of such a dynamic
+renormalization process are twofold: (i) it provides convergence when needed and (ii) enables the inclusion of
+conservation/dissipation laws. The Duhamel integrals are numerically computed using a Cauchy-Filon-Simpson
+quadrature formula. The TDSR method is implemented on several prototypical evolution equations of physical
+significance. This includes the KdV, Allen-Cahn, multi-dimensional and the PT symmetric integrable nonlocal
+NLS equations.
+
+The paper is organized as follows. In Sec. 2 we put forward a general framework for the TDSR scheme in
+arbitrary space dimensions and show how to incorporate multiple conservation laws or dissipation rate equations
+into the algorithm. The Cauchy-Filon Simpson time integration is derived in Sec. 3.1 for evolution equations
+subject to either periodic or rapidly decaying boundary conditions. The TDSR scheme is applied on the KdV
+and NLS equations, with single and multiple conservation laws. In Sec. 3.2 the Cauchy-Filon trapezoidal time
+integration is developed for evolution equations subject to non-periodic and non decaying boundary conditions. In
+this regard, the Allen-Cahn equation is used as a test bed to assess the performance of the algorithm. We conclude
+in Sec. 7 with comments on future directions.
+
+In this section, we formulate the TDSR method using Duhamel's principle in conjunction with multiple conser-
+
+vation laws. Consider the evolution equation for the real (or complex) valued function u(x,t):
+
+2. TDSR AND DUHAMEL PRINCIPLE
+
+ut = L (u) + N (u), u(x,0) = u0(x),
+
+(2.1)
+where L is a linear, constant coefficient differential operator and N (u) is a nonlinear operator. The initial-
+boundary value problem (2.1) is posed on a spatial domain Ω that is either bounded or unbounded. Furthermore,
+Eq. (2.1) is supplemented with either periodic, rapidly decaying, or other types of boundary conditions. As men-
+tioned above, we are interested in evolution equations that are either (i) conservative, in which case, there exists N
+conserved quantities given by
+Qm(u) ≡
+(cid:90)
+
+Qm[u0(x)]dx ≡ Cm , m = 1,2,3,···N,
+or (ii) dissipative, so that there are N densities ρm and fluxes Fm that obey the rate equations
+
+Qm[u(x,t)]dx =
+
+(cid:90)
+(cid:90)
+ρm[u(x,t)]dx = −
+
+(2.2)
+
+(2.3)
+
+(cid:90)
+
+Ω
+
+d
+dt
+
+Ω
+
+Ω
+
+Ω
+
+Equation (2.1) is rewritten in an integral form using the Duhamel's principle:
+
+Fm[u(x,t)]dx , m = 1,2,3,··· ,N.
+(cid:90) t
+
+e(t−τ)L N [u(x,τ)]dτ.
+
+(2.4)
+
+(2.6)
+
+(2.7)
+
+Recall that for any periodic or L2 function w(x), the semi-group etL admits the spectral representation:
+
+(2.5)
+L is the Fourier symbol associated with L and F , F −1 denote the d-dimensional forward and inverse
+
+L )F [w(x)]],
+
+where
+Fourier transforms, defined by
+
+u(x,t) = etL [u0(x)] +
+
+0
+
+etL [w(x)] = F −1[exp(t
+(cid:90)
+w(k) ≡ F [w(x)] = (2π)−d/2
+F −1[ w(k)] = (2π)−d/2
+
+(cid:90)
+
+Rd
+
+w(x)e−ik·xdx,
+w(k)eik·xdk.
+
+Rd
+
+For periodic functions defined on a bounded spatial domain the forward Fourier integral (2.6) represents the coef-
+ficients of its Fourier series.
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+3
+
+We now outline in details how to incorporate multiple conservation laws or dissipation rate equations in the
+
+TDSR scheme. To this end, we seek a solution to Eq. (2.4) in the form
+
+u(x,t) =
+
+N
+
+∑
+
+j=1
+
+R j(t)v j(x,t),
+
+(2.8)
+
+where R j(t) are time-dependent renormalization factors to be determined from knowledge of the conservation or
+dissipation laws and v j(x,t) are space-time dependent auxiliary functions that satisfy the same boundary conditions
+as the solution u(x,t). Our extensive numerical experiments seem to indicate that in order for the TDSR iteration
+to converge, the initial condition u0(x) needs to be re-written as a sum of N (identically non-zero) functions f j(x)
+(here referred to as pseudo initial conditions). Namely, we write
+
+u0(x) =
+
+N
+
+∑
+
+j=1
+
+f j(x),
+
+(2.9)
+
+where each f j is chosen to be compatible with the underlying boundary conditions. The specific choice of the
+functions { f j(x)}, j = 1,2,··· ,N, is discussed in Sec. (5) when solving the KdV equation. Substituting Eqns. (2.8)
+and (2.9) into (2.4), we obtain an equation for the auxiliary functions v j(x,t), j = 1,2,···N:
+
+N
+
+∑
+
+R j(t)v j(x,t) =
+
+(2.10)
+Scrutinizing Eq. (2.10) reveals the existence of N − 1 degrees of freedom for the variables v1,v2,··· ,vN−1. Next,
+we outline how to eliminate each degree of freedom and derive a self-consistent set of equations that forms the
+basis for the TDSR scheme. To begin with, we choose v1(x,t) such that
+
+R j(τ)v j(x,τ)
+
+etL [ f j(x)] +
+
+dτ.
+
+j=1
+
+j=1
+
+0
+
+e(t−τ)L N
+
+N
+
+∑
+
+(cid:34) N
+
+∑
+
+j=1
+
+(cid:90) t
+
+(cid:35)
+
+v1(x,t) = M1[R1,v1] ≡ 1
+R1(t)
+
+etL [ f1(x)] +
+
+e(t−τ)L N [R1(τ)v1(x,τ)]dτ
+
+.
+
+(2.11)
+
+The rationale behind this choice is rooted in the fact that Eq. (2.11) must reduce back to the case when only
+one conservation or dissipation law is under consideration with f1(x) ≡ u0(x). With this at hand, we next require
+v2(x,t) to satisfy
+
+(cid:90) t
+
+0
+
+v2(x,t) = M2[R1,R2,v1,v2]
+
+(cid:16)
+(cid:90) t
+
+0
+
+≡
+
+−
+
+1
+
+R2(t)
+
+1
+
+R2(t)
+
+e(t−τ)L N [R1(τ)v1(x,τ) + R2(τ)v2(x,τ)]dτ
+
+etL [ f2(x)] +
+e(t−τ)L N [R1(τ)v1(x,τ)]dτ,
+
+0
+
+and for general j = 3,4,··· ,N,
+
+v j(x,t) = M j[R1,R2,··· ,R j;v1,v2,··· ,v j]
+
+≡
+
+−
+
+1
+
+R j(t)
+
+1
+
+(cid:90) t
+
+R j(t)
+
+0
+
+etL [ f j(x)] +
+
+e(t−τ)L N
+
+e(t−τ)L N
+
+R(cid:96)(τ)v(cid:96)(x,τ)
+
+dτ,
+
+1
+
+(cid:90) t
+(cid:34) j−1
+
+0
+
+R j(t)
+
+∑
+
+(cid:96)=1
+
+(2.12)
+
+(2.13)
+
+(cid:35)
+
+R(cid:96)(τ)v(cid:96)(x,τ)
+
+dτ
+
+(cid:34) j
+(cid:35)
+
+∑
+
+(cid:96)=1
+
+(cid:26)
+
+(cid:90) t
+
+(cid:27)
+
+(cid:17)
+
+N
+
+∑
+
+j=2
+
+R j(t)v j(x,t) = etL
+
+∑
+
+f j(x)
+
+(cid:34) N
+
+(cid:90) t
+(cid:90) t
+
+0
+
+0
+
+j=2
+e(t−τ)L
+
+e(t−τ)L
+
+N
+
+∑
+
+j=2
+N
+
+∑
+
++
+
+−
+
+(cid:35)
+(cid:40)
+(cid:40)
+
+N
+
+N
+
+(cid:96)=1
+
+∑
+
+(cid:34) j
+(cid:34) j−1
+(cid:105)− N (cid:104)
+
+∑
+
+R(cid:96)(τ)v(cid:96)(x,τ)
+
+dτ
+
+(cid:35)(cid:41)
+(cid:35)(cid:41)
+
+4
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+Note that Eqns. (2.11)-(2.13) are self-consistent with the Duhamel's formula (2.10). Indeed, multiplying (2.12)
+by R2 and (2.13) by R j and summing over all j = 2,3,··· ,N, we obtain
+
+R(cid:96)(τ)v(cid:96)(x,τ)
+
+dτ.
+
+(2.14)
+
+(cid:96)=1
+
+j=2
+The last two terms on the right hand side of Eq. (2.14) satisfy
+
+(cid:110)N (cid:104)
+(cid:82) t
+0 dτe(t−τ)L N (cid:2)∑N
+=(cid:82) t
+0 dτe(t−τ)L ∑N
+
+(cid:105)(cid:111)
+(cid:96)=1 R(cid:96)(τ)v(cid:96)(x,τ)(cid:3)− N [R1(τ)v1(x,τ)].
+
+∑ j−1
+(cid:96)=1 R(cid:96)(τ)v(cid:96)(x,τ)
+
+∑ j
+(cid:96)=1 R(cid:96)(τ)v(cid:96)(x,τ)
+
+(2.15)
+The conclusion is complete once we multiply Eq. (2.11) by R1(t); add the result to Eq. (2.15) and use the condition
+(2.9). In summary, Eqns. (2.11)-(2.13) give an implicit integral representation for the auxiliary functions v j. To
+close the system, all we need is to compute the renormalization factors R j(t). Substituting Eq. (2.8) into Eqns. (2.2)
+and (2.3) gives:
+
+j=2
+
+Conservative case:
+
+Dissipative case:
+
+(cid:32) N
+
+∑
+
+(cid:96)=1
+
+(cid:34) N
+
+∑
+
+Qm
+
+(cid:90)
+
+d
+dt
+
+R(cid:96)(t)v(cid:96)(x,t)
+
+R(cid:96)(t)v(cid:96)(x,t)
+
+(cid:33)
+
+(cid:33)
+
+≡
+
+(cid:90)
+(cid:35)
+
+Qm
+
+(cid:32) N
+∑
+(cid:90)
+dx = −
+
+Ω
+
+(cid:96)=1
+
+(cid:34) N
+
+∑
+
+ρm
+
+(2.17)
+where m = 1,2,··· ,N. System (2.16) defines N algebraic equations for the time-dependent renormalization factors
+whereas (2.17) a set of coupled nonlinear ordinary differential equations governing the evolution of R j(t). With
+this at hand, the TDSR iterative process is summarized below:
+
+R(cid:96)(t)v(cid:96)(x,t)
+
+R(cid:96)(t)v(cid:96)(x,t)
+
+dx,
+
+Fm
+
+(cid:96)=1
+
+(cid:96)=1
+
+Ω
+
+Ω
+
+dx = Cm,
+
+(cid:35)
+
+(2.16)
+
+v(n+1)
+1
+v(n+1)
+2
+v(n+1)
+j
+
+= M1[R(n)
+= M2[R(n)
+= M j[R(n)
+
+1 (t),v(n)
+1 ],
+2 ,v(n)
+1 ,R(n)
+1 ,v(n)
+2 ],
+2 ,··· ,R(n)
+1 ,R(n)
+(cid:32) N
+
+,v(n)
+1 ,v(n)
+, j = 1,2,··· ,N given by (for conservative cases)
+
+j
+
+(cid:34) N
+
+(cid:90)
+
+d
+dt
+
+Qm
+
+∑
+
+(cid:96)=1
+
+R(n)
+(cid:96) (t)v(n)
+
+(cid:96) (x,t)
+
+(cid:35)
+
+(cid:90)
+dx = −
+
+j
+
+2 ,··· ,v(n)
+(cid:33)
+(cid:34) N
+
+≡ Cm ,
+
+with R(n)
+j
+
+and
+
+] , j = 3,··· ,N,
+
+(cid:35)
+
+ρm
+
+∑
+
+R(n)
+(cid:96) (t)v(n)
+
+(cid:96) (x,t)
+
+Ω
+
+Fm
+
+(cid:96)=1
+
+(2.22)
+for the dissipative cases where m = 1,2,··· ,N. As a reminder, the functionals M1 and M j, j = 2,3,··· ,N are
+respectively defined by Eqns. (2.11) - (2.13). A workflow for the TDSR algorithm is given below, clarifying the
+structure of the iterative process:
+(1) Choose the pseudo initial conditions: The set of pseudo initial conditions f j(x), j = 1,2,··· N, are
+chosen in such a way that Eq. (2.9) is satisfied (see Sec.5 for further details). Note that they are used in
+the Picard iterations defined by Eqs. (2.11)-(2.13).
+
+(cid:96)=1
+
+Ω
+
+∑
+
+R(n)
+(cid:96) (t)v(n)
+
+(cid:96) (x,t)
+
+dx,
+
+(2.18)
+
+(2.19)
+
+(2.20)
+
+(2.21)
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+5
+
+(2) Select initial guesses v(1)
+
+for the space-time dependent auxiliary functions.
+
+j (x,t) for j = 1,2,··· ,N: We seed Eqs. (2.11)-(2.13) with these initial guesses
+(3) Compute the initial iterate of the set of renormalization factors: The set of auxiliary functions are used
+j (t) , j = 1,2,··· ,N via the system of equations
+(4) Compute the Duhamel integrals defined in Eqs. (2.18)-(2.20): The Duhamel integrals are computed
+
+to evaluate the time-dependent renormalization factors R(1)
+(2.21) or (2.22) depending on whether the underlying evolution equation is conservative or dissipative.
+
+using v(1)
+
+j (x,t) and R(1)
+
+j (t), for j = 1,2,··· ,N.
+
+(5) Update the Duhamel iteration: The Duhamel integrals computed in the previous step are now used to
+
+compute the second iterate of v(2)
+
+j (x,t) using Eqs. (2.18)-(2.20).
+
+(6) Update the renormalization factors: The updated {v(2)
+
+j (x,t)}'s are now used to correct the the set of
+j (t)} , j = 1,2,··· ,N; from the system of equations given by (2.21) (for the
+
+renormalization factors {R(2)
+conservative case), or (2.22) (for the dissipative case).
+
+(7) Iterative update: Repeat steps (5) and (6) till convergence is achieved.
+
+3. TIME INTEGRATION WITH VARIOUS BOUNDARY CONDITIONS
+
+(cid:90) t
+
+3.1. Periodic and decaying boundary conditions. In this section, we detail the numerical approach used to
+approximate the Duhamel integral
+
+I(x,t) ≡
+
+e(t−τ)L G(x,τ)dτ,
+
+(3.1)
+with G(x,τ) ≡ N [u(x,τ)]. When subject to periodic or rapidly decaying boundary conditions, the action of the
+L is
+semi-group exp(tL ) on G follows from its spectral representation F [exp(tL )G] = exp[t
+the Fourier symbol associated with the constant coefficients linear operator L . Our approach in approximating the
+integral Eq. (3.1) is based on the Filon-Simpson quadrature method [9, 20, 34]. To this end, we consider an NT
+equally spaced mesh points residing inside the time interval [0,T ] with ti = i∆t,i = 0,1,2,··· ,NT , labeling all grid
+points. It can be shown that I(k,ti) satisfies the exact recurrence relation
+
+L ]F [G] where
+
+0
+
+I(k,ti+1) = e2∆t
+
+L (k)
+
+I(k,ti−1) +
+
+e(ti−1−τ) L (k) G(k,τ)dτ
+
+.
+
+(3.2)
+
+(cid:20)
+
+(cid:90) ti+1
+
+ti−1
+
+(cid:21)
+
+As a reminder, a hat over a quantity represents its Fourier transform (see definition (2.6)) or its Fourier series
+coefficients. Next, we approximate the function G(k,τ) by a quadratic polynomial defined in the interval [ti−1,ti+1]
+
+G(k,τ) ≈ G(k,ti−1)
+
++ G(k,ti+1)
+
+(τ −ti)(τ −ti+1)
+(τ −ti−1)(τ −ti)
+
+2(∆t)2
+
+2(∆t)2
+
+− G(k,ti)
+
+.
+
+(τ −ti−1)(τ −ti+1)
+
+(∆t)2
+
+(3.3)
+
+Substituting Eq. (3.3) back into (3.2) and integrating by parts gives a recursive formula for the Duhamel integral
+(3.1):
+
+I(k,ti+1) = e2∆t
+
+(3.4)
+The quadrature coefficients q j ≡ q j(k,∆t), j = 1,2,3, depend on the Fourier wavenumber and the time step ∆t but
+not on the iteration index i. Thus, they are computed only once. The exact expressions for the q j's, j = 1,2,3, are
+given by (z ≡ ∆t
+
+L (k)[ I(k,ti−1) + q1 G(k,ti−1) + q2 G(k,ti) + q3 G(k,ti+1)].
+
+(3.5a)
+(3.5b)
+(3.5c)
+For linear operators satisfying L (0) = 0 we find (in the limiting case k → 0), q1(0,∆t) = q2(0,∆t)/4 = q3(0,∆t) ≡
+0 e(∆t−τ) L (k) G(k,τ)dτ
+
+∆t/3. Equation (3.4) needs to be initialized with I(k,t = 0) = 0 and the quantity I(k,∆t) =(cid:82) ∆t
+
+q1 = ∆t(−ze−2z − 2e−2z + 2z2 − 3z + 2)/(2z3),
+q2 = ∆t(2ze−2z + 2e−2z + 2z− 2)/z3,
+q3 = ∆t(−2z2e−2z − 3ze−2z − 2e−2z − z + 2)/(2z3).
+
+L (k))
+
+6
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+which we next explain how to find. Note that in the interval [0,∆t], the values (in time) of the function G(k,τ)
+are available only at two grid points: 0 and ∆t. To maintain the same order of accuracy as was done at the other
+temporal grid points, we apply a combination of two different quadrature rules to approximate I(k,∆t). First,
+consider the following identity:
+
+e(∆t−τ) L (k) G(k,τ)dτ =
+
+e(∆t−τ) L (k) G(k,τ)dτ
+
++
+
+e(∆t−τ) L (k) G(k,τ)dτ.
+
+(3.6)
+
+(cid:90) ∆t
+(cid:124)
+
+0
+
+(cid:123)(cid:122)
+
+I(k,∆t)
+
+(cid:90) 3∆t
+
+∆t
+
+(cid:125)
+
+(cid:90) 3∆t
+
+0
+
+The second integral on the right-hand side of Eq. (3.6) is computed using a quadratic interpolation (in time) for
+G(k,τ). Indeed, after some algebra, we find
+
+e(∆t−τ) L (k) G(k,τ)dτ ≈ q1 G(k,∆t) + q2 G(k,2∆t) + q3 G(k,3∆t).
+
+(3.7)
+
+(cid:90) 3∆t
+
+∆t
+
+To obtain a similar order of accuracy for the integral on the left hand side of Eq. (3.6), we first represent G(k,τ) as
+a cubic polynomial (in time)
+
+(τ − ∆t)(τ − 2∆t)(τ − 3∆t)
+
+τ(τ − 2∆t)(τ − 3∆t)
+
+Substituting expressions (3.8) and (3.7) into Eq. (3.6) gives (after integration by parts)
+
+G(k,τ) ≈ − G(k,0)
+
+− G(k,2∆t)
+
+6(∆t)3
+
+τ(τ − ∆t)(τ − 3∆t)
+
+2(∆t)3
+
+I(k,∆t) = q4e∆t
+q6e∆t
+
+L (k) G(k,0) +
+L (k) − q2
+
++
+
+(cid:16)
+
++ G(k,∆t)
+
+2(∆t)3
+τ(τ − ∆t)(τ − 2∆t)
+
+.
+
+6(∆t)3
+
++ G(k,3∆t)
+
+(cid:16)
+(cid:17) G(k,2∆t) +
+
+q5e∆t
+
+(cid:16)
+
+L (k) − q1
+q7e∆t
+
+(cid:17) G(k,∆t)
+
+L (k) − q3
+
+(cid:17) G(k,3∆t).
+
+(3.8)
+
+(3.9)
+
+Here, q j ≡ q j(k,∆t), j = 4,5,6,7, denote the quadrature coefficients whose expressions are given by
+
+q4 = ∆t(2z2e−3z + 6ze−3z + 6e−3z + 6z3 + 12z− 11z2 − 6)/(6z4),
+q5 = ∆t(−3z2e−3z − 8ze−3z − 6e−3z + 6z2 − 10z + 6)/(2z4),
+q6 = ∆t(6z2e−3z + 10ze−3z + 6e−3z − 3z2 + 8z− 6)/(2z4),
+q7 = ∆t(−6z3e−3z − 11z2e−3z − 12ze−3z − 6e−3z + 2z2 − 6z + 6)/(6z4).
+
+(3.10a)
+(3.10b)
+(3.10c)
+(3.10d)
+For linear operators satisfying L (0) = 0, and for wavenumber k→ 0, q4(0,∆t) = q7(0,∆t)≡ 3∆t/8, and q5(0,∆t) =
+q6(0,∆t) ≡ 9∆t/8. To summarize, the Duhamel integral I(x,t) is determined from iterating Eq. (3.4) subject to the
+initial conditions: I(x,0) = 0 and I(x,∆t) given in Fourier space by Eq. (3.9). Note that in some cases, the Filon
+coefficients q j may exhibit a removable singularity in the variable z ≡ ∆t
+L (k) at zero wave number that could
+trigger numerical instability. To remedy this, we represent each quadrature term as a Cauchy integral that allows a
+stable and uniform approximation valid for all wavenumbers. This idea has been first implemented in the context
+of exponential time differencing fourth order Runge-Kutta (ETDRK4) [25]. For the sake of completeness, we
+show how to implement this approach on the coefficient q1. The computation of the other quadrature coefficients
+follow similar derivation. Since the function q1(ζ ;∆t) is analytic in the ζ complex plane, by the Cauchy integral
+formula we have
+
+q1(z;∆t) =
+
+1
+2πi
+
+q1(ζ ;∆t)
+ζ − z
+
+C
+
+dζ ,
+
+(3.11)
+
+(cid:90)
+
+where C is a circle of constant radius centered at z. The above integral can be evaluated to spectral accuracy with
+the use of the trapezoidal quadrature [14, 25].
+3.2. Time integration: non-periodic boundary conditions. So far, we have discussed the development and
+application of the TDSR method to evolution equations subject to periodic or localized boundary conditions. Here,
+we intend to extend the TDSR scheme to allow for non-periodic and non-decaying boundary conditions where the
+use of Fourier analysis is not applicable. In such circumstances the matrix approximating the linear operator could
+be banded (as is the case with finite differences) or dense, for example, in case of Chebyshev spectral method.
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+7
+
+The derivation of the Duhamel formula follows similar steps as outlined in Sec.2 with the exception of the use
+of trapezoidal scheme instead of Simpson. Using a Chebyshev basis function or other discretization methods we
+represent the differential operator L in Eq. (3.1) by a finite dimensional matrix L. The boundary conditions are
+incorporated within the matrix L. By creating a mesh in time domain, Eq.(3.1) can be put in the recursive form
+
+e(ti−τ)LG(τ)dτ,
+
+(3.12)
+
+I(ti+1) = e∆tLI(ti) + e∆tL(cid:90) ti+1
+
+ti
+
+where now I(ti) is the matrix representing the Duhamel integral at space meshgrid x and time level ti. Additionally,
+G(ti) is the matrix representing the nonlinear terms at ti = i∆t with i = 0,1,···NT . Using a linear interpolant to
+approximation G(τ) in the interval [ti,ti+1] we find
+G(τ) ≈ G(ti) +
+
+G(ti+1)− G(ti)
+
+(τ −ti).
+
+(3.13)
+
+∆t
+Substituting Eq.(3.13) into (3.12) we obtain after some algebra
+
+where the matrix valued quadrature coefficients A ≡ A(L,∆t) and B ≡ B(L,∆t) are defined by
+
+I(ti+1) = e∆tL[I(ti) + AG(ti) + BG(ti+1)],
+
+A ≡ ∆t A,
+B ≡ ∆t B,
+
+,
+
+A = L−2(cid:16)
+e− L + L− I(cid:17)
+B = L−2(cid:16)I − Le− L − e− L(cid:17)
+(cid:90)
+
+1
+2πi
+
+Γ
+
+(3.16)
+with I being the identity matrix and L ≡ ∆tL. As was done in Sec. 3.1 for the periodic case [25], we again adopt
+the Cauchy integral formula to represent each quadrature coefficient as a contour integral in the complex plane.
+Thus we write :
+
+,
+
+A(ζ )(ζ I − L)−1dζ ,
+
+B( L) =
+
+B(ζ )(ζ I − L)−1dζ
+
+(3.17)
+
+(cid:90)
+
+Γ
+
+A( L) =
+
+1
+2πi
+
+with Γ being a circular contour that encloses all the eigenvalues of L. The integral in Eq.(3.17) is computed to a
+spectral accuracy with the use of the trapezoidal rule.
+
+(3.14)
+
+(3.15)
+
+4. NUMERICAL IMPLEMENTATION OF TDSR: ONE CONSERVATION OR DISSIPATION LAW WITH VARIOUS
+
+BOUNDARY CONDITIONS
+
+4.1. The KdV equation. In this section, we use the KdV equation as a testbed PDE model to examine various
+numerical aspects related to the TDSR method such as convergence, accuracy and dependence on initial guesses.
+The KdV equation is given by:
+
+(4.1)
+where α,ε are real and positive numbers. When considered on the whole real line with rapidly decaying boundary
+conditions, Eq.(4.1) admits a one parameter family of soliton solution given by (e.g. α = 6,ε = 1)
+
+ut + αuux + ε2uxxx = 0,
+
+uex(x,t) = 2β 2sech2(β (x− 4β 2t)), β > 0.
+
+(4.2)
+It is noteworthy that the KdV equation is an integrable dynamical system admitting infinitely many conservation
+laws. Among them are the physically relevant mass, momentum and Hamiltonian given for α = 6,ε = 1 by
+Eq. (2.2) with Q1 = u, Q2 = u2 and Q3 = −u3 + 1
+x, respectively. All numerical simulations reported in this
+section were performed on a spatial domain of size L = 100 or L = 800 (depending on the case at hand) with
+corresponding number of spatial grid points (Fourier modes) NS = 2048, NS = 16384 respectively and time interval
+[0,T ] with T = 5,10,20,30 or 60. In this section, the renormalization factors were computed by enforcing a single
+conservation law. Numerical convergence and accuracy were quantified by monitoring the error between two
+successive iterations
+
+2 u2
+
+u(n+1)(x,t)− u(n)(x,t),
+
+max
+x,t
+
+8
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+and the quantities
+
+δ u(t) ≡ max
+
+x
+
+u(x,t)− uex(x,t),
+j = 1,2,3,
+
+δ Q j(t) ≡ Q j[u(x,t)]− Q j[u0(x)] ,
+
+(4.4)
+where u0(x) = 2β 2sech2(β x) is the initial condition associated with Eq. (4.1), for the parameters α = 6,ε = 1,
+where uex(x,t) is the one-parameter soliton solution for the KdV given in Eq. (4.2). For all simulations reported
+here, convergence tolerance was set near 1× 10−16. All functionals Q j, j = 1,2,3, are defined in Eq. (2.2). We
+perform numerical experiments on the KdV equation while conserving one of the following quantities: mass,
+momentum, or Hamiltonian. The renormalization factor R(t) in each case, is given by:
+
+mass:
+
+R(t) =
+
+,
+
+Q1[u0(x)]
+Q1[v(x,t)]
+
+(cid:18) Q2[u0(x)]
+
+(cid:19)1/2
+
+momentum: R(t) =
+Hamiltonian: A(t)R3(t)− B(t)R2(t)−C3 = 0,
+
+Q2[v(x,t)]
+
+,
+
+where A(t) = −(cid:82)
+
+R v3(x,t)dx, B(t) = − 1
+
+(4.7)
+x dx and C3 is the initial value of the Hamiltonian. All spatial integrals
+are computed to spectral accuracy with the use of fast Fourier transform. We initialize the TDSR algorithm with
+a space-time random function v(1)(x,t) constructed by superimposing several Gaussians each being centered at a
+random location and having a random time-dependent amplitude. The centers and amplitudes are sampled from
+a uniform distribution on the interval [−L/2,L/2] and [−1,1] respectively. To ensure the initial guess v(1)(x,t)
+satisfies the underlying boundary conditions, we mollify it with χ(x). Thus, we have
+
+R v2
+
+2
+
+(cid:82)
+
+where NG denotes the number of Gaussians with cn and an(t) representing their centres and time-varying ampli-
+tudes and d is the width. Here, χ(x) is the mollifier with unit peak amplitude defined by:
+
+(4.3)
+
+(4.5)
+
+(4.6)
+
+(4.8)
+
+(4.9)
+
+(cid:1)2(cid:3) χ(x),
+
+d
+
+∑NG
+
+maxx,t∑NG
+
+(cid:1)2(cid:3)
+n=1 an(t)exp(cid:2)−(cid:0) x−cn
+n=1 an(t)exp(cid:2)−(cid:0) x−cn
+(cid:18)
+exp
+
+a2 − b
+a2−x2
+0,if x > a,
+
+(cid:19)
+
+b
+
+d
+
+,if x ∈ (−a,a)
+
+v(1)(x,t) =
+
+χ(x) =
+
+with arbitrary mollifier parameters a and b. As expected, the numerical result agrees well with the exact solution.
+In generating Fig. 1, conservation of momentum is imposed in which case the renormalization parameter R(t) is
+computed from Eq. (4.6). One could instead reach the same conclusion by using a different dynamic renormal-
+ization process emanating from either conservation of mass or Hamiltonian. This numerical experiment reveals
+the simplistic (albeit powerful) nature of our proposed method as measured by its easy formulation, actual im-
+plementation, robustness to initial guesses and its ability to impose conservation laws "on-demand". To further
+characterize the numerical performance of the TDSR scheme, we have investigated its temporal convergence prop-
+erties by measuring the space-time maximum error between the numerically obtained solution to the KdV equation
+(relative to its exact solution) and all conservation laws, as quantified by Eqs. (4.3) and (4.4), as a decreasing func-
+tion of time step ∆t. It is evident from Fig. 2(a) that the maximum (over time) error in the solution decreases at
+a fourth order rate. This trend seems to persist independently of the choice of specific conservation law. When
+conservation of mass is imposed, the error in the Hamiltonian and momentum reduces with decreasing ∆t. Similar
+scenarios occur when imposing conservation of momentum or Hamiltonian  --  see Fig. 2 (b)-(d). We remark that
+to conserve the Hamiltonian structure, we need to solve a cubic equation defined by Eq. (4.7). As such, there are
+three possible expressions for the renormalization factor, of which only one is feasible. It turns out that the right
+expression yields R(0)v(x,0) = u0(x) at any Duhamel iteration, while the other two roots violate this criterion.
+Finally, for cases where the renormalization factor satisfies an associated equation that lacks exact solution, one
+needs to resort to a root finding algorithms such as the Newton's method. It is interesting to note that when it
+comes to long time simulations, the TDSR performs optimally when imposing conservation of momentum rather
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+9
+
+FIGURE 1. (a) A random space-time initial guess constructed from a linear superposition of randomly
+centered Gaussians with random amplitudes  --  see Eq.(4.8). (b) Numerical solution for the KdV equation
+obtained from the TDSR algorithm after 30 Duhamel iterations. Parameters are: T = 20,∆t = 0.025,L =
+100,NS = 2048 (Fourier modes). Here, the wave speed is 4β 2 = 2/5. This figure was generated by impos-
+ing conservation of momentum for which the renormalization parameter R(t) is computed from Eq. (4.6).
+The soliton initial condition is u0(x) = 2β 2sech2(β x) with α = 6 and ε = 1. (c) Time evolution of the
+relative error between the TDSR and the exact solution. Mollifier parameters are a = 0.95× L
+
+2 , b = 1.
+
+FIGURE 2. The relative error in (a) TDSR solution, (b) mass, (c) momentum, and (d) Hamiltonian. Pa-
+rameters are T = 10, L = 100, NS = 2048. The renormalization factor R(t) is computed by enforcing either
+conservation of mass (red), momentum (green), or Hamiltonian (blue).
+
+than mass or Hamiltonian. Indeed, we have tested the TDSR method on the long-time evolution of the 1-soliton so-
+lution for the KdV equation while conserving momentum (the L2 norm of the solution). The numerical experiment
+was performed with parameters T = 240,∆t = 0.1875,NS = 4096,L = 300 using the idea of multi-blocking with
+Mb = 8 time blocks (see remark below). The relative error in the solution, mass and Hamiltonian at end time were
+in the order of 10−6, 10−7 and 10−10 respectively, while the relative error in momentum remained near machine
+precision.
+Remark: Below, we describe the idea of multi-blocking used when the time interval is too large for the renor-
+malized Picard iterations to converge (this is not due to a CFL-type restriction prevalent in generic time-stepping
+schemes). The idea is to divide the full time interval [0,T ] into Mb sub-intervals such that [0,T ] = ∪Mb
+i=1[Ti−1,Ti]
+with T0 = 0. For a fixed i, the quantity Ti − Ti−1 is chosen sufficiently large so that the spectral renormalization
+algorithm is efficient and convergent. On the first segment [0,T1], the solution of the TDSR scheme with the initial
+condition u0(x) is obtained from the iteration:
+
+etL [u0(x)] +
+
+e(t−τ)L N [R(n)(τ)v(n)(x,τ)]dτ
+
+(cid:17)
+
+,
+
+(cid:16)
+
+v(n+1)(x,t) =
+
+1
+
+R(n)(t)
+
+(cid:90) t
+
+0
+
+05101520t012345j/u(t)jjjuex(x;t)jj1#10-10(c)10-210-1100"t10-1010-5100maxtj/u(t)j=jjuex(x;t)jj1(a)10-210-1100"t10-3010-15100maxtj/Q1(t)j=jQ1[u0]j(b)10-210-1100"t10-1510-1010-5maxtj/Q2(t)j=jQ2[u0]j(c)10-210-1100"t10-1510-1010-5100maxtj/Q3(t)j=jQ3[u0]j(d)10
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+while on the second segment [T1,T2], from:
+
+v(n+1)(x,t) =
+
+1
+
+R(n)(t)
+
+e(t−T1)L [u(x,T1)] +
+
+e(t−T1−τ)L N [R(n)(τ)v(n)(x,τ)]dτ
+
+The renormalization factor R(n)(t) (corresponding to a single conservation law) is obtained from
+
+(cid:16)
+
+(cid:16)
+
+(cid:90) t
+
+T1
+
+(cid:17)
+
+(cid:17)
+
+.
+
+Qm
+
+R(n)(t)v(n)(x,t)
+
+= Cm.
+
+This process is repeated Mb times until final time T is reached. It should be pointed out that the number of
+segment Mb is chosen such that the Duhamel fixed point iteration, without renormalization, would diverge on any
+given sub interval [Ti−1,Ti].
+
+(cid:82) 2
+
+4.2. Zabusky-Kruskal experiment. Our goal in this section is to reproduce the well-known numerical results
+of Zabusky and Kruskal on the KdV equation [44] using our algorithm. Their simulation displays rich nonlinear
+dynamics which, as such, represents a challenge for numerical methods as far as the choice of time-steps, long-
+time accuracy and stability are concerned [10, 13, 15, 36]. To this end, we apply the TDSR method on the KdV
+Eq. (4.1) with α = 1 and ε = 0.022 subject to periodic boundary conditions u(x +2,t) = u(x,t) and initial condition
+u0(x) = cos(πx). Figure 3 (a) shows the Zabusky-Kruskal results while rigorously conserving the momentum
+0 u2dx. We compare our findings with those obtained using the ETDRK4 method [25]. Note that, in order to keep
+the level of solution accuracy of the ETDRK4 method comparable with that of the TDSR scheme while conserving
+momentum, the time step ∆tET D (of the ETDRK4) has to be about one order of magnitude lesser than its TDSR
+counterpart (∆tT DSR). This can be seen by gradually reducing the relative time step (∆tr = ∆tET D/∆tT DSR) while
+monitoring the relative difference between the two numerical solutions. At ∆tr = 0.125, this difference was seen to
+drop to O(10−6). Using the same spatio-temporal discretization as before, we checked the TDSR results' fidelity
+up to 20 recurrence times. This was done, by monitoring the time evolution of the first six conserved quantities of
+the KdV equation with α = 1 and ε = 0.022 given by:
+
+,
+
++
+
+Q2 = u2
+ε2u2
+x
+2
+
+Q1 = u,
+Q3 = −u3
+6
+u5
+− 6ε2u2u2
+x +
+5
+u6
+− 10ε2u3u2
+6
+
+Q5 =
+
+Q6 =
+
+u4
+− 3ε2uu2
+Q4 =
+x +
+4
+36ε4uu2
+− 108ε6u2
+xx
+35
+xx − 5ε4u4
+
+xxx
+
+5
+
+x + 18ε4u2u2
+
+,
+
+9ε4u2
+xx
+
+5
+
+,
+
+x − 108ε6uu2
+
+xxx
+
+7
+
++
+
+120ε6u3
+xx
+
+7
+
++
+
+36ε8u2
+7
+
+xxxx
+
+.
+
+Clearly, the relative error in the momentum remains close to machine precision, while at the same time resulting
+in the conservation of the mass as well. This can be explained by considering the Fourier series representations of
+the KdV solution u(x,t) = ∑∞
+m=−∞ vm(t)eiπmx.
+With this at hand, the (n + 1)th renormalized Duhamel iterate takes the form:
+eiε2m3π3(t−τ) imπ
+2
+
+m=−∞ um(t)eiπmx, and its corresponding auxiliary function v(x,t) = ∑∞
+
+eiε2m3π3t um(0)−
+
+u(n)
+m−ldτ
+
+(cid:90) t
+
+v(n+1)
+m
+
+(4.10)
+
+(cid:19)
+
+u(n)
+l
+
+(t) =
+
+R(n)(t)
+
+1
+
+0
+
+∞
+∑
+l=−∞
+
+(cid:18)
+(cid:17)2
+
+(cid:19)
+
+(cid:16)
+
+(cid:18)(cid:82) 2
+
+0
+
+where (R(n)(t))2 = C2/
+
+v(n)(x,t)
+
+dx
+
+. Substituting m = 0 in Eq. (4.10), we obtain:
+
+v(n+1)
+0
+
+(t) =
+
+u0(0)
+R(n)(t)
+
+.
+
+(4.11)
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+11
+
+FIGURE 3. (a) Space-time contour plot for the KdV solution with α = 1,ε = 0.022 and initial condition
+u(x,0) = cos(πx). Other parameters are ∆t ≈ 0.0008, L = 2, NS = 256 and the time block size T1 ≈ 0.016
+(multi-blocking with Mb sub-intervals of equal size). (b) The solution at T = 3.6/π depicting the fission
+of the initial condition into an eight soliton train. (c) The solution at one recurrence time T = tR = 30.4/π
+obtained via TDSR Simpson showing good agreement with the fourth-order accurate (in time) ETDRK4
+solution. A time step of ∆t = 0.0001 (for the ETDRK4 scheme) was used to obtain a solution of comparable
+accuracy to ours. (d) A space-time contour plot for the solution obtained from the TDSR algorithm using
+the same spatio-temporal discretization as in (a), over the time span [19tR,20tR]. The stable numerical
+simulation produced accurate results, as evidenced by the minor relative errors in the first six conserved
+quantities (see Fig. 4). (e) The solution at T = 20tR obtained using TDSR Simpson.
+
+Using the identity u(n+1)
+
+0
+
+(t) = R(n+1)(t) v(n+1)
+
+(t) we find
+
+0
+
+(cid:118)(cid:117)(cid:117)(cid:117)(cid:117)(cid:116)
+
+(cid:16)
+(cid:82) 2
+(cid:16)
+(cid:82) 2
+
+0
+
+0
+
+(cid:17)2
+(cid:17)2
+
+v(n)(x,t)
+
+dx
+
+v(n+1)(x,t)
+
+dx
+
+u(n+1)
+0
+
+(t) =
+
+u0(0).
+
+(4.12)
+
+(t) ≡ 0, i.e.,
+For the initial condition considered here u0(x) = cos(πx), one finds u0(0) = 0, resulting in u(n+1)
+the mass is also preserved at every Duhamel iterate. Additionally, the relative errors of the other four conserved
+quantities are within O(10−5). In particular, some aspects of our scheme (such as solution accuracy) outperforms
+other well known conservative numerical methods to simulate the KdV equation, such as the one developed in [13].
+In [13], the authors develop an operator splitting scheme in conjunction with a finite volume spatial discretization
+to locally conserve the mass and momentum. While their scheme demonstrates impressive long time stability
+properties (Zabusky-Kruskal dynamics), there were some phase errors at T = 20tR, that arise from the global
+(absolute) errors in the conservation of the Hamiltonian (∼ 10−3).
+
+0
+
+Presently, it is unclear if there are other finite volume based schemes capable of incorporating more than two
+conserved quantities for the KdV equation. Also, it is worth to mention that the ETDRK4 scheme (which does not
+conserve momentum at the local or global level for the KdV), suffers from numerical instabilities (for ∆t ≈ 0.0008)
+and for time integration up to T = 20tR.
+
+Finally, we examine the performance of the TDSR method by measuring the local errors in the mass and
+momentum. Specifically, we compute the errors for mass and momentum at end time T = 20tR respectively
+defined by
+
+E1(x,T ) = ut + αuux + ε2uxxx,
+
+(4.13)
+
+00.511.52x-1-0.500.511.522.5u(b)00.511.52x-1-0.500.511.5u(c)TDSRETDRK400.511.52x-1-0.500.511.52u(e)12
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+FIGURE 4. Errors in conserved quantities for the Zabusky-Kruskal test case monitored over the time-span
+[0, 20tR]; computational parameters for the simulation can be found in caption of Fig. 3: (a) absolute error
+in the mass (the initial mass Q1[u0] = 0), relative errors in (b) momentum (L2-norm), (c) Hamiltonian,
+(d) fourth conserved quantity (Q4[u0]), (e) fifth conserved quantity (Q5[u0]) and (f) sixth conserved quan-
+tity (Q6[u0]). By construction, the relative error in the conservation of momentum is kept near machine
+precision, while the absolute error in mass remains at ∼ 10−15.
+
+FIGURE 5. A snapshot of the local errors in (a) conservation of mass (E1(x,t)) and (b) conser-
+vation of momentum (E2(x,t)) as a function of x at time T = 20tR.
+
+E2(x,T ) = (u2/2)t +
+
+uuxx − u2
+
+x/2
+
+(cid:18)α
+
+3
+
+u3 + ε2(cid:16)
+
+(cid:17)(cid:19)
+
+.
+
+x
+
+(cid:16)
+
+The time derivatives are computed using the fourth-order backward differentiation formula [35]:
+
+25u(xm,T )− 48u(xm,T − ∆t) + 36u(xm,T − 2∆t)− 16u(xm,T − 3∆t) + 3u(xm,T − 4∆t)
+
+ut (xm,T ) ≈
+whereas, all the spatial derivatives were computed to spectral accuracy with the use of fast Fourier transforms.
+Fig. 5 shows the variations of E1 and E2 as a function of x at time T = 20tR. Remarkably, the local errors remain
+relatively small even over such long time intervals.
+
+(4.15)
+
+12∆t
+
+,
+
+(4.14)
+
+(cid:17)
+
+5010015020000.511.5j/Q1(t)j#10-15(a)5010015020022.533.544.5j/Q2(t)j=jQ2[u0]j#10-16(b)5010015020000.511.522.5j/Q3(t)j=jQ3[u0]j#10-5(c)50100150200t01234j/Q4(t)j=jQ4[u0]j#10-7(d)50100150200t00.511.52j/Q5(t)j=jQ5[u0]j#10-5(e)50100150200t02468j/Q6(t)j=jQ6[u0]j#10-7(f)012x-505E1(x;t=20tR)#10-5(a)012x-505E2(x;t=20tR)#10-5(b)TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+13
+
+FIGURE 6. (a) Travelling wave solution for the Allen-Cahn equation with simulation parameters: L = 4,
+ε = 0.05, NS = 1024, ∆t = 0.000125, and end time T = 0.02. Solution advanced to the final time with the
+idea of multi-blocking with sub-interval size T1 = 0.01. The error in solution was restricted to 6.3× 10−4
+with this parameter choice. (b) The absolute error, in time, between the TDSR numerical and the exact
+solutions in the time interval [0.01,0.02].
+
+4.3. Travelling waves for the Allen-Cahn equation. In this section, we apply the TDSR method on the Allen-
+Cahn equation, a prototypical reaction-diffusion type equation that arises in material science [8]. It is given by
+
+ut = Duxx + γ(u− u3),
+
+x − 2γ(u2 − u4).
+
+(4.16)
+where D > 0 is the diffusion coefficient and γ measures the strength of reaction. The Allen-Cahn equation is
+dissipative in nature. In fact when subject to homogeneous Dirichlet/Neumann boundary conditions (considered
+in this paper), multiplying Eq. (4.16) by 2u and integrating over the whole domain leads to the dissipation rate
+Eq. (2.3) with density and flux:
+
+ρ = u2, F = 2Du2
+
+(4.17)
+In this case, as we shall see later, the renormalization factor R(t) obeys a nonlinear ordinary differential equation.
+We present numerical results on two canonical problems associated with the Allen-Cahn equation: (i) dynamics
+of traveling waves and (ii) observation of meta-stable dynamics. Both examples represent a departure from the
+periodic case for which the linear operator L is diagonalizable. Indeed, for the Allen-Cahn equation, the discrete
+representation of L is now dense as is the case when using spectral differentiation matrices. Thus, the semi-
+group exp(tL ) forms a rank-3 tensor. We implement the TDSR method on the Allen-Cahn Eq. (4.16) to compute
+traveling waves with diffusion coefficient D = 1 and large reaction parameter γ that scales like ε−2, with ε (cid:28) 1.
+Equation (4.16) is subject to the initial condition u(x,0) = 0.5 − 0.5tanh
+and Neumann boundary
+conditions: ux(x,t) → 0 as x → ∞. Interestingly enough, the Allen-Cahn Eq. (4.16) admits an exact travelling
+√
+√
+wave solution given by u(x,t) = 0.5− 0.5tanhξ /(2
+2ε), ξ = x− 3t/(
+2ε) [24]. It is the aim of this section
+to reproduce this exact solution using the TDSR while enforcing the dissipation rate equation given in (2.3) and
+(4.17). We proceed by substituting the ansatz u(x,t) = R(t)v(x,t) into Eq. (4.16); multiply by 2u and integrate the
+resulting system over the whole computational domain to obtain a first order dynamical system for the variable
+p(t) ≡ r(t)R2(t):
+
+√
+2ε)
+x/(2
+
+(cid:16)
+
+(cid:17)
+
+(4.18)
+where the expressions for the time-dependent coefficients r(t), a(t) and b(t) > 0 are given by (here Ω denotes the
+spatial domain of the Allen-Cahn equation)
+
+dt = (−a(t) + 2γ)p− b(t)p2,
+
+d p
+
+v2(x,t)dx,
+
+r(t) =
+
+(4.19)
+The presence of the large coefficient γ ∼ ε−2 in Eq.(4.18) causes the differential equation to become stiff,
+thus severely limiting the choice of time-steps. With this in mind, we use an implicit scheme (such as Crank-
+Nicolson) to time-step (4.18) [35]. The coefficients r(t), a(t) and b(t) are computed to spectral accuracy using
+
+a(t) =
+
+b(t) =
+
+Ω
+
+,
+
+.
+
+(cid:90)
+
+2D(cid:82)
+
+Ω v2
+x(x,t)dx
+r(t)
+
+2γ(cid:82)
+
+Ω v4(x,t)dx
+r2(t)
+
+0.010.0150.02t234567j/u(t)jjjuex(x;t)jj1#10-4(b)14
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+FIGURE 7. (a) Spatio-temporal field distribution illustrating the meta-stable dynamics. Simulations were
+performed using the idea of multi-blocking with block size T1 = 8 and final time T = 80. Computational
+parameters: NS = 256, ∆t ≈ 0.016. (b) Comparison with the ETDRK4 scheme (at end time), showing a
+good agreement with the TDSR trapezoidal result.
+
+Clenshaw-Curtis quadrature method [39]. The spatial domain Ω is truncated, in which case, x ∈ [−L/2,L/2]
+and taking advantage of the spatial decay of ux to enforce homogeneous Neumann boundary conditions. Several
+remarks are in order: (i) The Chebyshev (Chebyshev-Lobatto) series representation is originally developed for
+functions defined on the interval [−1,1]. It can, nonetheless be applied on the interval [−L/2,L/2] using a linear
+transformation. (ii) We incorporate the homogeneous Neumann boundary conditions following similar procedure
+as outlined in [29]. For example, the second derivative is represented by the matrix product DD0 with D being
+the standard first order spectral differentiation matrix while D0 is the first order differentiation matrix whose first
+and last rows have been replaced by the zero-vector respectively. This implicitly enforces the underlying boundary
+conditions. The numerical results obtained in this section are summarized in Fig. 6 where a surface plot describing
+the time evolution of the traveling wave as well as its numerical accuracy are shown.
+
+4.4. Meta-stable dynamics of the Allen-Cahn equation. Our last example is concerned with the dynamics of
+a meta-stable state associated with the Allen-Cahn Eq. (4.16) with parameters D = 0.01,γ = 1 and subject to the
+boundary conditions u(−1,t) = −1, u(1,t) = 1 and initial condition u(x,0) = 0.53x + 0.47sin(−1.5πx). This test
+bed case is particularly interesting since the dynamics of an initial hump is observed to be meta-stable, i.e., it
+remains unchanged over long time, before abruptly vanishing. This type of rapid change in the wave profile over
+short time scales inevitably creates numerical challenges. Such dynamic metastability was numerically observed
+by Kassam and Trefethen [25] using the modified ETDRK4 scheme. In this section, we demonstrate the robust-
+ness of our TDSR method by reproducing this type of abrupt transition from a meta-stable state to another stable
+wavefunction profile. Here, the renormalization factor R(t) is governed by the same nonlinear ordinary differential
+equation Eq. (4.18) with the exception that now the parameters are D = 0.01,γ = 1 with a spatial domain [−1,1].
+Few remarks are in order: (i) To simplify the computation, we first homogenize the boundary conditions by de-
+riving a new evolution equation on which the TDSR method is implemented. (ii) To impose Dirichlet boundary
+conditions, the operator d2/dx2 is approximated by D2 where D is the first order spectral differentiation matrix
+[39]. The time evolution of the Allen-Cahn front is shown in Fig. 7 (a). As expected, our method is indeed ca-
+pable of reproducing those well known results. We have also compared our results with those obtained using the
+ETDRK4 scheme and found good agreement (see Fig. 7 (b) for a comparison at end time).
+
+5. NUMERICAL IMPLEMENTATION OF TDSR WITH MULTI-CONSERVATION LAWS
+
+So far we have addressed several cases where a single conservation law is "injected" into the numerical sim-
+ulations. In this section, we shall present results when multiple conservation laws are enforced. There are three
+choices that we considered: conservation of (i) mass and momentum; (ii) mass and Hamiltonian ; (iii) mass, mo-
+mentum and Hamiltonian. All numerical results reported in this section are for the KdV equation (4.1), subject to
+rapidly decaying boundary conditions with α = 6 and ε = 1.
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+15
+
+We remark that the pseudo initial conditions f j(x), j = 1,2,··· ,N, introduced in the TDSR formulation (see
+Eqs. 2.11-2.13) are crucial for the success of the method. They greatly control the scheme's convergence and allow
+the renormalization factors to act as "expansion" coefficients. Our numerical tests strongly indicate that taking none
+of the pseudo-initial conditions be identically equal to zero, (albeit satisfying the underlying boundary conditions),
+in order for the scheme to converge. With this in mind, a natural and important issue that immediately arises is
+how to choose them? Our extensive numerical experiments seem to suggest that the natural choice f j(x) ≡ α ju0(x)
+with non-zero constant α j's does not lead to convergence. However, several other possible choices for f j are given
+by f j(x) = α j(x)u0(x) where α j(x) are spatially localized functions. For evolution equations in (1 + 1)D subject
+to rapidly decaying boundary conditions (such as the KdV, NLS, mKdV), the algorithm seems to converge (at least
+over some time interval) when the first (N − 1) f j(x) are chosen to belong to the class of bell-shaped, sign-definite
+,sech2(x)} for j = 1,2,··· (N −1), while the entire set of pseudo-initial
+functions. For example, f j ∈ {sech(x),e−x2
+conditions is required to satisfy the normalization condition in Eq. (2.9). A full characterization on the choice of
+the pseudo-initial conditions f j(x) is the subject for future work.
+
+5.1. Conservation of mass and momentum. Here the KdV solution is decomposed in the form: u(x,t) =
+R1(t)v1(x,t) + R2(t)v2(x,t), where R1(t) and R2(t) are computed from the coupled system
+
+(cid:2)2β 2sech2(β x)(cid:3) , j = 1,2.
+
+(cid:16)
+
+(cid:17)
+
+Q j [R1(t)v1(x,t) + R2(t)v2(x,t)] = Q j
+
+√
+x/
+600
+
+(5.1)
+, and f2(x) = u0(x)− f1(x). The explicit expressions for R1(t) and
+
+We choose f1(x) = (1/300)sech
+R2(t) can be obtained from the coupled system
+C1 − A2(t)R2(t)
+
+R1(t) =
+
+A1(t)
+
+,
+
+and µ1(t)R2
+
+2 + µ2(t)R2 + µ3(t) = 0,
+
+µ1(t) = A3A2
+
+2 + A4A2
+
+1 − 2A1A2A5, µ2(t) = 2A1A5C1 − 2A2A3C1, µ3(t) = A3C2
+
+1 −C2A2
+1,
+
+(cid:90) ∞
+
+−∞
+
+v2
+1(x,t)dx,
+
+where
+
+and
+
+(cid:113)
+
+(cid:90)
+(cid:90)
+
+R
+
+R
+
+A1(t) =
+
+A4(t) =
+
+v1(x,t)dx, A2(t)
+
+v2
+2(x,t)dx, A5(t)
+
+=
+
+=
+
+v2(x,t)dx, A3(t) =
+
+v1(x,t)v2(x,t)dx.
+
+(cid:90)
+(cid:90)
+
+R
+
+R
+
+Numerical tests indicate that the algorithm converges to the correct solution when using the root R2(t) = [−µ2(t) +
+2 (t)− 4µ1(t)µ3(t)]/[2µ1(t)], while the other one causes the TDSR algorithm to diverge. The correct root was
+µ2
+found to always satisfy R2(0)v2(x,0) = f2(x) at any Duhamel iteration while the other consistently violated it.
+Figure 8 shows results of TDSR simulations where mass and momentum are both conserved. Another interesting
+numerical experiment (discussed below), is related to interaction (or collision) between two 1-soliton solutions to
+the KdV equation. The corresponding initial condition is
+
+u0(x) = 2β 2
+
+1 sech2 (β1x) + 2β 2
+
+(5.2)
+√
+with β1 = 1√
+, β2 = 1
+10 and an initial separation of x0 = 40. We simulated this to end time T = 200 using the idea
+2
+10
+of multi-blocking (see Fig. 9). The solitons interact elastically, mainly emerging unscathed from the interaction,
+suffering only from a phase shift as expected. As before, we prescribed f1(x) = (1/300)sech
+, while
+f2(x) = u0(x)− f1(x).
+
+√
+x/
+600
+
+(cid:16)
+
+(cid:17)
+
+2 sech2 (β2(x− x0)) ,
+
+16
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+FIGURE 8. (a) Time evolution of the relative error between the numerically obtained solution for the KdV
+equation compared to its exact solution given in Eq. (4.3). Time evolution of the conserved quantities given
+in Eq. (4.4): mass (b), momentum (c) and Hamiltonian (d). Note that the relative errors in conservation
+of mass and momentum stay close to machine precision. Parameters are: L = 800, ∆t = 0.5, T = 60,
+Ns = 16384 with the renormalization factors obtained from system (5.1) for j=1, 2. Note the renormalized
+Duhamel iterations converge over such a large time-span, a significant improvement over when a single
+quantity is conserved.
+
+condition u(x,0) = (1/5)sech2(cid:0)x/
+
+10(cid:1) + (1/20)sech2(cid:0)(x− 40)/2
+
+√
+
+10(cid:1) . Other parameters are ∆t = 0.5,
+
+√
+
+FIGURE 9. Interaction between two 1-soliton solution for the KdV equation with α = 6,ε = 1 and initial
+
+L = 800, NS = 16384 and the time block size T1 = 20. The renormalization factors are obtained by enforcing
+the conservation of mass and momentum simultaneously. The relative error in Hamiltonian ≈ 7.86× 10−6
+at T = 200, while relative error in mass ≈ 1.9×10−16 and momentum ≈ 5.9×10−16 are kept near machine
+precision.
+
+FIGURE 10. (a) Time evolution of the relative error between the numerically obtained (TDSR) solution
+to the KdV equation with conservation of mass and Hamiltomian compared to its exact solution given in
+Eq. (4.3). Time evolution of the conserved quantities given in Eq. (4.4): mass (b), momentum (c) and
+Hamiltonian (d). Note that the relative errors in conservation of mass and Hamiltonian now stay close to
+machine precision. Parameters are: L = 800, ∆t = 0.5, T = 30, Ns = 16384 with the renormalization factors
+obtained from system (5.1) for j=1, 3.
+
+050t00.51j/u(t)j=jjuex(x;t)jj1#10-4050t00.511.52maxtj/Q1(t)j=jQ1[u0]j#10-16050t02468maxtj/Q2(t)j=jQ2[u0]j#10-16050t00.51maxtj/Q3(t)j=jQ3[u0]j#10-60102030t00.51j/u(t)j=jjuex(x;t)jj1#10-40102030t00.511.52maxtj/Q1(t)j=jQ1[u0]j#10-160102030t0123maxtj/Q2(t)j=jQ2[u0]j#10-70102030t01234maxtj/Q3(t)j=jQ3[u0]j#10-16TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+17
+
+FIGURE 11. (a) Time evolution of the relative error between the numerically obtained solution, from
+TDSR with conservation of mass, momentum and Hamiltonian, for the KdV equation compared to its
+exact solution given in Eq. (4.3). Time evolution of the conserved quantities given in Eq. (4.4): mass
+(b), momentum (c) and Hamiltonian (d). Parameters are: ∆t = 0.5, T = 5, Ns = 2048, L = 100 with the
+renormalization factors obtained from Eqs.(5.3).
+
+5.2. Conservation of mass and Hamiltonian. In this case, the renormalization factors R1(t) and R2(t) are now
+computed from the coupled system of equations given in (5.1) with j taking the values 1 and 3. Like before,
+and f2(x) = u0(x)− f1(x). We solved
+we pick the pseudo-initial conditions to be f1(x) = (1/300)sech
+system (5.1) for j = 1,3 using the Newton's method. Our findings are similar to those reported for the simultaneous
+conservation of mass and momentum, i.e., conservation of mass and Hamiltonian are achieved (see Fig. 10).
+
+√
+x/
+600
+
+(cid:16)
+
+(cid:17)
+
+5.3. Conservation of mass, momentum and Hamiltonian. Lastly, we seek three renormalization factors R1(t),
+R2(t) and R3(t) that satisfy u(x,t) = ∑3
+
+j=1 R j(t)v j(x,t) and obey the conservation laws
+
+(cid:34) 3
+
+∑
+
+(cid:96)=1
+
+(cid:35)
+
+(cid:2)2β 2sech2(β x)(cid:3) ,
+
+Q j
+
+R(cid:96)(t)v(cid:96)(x,t)
+
+= Q j
+
+j = 1,2,3.
+
+(5.3)
+
+Unlike the previous cases, of mass-momentum and mass-Hamiltonian conservation, two of the current conserved
+quantities now are nonlinear functionals further limiting the choices for the pseudo-initial conditions as far as
+the convergence over large time intervals is concerned. It turns out that convergence over moderately long time
+intervals (T = 5) is achieved with pseudo-initial conditions in the Duhamel integral formulas Eqs. (2.11) and (2.13)
+as f3(x) = 0.15exp(−x2), f2(x) = 0.05exp(−x2) and f1(x) = u0(x)− f2(x)− f3(x). The renormalization factors
+are found from the coupled system of equations derived from enforcing the conservation of mass, momentum and
+conservation of Hamiltonian simultaneously Eq. (5.1) for j = 1,2,3, using the Newton's root finding method. The
+results are depicted in Fig. 11 where the error in the momentum, Hamiltonian and mass are kept at the level of
+machine precision.
+
+6. TDSR METHOD: MULTI-DIMENSIONAL TEST CASE
+
+The nonlinear Schrodinger equation
+
+iut +V (x)u + ∇2u +u2u = 0,
+
+(6.1)
+plays an important role in modeling fundamental physics ranging from photonics, Bose-Einstein condensation to
+fluid mechanics [1]. Depending on the physics at hand, ∇2 = ∂ 2/∂ x2 + ∂ 2/∂ y2 denotes wave diffraction, V is the
+refractive index, photonic lattice or an external potential and u2 measuring the intensity or density of a complex
+valued wavefunction u. As such, using the TDSR method to simulate the NLS equation would seem natural. In
+the absence of any external potential (V (x) = 0), Eq. (6.1) admits a special class of solutions known as the Townes
+
+024t00.511.52j/u(t)j=jjuex(x;t)jj1#10-4024t00.511.52maxtj/Q1(t)j=jQ1[u0]j#10-16024t00.511.52maxtj/Q2(t)j=jQ2[u0]j#10-16024t0246maxtj/Q3(t)j=jQ3[u0]j#10-1618
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+FIGURE 12. (a) The error in the TDSR solution, as defined relative to the initial profile of the Townes
+soliton, (b) the relative error in the power as a function of time t. As one can see, it is kept close to machine
+precision over the entire time span [0,2]. Parameters are: ∆t = 0.05, a square spatial domain with L = 40 ,
+and a spatial discretization of 512× 512 for the computations.
+
+solitons. They are of the form u(x,t) = Uλ (x)eiλ 2t ,λ ∈ R with real valued function Uλ satisfying the boundary
+value problem
+
+∇2Uλ +U 3
+
+λ = λ 2Uλ .
+
+(6.2)
+
+The numerical computation of the Townes soliton is well documented in the literature and can be achieved with
+the use of various boundary value problem solvers (Quasi-Newton methods, spectral renormalization, etc. [3, 26,
+27, 41]). While the implementation of the TDSR method on the NLS equation was first reported in [11] it was
+exemplified in one spatial dimension for which the semi-group exp(it∂ 2/∂ x2) lives in (1 + 1) dimensions. Here,
+the (1 +2)D NLS equation, subject to sufficiently rapidly decaying boundary conditions is chosen as a prototypical
+example to demonstrate the applicability of the TDSR scheme in multiple spatial dimensions. The NLS Eq. (6.1)
+admits three conservation laws: power Q1 = u2, Hamiltonian Q3 = − 1
+2∇u2 and momentum Q2 = u∇u∗.
+We were able to reproduce the time evolution of the Townes soliton, to within a relative error of ∼ 1.8× 10−5,
+when the algorithm was implemented on time interval [0,2] using time step of size ∆t = 0.05 and number of spatial
+(square) grid points NS = 512. We rigorously conserve the power Q1, and as can be seen in Fig. 12 (b), the relative
+error in power stays close to machine precision.
+
+4u4 + 1
+
+7. CONCLUSIONS AND FUTURE DIRECTIONS
+
+In 2005 Ablowitz and Musslimani proposed the spectral renormalization method as a tool to numerically ap-
+proximate solutions to nonlinear boundary value problems. Since then, it has been successfully used in many
+physical settings that include photonics [42], Bose-Einstein condensation [7], Kohn-Sham density functional the-
+ory [17], and water waves [5]. In 2016, Cole and Musslimani proposed the time dependent spectral renormalization
+method to simulate evolution equations with periodic boundary conditions. This important idea brings two novel
+aspects: (i) it extends the original steady state spectral renormalization method to the time domain, thus offering
+a unifying approach by which time-independent as well as evolution equations are solved by the same numerical
+scheme, (ii) it allowed the inclusion of certain physics such as conservation and dissipation laws. In this paper we
+have significantly empowered the computational capabilities of the TDSR method that allows the (i) enforcement
+of several conservation laws or dissipation rate equations, (ii) flexibility to apply other non-periodic boundary
+conditions. We have successfully demonstrated these ideas on prototypical dynamical systems of physical signif-
+icance. Examples include the Korteweg-de Vries equation and dynamics of fronts modeled by the Allen-Cahn
+equation. We conclude this section by making a remark regarding possible application of the TDSR to weak wave
+turbulence. Wave turbulence describes the chaotic interactions of dispersive wavetrains (analogs to eddies) when
+an external forcing term added to the underlying nonlinear evolution equations are mediated by dissipative forces
+(see [31 -- 33] and references contained). Numerical investigations of these phenomena is a challenging task, requir-
+ing very long time runs for statistical equilibrium to be reached. Carefully designed numerical integrators are used
+
+012t00.511.52j/u(t)j=jju0(x;y)jj1#10-5(a)012t0123maxtj/Q1(t)j=jQ1[u0(x;y)]j#10-16(b)TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+19
+
+(see [30]) to integrate the potentially stiff, underlying nonlinear field equations over long time. In such scenarios,
+a close control over the conserved quantities of the dynamical system can prove vital to ensure long time accuracy
+of the solution. The application of the TDSR to this field thus seems natural and is kept for future work.
+
+REFERENCES
+
+[1] Mark J Ablowitz. Nonlinear dispersive waves: asymptotic analysis and solitons, volume 47. Cambridge
+
+University Press, 2011.
+
+[2] Mark J Ablowitz, Xu-Dan Luo, and Ziad H Musslimani. Discrete nonlocal nonlinear schrodinger systems:
+
+Integrability, inverse scattering and solitons. Nonlinearity, 33(7):3653, 2020.
+
+[3] Mark J. Ablowitz and Ziad H. Musslimani. Spectral renormalization method for computing self-localized
+
+solutions to nonlinear systems. Opt. Lett., 30(16):2140 -- 2142, Aug 2005.
+
+[4] Mark J Ablowitz and Ziad H Musslimani.
+
+Integrable discrete p t symmetric model. Physical Review E,
+
+[5] MJ Ablowitz, AS Fokas, and ZH Musslimani. On a new non-local formulation of water waves. Journal of
+
+[6] MJ Ablowitz and JF Ladik. A nonlinear difference scheme and inverse scattering. Studies in Applied Mathe-
+
+90(3):032912, 2014.
+
+Fluid Mechanics, 562:313, 2006.
+
+matics, 55(3):213 -- 229, 1976.
+
+[7] Eric Akkermans, Sankalpa Ghosh, and Ziad H Musslimani. Numerical study of one-dimensional and in-
+teracting Bose -- Einstein condensates in a random potential. Journal of Physics B: Atomic, Molecular and
+Optical Physics, 41(4):045302, 2008.
+
+[8] Samuel M. Allen and John W. Cahn. A microscopic theory for antiphase boundary motion and its application
+
+to antiphase domain coarsening. Acta Metallurgica, 27(6):1085  --  1095, 1979.
+
+[9] Uri M Ascher and Chen Greif. A first course on numerical methods. SIAM, 2011.
+[10] Uri M Ascher and Robert I McLachlan. On symplectic and multisymplectic schemes for the kdv equation.
+
+Journal of Scientific Computing, 25(1):83 -- 104, 2005.
+
+[11] Justin T Cole and Ziad H Musslimani. Time-dependent spectral renormalization method. Physica D: Non-
+
+[12] Steven M Cox and Paul C Matthews. Exponential time differencing for stiff systems. Journal of Computa-
+
+linear Phenomena, 358:15 -- 24, 2017.
+
+tional Physics, 176(2):430 -- 455, 2002.
+
+[13] Yanfen Cui and De-kang Mao. Numerical method satisfying the first two conservation laws for the korteweg -- 
+
+de vries equation. Journal of Computational Physics, 227(1):376 -- 399, 2007.
+
+[14] Philip J Davis. On the numerical integration of periodic analytic functions. On numerical approximation,
+
+pages 21 -- 23, 1959.
+
+[15] Daisuke Furihata. Finite difference schemes for ∂ u
+
+∂t = ( ∂
+
+∂ x )α δ g
+
+δ u that inherit energy conservation or dissipation
+
+property. Journal of Computational Physics, 156(1):181 -- 205, 1999.
+
+[16] Sergei Konstantinovich Godunov. A difference scheme for numerical solution of discontinuous solution of
+
+hydrodynamic equations. Math. Sbornik, 47:271 -- 306, 1959.
+
+[17] Juri Grossi, Ziad H. Musslimani, Michael Seidl, and Paola Gori-Giorgi. Kohn-Sham equations with func-
+tionals from the strictly-correlated regime: Investigation with a spectral renormalization method. Journal of
+Physics. Condensed matter, 32(47), 2020.
+
+[18] Ernst Hairer, Christian Lubich, and Gerhard Wanner. Geometric numerical integration: structure-preserving
+
+algorithms for ordinary differential equations, volume 31. Springer Science & Business Media, 2006.
+
+[19] Charles Hirsch. Numerical computation of internal and external flows. vol. 2-computational methods for
+inviscid and viscous flows(book). Chichester, England and New York, John Wiley & Sons, 1990, 708, 1990.
+[20] Arieh Iserles. On the numerical quadrature of highly-oscillating integrals i: Fourier transforms. IMA Journal
+
+of Numerical Analysis, 24(3):365 -- 391, 2004.
+
+[21] AL Islas, DA Karpeev, and CM Schober. Geometric integrators for the nonlinear schrodinger equation.
+
+Journal of computational physics, 173(1):116 -- 148, 2001.
+
+20
+
+SATHYANARAYANAN CHANDRAMOULI, ASEEL FARHAT, AND ZIAD MUSSLIMANI
+
+[22] A.L. Islas and C.M. Schober. Multi-symplectic methods for generalized schrodinger equations. Future
+
+Generation Computer Systems, 19(3):403 -- 413, 2003. Special Issue on Geometric Numerical Algorithms.
+
+[23] A.L. Islas and C.M. Schober. Backward error analysis for multisymplectic discretizations of hamiltonian
+pdes. Mathematics and Computers in Simulation, 69(3):290 -- 303, 2005. Nonlinear Waves: Computation and
+Theory III.
+
+[24] Darae Jeong, Seunggyu Lee, Dongsun Lee, Jaemin Shin, and Junseok Kim. Comparison study of numerical
+
+methods for solving the Allen -- Cahn equation. Computational Materials Science, 111:131 -- 136, 2016.
+
+[25] Aly-Khan Kassam and Lloyd N Trefethen. Fourth-order time-stepping for stiff PDEs. SIAM Journal on
+
+Scientific Computing, 26(4):1214 -- 1233, 2005.
+
+[26] Panayotis G Kevrekidis, Dimitri J Frantzeskakis, and Ricardo Carretero-Gonz´alez. Emergent nonlinear phe-
+nomena in Bose-Einstein condensates: theory and experiment, volume 45. Springer Science & Business
+Media, 2007.
+
+[27] Yuri S Kivshar and Govind P Agrawal. Optical solitons: from fibers to photonic crystals. Academic press,
+
+[28] Randall J LeVeque et al. Finite volume methods for hyperbolic problems, volume 31. Cambridge university
+
+2003.
+
+press, 2002.
+
+[29] Yi-Xin Liu and Hong-Dong Zhang. Exponential time differencing methods with Chebyshev collocation for
+
+polymers confined by interacting surfaces. The Journal of chemical physics, 140(22):224101, 2014.
+
+[30] AJ Majda, DW McLaughlin, and EG Tabak. A one-dimensional model for dispersive wave turbulence.
+
+Journal of Nonlinear Science, 7(1):9 -- 44, 1997.
+
+[31] Sergey Nazarenko. Wave turbulence, volume 825. Springer Science & Business Media, 2011.
+[32] Alan C Newell, Sergey Nazarenko, and Laura Biven. Wave turbulence and intermittency. Physica D: Non-
+
+linear Phenomena, 152:520 -- 550, 2001.
+
+[33] Alan C Newell and Benno Rumpf. Wave turbulence. Annual review of fluid mechanics, 43:59 -- 78, 2011.
+[34] Sheehan Olver. Numerical approximation of highly oscillatory integrals. PhD thesis, University of Cam-
+
+[35] Alfio Quarteroni, Riccardo Sacco, and Fausto Saleri. Numerical mathematics, volume 37. Springer Science
+
+bridge, 2008.
+
+& Business Media, 2010.
+
+[36] JM Sanz-Serna. An explicit finite-difference scheme with exact conservation properties. Journal of Compu-
+
+[37] A. Taflove. Advances in Computational Electrodynamics: The Finite-difference Time-domain Method. Artech
+
+tational Physics, 47(2):199 -- 210, 1982.
+
+House antenna library. Artech House, 1998.
+
+[38] Thiab R Taha and Mark I Ablowitz. Analytical and numerical aspects of certain nonlinear evolution equations.
+
+iii. numerical, Korteweg-de Vries equation. Journal of Computational Physics, 55(2):231 -- 253, 1984.
+
+[39] Lloyd N Trefethen. Spectral methods in MATLAB, volume 10. Siam, 2000.
+[40] J. A. C. Weideman and B. M. Herbst. Split-step methods for the solution of the nonlinear Schrodinger
+
+equation. SIAM Journal on Numerical Analysis, 23(3):485 -- 507, 1986.
+
+[41] Jianke Yang. Newton-conjugate-gradient methods for solitary wave computations. Journal of Computational
+
+[42] Jianke Yang and Ziad H Musslimani. Fundamental and vortex solitons in a two-dimensional optical lattice.
+
+Physics, 228(18):7007 -- 7024, 2009.
+
+Optics letters, 28(21):2094 -- 2096, 2003.
+
+[43] L Minah Yang, Ian Grooms, and Keith A Julien. The fidelity of exponential and IMEX integrators for
+wave turbulence: Introduction of a new near-minimax integrating factor scheme. Journal of Computational
+Physics, page 109992, 2020.
+
+[44] Norman J Zabusky and Martin D Kruskal. Interaction of "solitons" in a collisionless plasma and the recur-
+
+rence of initial states. Physical review letters, 15(6):240, 1965.
+
+TIME-DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS
+
+21
+
+(S. Chandramouli) DEPARTMENT OF MATHEMATICS, FLORIDA STATE UNIVERSITY, TALLAHASSEE, FL 32306, USA
+Email address: schandra@math.fsu.edu
+
+(A. Farhat) DEPARTMENT OF MATHEMATICS, FLORIDA STATE UNIVERSITY, TALLAHASSEE, FL 32306, USA
+Email address: afarhat@fsu.edu
+
+(Z. Musslimani) DEPARTMENT OF MATHEMATICS, FLORIDA STATE UNIVERSITY, TALLAHASSEE, FL 32306, USA
+Email address: musliman@math.fsu.edu
+
+

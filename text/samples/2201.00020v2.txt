@@ -1,0 +1,1620 @@
+Geometric Fluctuation of Conformal Hilbert Spaces and Multiple Graviton Modes in
+
+Fractional Quantum Hall Effect
+
+Wang Yuzhu1 and Yang Bo1, 2, ∗
+
+1School of Physical and Mathematical Sciences, Nanyang Technological University, 639798 Singapore
+
+2Institute of High Performance Computing, A*STAR, 138632 Singapore
+
+(Dated: January 10, 2022)
+
+We develop the microscopic theory for the emergence of multiple graviton modes (GMs) in frac-
+tional quantum Hall (FQH) fluids, and show explicitly these modes are associated with the geometric
+fluctuation of well-defined conformal Hilbert spaces (CHS). These Hilbert spaces are hierarchical
+subspaces within a single Landau level, each with emergent conformal symmetry and continuously
+parameterized by a unimodular metric. We show explicitly the multiple GMs originate from the
+spectral weights of the long wavelength GMP modes in each of the CHSs, corresponding to the quan-
+tum fluctuation of each of its metric. For different FQH phases, whether or not the spectral weight
+in a certain CHS is zero can be analytically derived. This leads to a number of statements about the
+number of GMs as well as merging and splitting of those modes, which we verified numerically. We
+also discuss how the microscopic theory can serve as the basis for the additional Haldane modes in
+the effective field theory description, and their experimental relevance to realistic electron-electron
+interaction.
+
+Gravitons are hypothetical spin-2 bosons from the
+quantization of gravitational field, the existence of which
+has not been confirmed by experiments and remained one
+of the most interesting unsolved mysteries in physics[1,
+2]. There also exist the analogous "graviton modes"
+in the fractional quantum Hall (FQH) droplet, which
+is a two-dimensional quantum fluid of electrons subject
+to a strong magnetic field at low temperature. As a
+typical manifestation of the interplay between topology
+and geometry, the graviton modes are collective neu-
+tral excitations with spin-2, originating from the metric
+fluctuations emerging from the strong interactions be-
+tween electrons[3 -- 5]. While Lorentz invariance is ab-
+sent in this (2 + 1)-dimensional space-time, these 2D
+graviton modes encode topological
+information about
+their respective FQH phases, and their dynamics lead
+to rich physics ranging from ground state incompressibil-
+ity to the dynamical phase transitions of the low-lying
+excitations[6, 7].
+
+The effective field theory studying these modes has
+been proposed by using the Newton-Carton metric, and
+various experimental proposals for the observation of
+these modes have been put forward[8 -- 17]. The standard
+technique in probing neutral excitations is to use inelas-
+tic photon scattering[18 -- 22]. The coupling between the
+graviton modes and the acoustic waves can also be used
+to simulate the behaviour of gravitons interacting with
+the gravitational waves[23]. Meanwhile, the microscopic
+theory of the graviton modes with model Hamiltonians
+has also been established to provide insights for the ex-
+periments, where model Hamiltonians for the graviton
+modes have been constructed for FQH fluids at different
+filling factors[7, 24]. Recently numerical results have im-
+plied the signature of multiple graviton modes in FQH
+
+states, the microscopic understanding of which is un-
+der development[25, 26]. Given that most of the re-
+search so far on graviton modes are based on effective
+field-theoretical descriptions and numerical analysis with
+model wavefunctions[26], a detailed microscopic theory is
+needed for a more complete characterisation of the emer-
+gence and interaction between different graviton modes.
+In this article, we show analytically that multiple gravi-
+ton modes (GM) is a generic feature for FQH fluids,
+from the splitting of the long wavelength limit of the
+GMP mode[3] in different subspaces in a single LL. Us-
+ing the analytic tools we developed earlier[7], we demon-
+strate that the number of GMs is dynamical in nature,
+and is only meaningful when referring to specific in-
+teraction Hamiltonians. Each GM can be interpreted
+as the metric fluctuation of a conformal Hilbert space
+(or the null spaces of model Hamiltonians, as explained
+later) within a single LL. For short-range two-body in-
+teractions, we show all non-Laughlin FQH states around
+ν = 1/(2n) with n > 1 (e.g. within the null space of
+V 2bdy
+V 2bdy
+2k−1 Haldane pseudopotential interac-
+tion), including the interacting composite fermion (CF)
+states, have at least two GMs.
+In particular, the Jain
+states at ν = N/ (2nN ± 1) and the Pfaffian states at
+ν = 1/(2n) all have two GMs if n, N > 1. The Laughlin
+states (N = 1) and the Jain states with n = 1 all have
+a single GM. This agrees with the special cases studied
+numerically in both[25, 26] at ν = 2/7, 2/9, 1/4, at the
+same time providing an analytic explanation and geomet-
+ric interpretation to their numerical observations. The
+microscopic theory can easily predict the chirality of the
+gravitons[17] without numerical computations.
+It also
+serves as the basis for the effective field theory, where
+we show the necessity of additional Haldane modes de-
+pends on the proper identification of the base space of
+such theories.
+
+= (cid:80)n
+
+n
+
+k=1
+
+∗ yang.bo@ntu.edu.sg
+
+The cyclotron and guiding center metric --  It is useful
+to first consider the simple case of the integer quantum
+
+2
+2
+0
+2
+
+ 
+
+n
+a
+J
+ 
+7
+ 
+ 
+]
+l
+e
+-
+r
+t
+s
+.
+t
+a
+m
+-
+d
+n
+o
+c
+[
+ 
+ 
+
+2
+v
+0
+2
+0
+0
+0
+
+.
+
+1
+0
+2
+2
+:
+v
+i
+X
+r
+a
+
+Ra
+i
+
+ρq
+
+Guiding center operator
+
+Guiding center density operator
+
+δ ¯ρq Regularized guiding center density operator
+
+2
+
+πia
+
+¯gab
+
+gab
+
+gab
+α
+
+Sq
+
+V kbdy
+α
+V kbdy
+Hkbdy
+
+α
+
+α
+
+Dynamical momentum operator
+
+Guiding center metric
+
+Cyclotron metric
+
+Guiding center metric of CHS Hα
+
+Regularised guiding center structure factor
+
+Model Hamiltonian defined by(cid:80)α
+
+k-body pseudopotential
+
+i=1 λi V kbdy
+
+i
+
+CHS determined by V kbdy
+
+α
+
+TABLE I. Definition of various symbols used in the
+text. Note that due to fermionic statistics, the constant co-
+efficients λi in V kbdy
+=
+α
++ λ3 V kbdy
+λ1 V kbdy
+
+might vanish. For example, V 2bdy
+
+with λ2 = 0.
+
+3
+
+1
+
+3
+
+Hall effect (IQHE), which are topological phases coming
+from fully filled Landau levels (LL). We are dealing with
+the following full Hamiltonian:
+
+Ne(cid:88)
+
+i=1
+
+H =
+
+1
+2m
+
+gab πia πib + Vint
+
+(1)
+
+Here πia = pia + e Aia denotes the dynamical momen-
+tum operator of the i-th electron (pi is the canonical mo-
+mentum and Ai is the external vector potential), with
+the commutation rules [πia, πjb] = iδijab/(cid:96)2
+B. The mag-
+netic field is B = ab∂a Aib and the magnetic length is
+
+(cid:96)B = (cid:112)1/eB. We assume the cyclotron energy is the
+
+dominant energy scale, so any LL mixing induced by
+electron-electron interaction can be perturbatively cap-
+tured by few-body interaction of the second term Vint,
+which now describes the dynamics only within a single
+LL[27 -- 31]. The important note here is that the Hilbert
+space of a single LL, which we will refer to as the lowest
+LL (LLL) without loss of generality, is parametrized by
+the unimodular metric gab in Eq.(1), which is physically
+the effective mass tensor. Quantum fluctuations around
+this metric thus lead to density modes in higher LLs,
+which we can term as "cyclotron gravitons". The energy
+of this GM is very high with large magnetic field. It is
+the only GM for the IQHE, since the LLL is fully filled.
+For FQHE in a partially filled LL, the dynamics is de-
+termined entirely by the guiding center coordinates ¯Ra =
+ra − ab πb(cid:96)2
+=
+i(cid:96)2
+= 0, where we de-
+fine Ra = (cid:96)2
+Bab πb. This implies the interaction energy
+Vint is a functional of ¯Ri only and commutes with the
+
+Bab,(cid:2) ¯Ra, ¯Rb(cid:3) = −i(cid:96)2
+
+(cid:104) Ra, Rb(cid:105)
+
+(cid:104) Ra, ¯Rb(cid:105)
+
+B with the commutation rules
+
+Bab,
+
+FIG. 1. Intrinsic metrics in FQH states. The left panel
+shows that the fluctuations of the cyclotron metric gab origi-
+nate from the LL mixing. The right panel shows the hierarchi-
+cal structure of the CHSs (null spaces) of the corresponding
+model Hamiltonians (more details can be found in Table.II)
+in the lowest Landau level. Each of these spaces can have its
+own metric gab
+, the fluctuation around which can potentially
+i
+lead to multiple graviton modes in a single Landau level.
+
+(cid:90)
+
+kinetic energy. It can be explicitly expressed as:
+
+(2)
+
+Vint =
+
+d2qVq ¯ρq ¯ρ−q
+
+where ¯ρq = (cid:80)
+mentum space q = (cid:112)¯gabqaqb, which is physically in-
+
+i eiq· ¯Ri is the guiding center density op-
+erator. For rotationally invariant systems we have a
+new unimodular metric ¯gab defining distance in the mo-
+
+dependent from gab. We illustrate a complete analogy
+to the "cyclotron graviton" in the IQHE by using the
+simple example of Vint = V 2bdy
+, or the model Hamilto-
+nian for the Laughlin ν = 1/3 state. Just like the LLL,
+which is the null space of the kinetic energy parame-
+terized by gab, the null space of V 2bdy
+(spanned by the
+Laughlin ground state and quasiholes) is parametrized
+by ¯gab. The quantum fluctuation around gab gives the
+"cyclotron graviton" outside of LLL, while that of ¯gab
+gives the well-known graviton or quadrupole mode (the
+long wavelength limit of the GMP mode) outside of the
+V 2bdy
+1
+
+null space[5].
+
+1
+
+1
+
+We would like to emphasize the arguments above ap-
+plies to any Vint with an incompressible ground state.
+Thus generally speaking all FQH states have at least two
+GMs due to the structure of the full Hamiltonian: the
+cyclotron GM residing in higher LLs which is at very
+high energy due to the large magnetic field, and at least
+one guiding center GM within the LLL. For the rest of
+this work we will ignore the cyclotron GM and focus on
+the dynamics within the LLL, though we will borrow the
+same concept when understanding the emergence of mul-
+tiple guiding center GMs from Vint.
+
+The hierarchy of conformal Hilbert spaces --  Given the
+rich algebraic structure of the Hilbert spaces like the
+LLL and the V 2bdy
+null space, we term them as con-
+formal Hilbert spaces (CHSs), because they are believed
+to be generated by the conformal operators (i.e.
+the
+
+1
+
+1LL2LLHLLLLLLLLMIXING...HFibonacciHMRHGaffnianHHaffnianHLaughlin-1/3HLaughlin-1/5can thus define two types of area-preserving deformation:
+
+3
+
+Pα U (χ)ψ(cid:105) ∼ limq→0
+
+1 (cid:105) ∼ limχ→0
+ψχ
+ψχ
+2 (cid:105) =
+
+(cid:16)I − Pα U (χ)
+(cid:17)ψ(cid:105)
+
+Pαδ ¯ρqψ(cid:105)
+
+(4)
+
+(5)
+
+(cid:80)
+i{ ¯Ra
+
+i , ¯Rb
+
+1 (cid:105) = 0, and ψχ
+
+where U (χ) = eiχab Λab
+is the unitary operator in-
+ducing the squeezing and rotation of the guiding cen-
+i}, and χ
+ter metric[5, 45], with Λab = 1
+4l2
+paramertrize the squeezing; δ ¯ρq = ¯ρq − (cid:104)ψ0¯ρqψ0(cid:105) is the
+B
+regularised guiding center density operator, and Eq.(4)
+has been established in[4]. Here Pα is the projection into
+Hα so that Vαψχ
+1 (cid:105) is associated with the
+geometric deformation of Hβ. Eq.(5) is entirely outside of
+Hα and in some cases it will vanish, as we will see later.
+If it is non-vanishing, then ψχ
+2 (cid:105) is associated with the
+geometric deformation of Hα. This geometric descrip-
+tion forms the basis of possible multiple GMs in different
+FQH phases, dictated by "model Hamiltonians" in the
+form of Eq.(3), and can be resolved by realistic Hamilto-
+nians close to those model Hamiltonians.
+Emergence of multiple GMs --  Within this framework,
+k }. We
+let us start with a collection of CHSs {Hk, Vk, gab
+will ignore the cyclotron GM so all these are subspaces of
+the LLL, and also with a hierarchical structure Hk+1 ⊂
+Hk. The model Hamiltonian for understanding the GMs
+is given by:
+
+Vint =
+
+λk Vk,
+
+λk (cid:29) λk+1
+
+(6)
+
+m(cid:88)
+
+k=1
+
+All metrics gab
+k in the Hamiltonian is arbitrary and with-
+k = I2, since
+out loss of generality we can set them as gab
+the GMs are quantum fluctuations around these fixed
+metrics. Let the ground state of Eq.(6) be ψ0(cid:105) ∈ Hm,
+so the quadrupole excitation is obtained from the long
+wavelength limit of the GMP mode or single mode ap-
+proximation defined as follows[3, 4]:
+
+ψg(cid:105) = lim
+q→0
+
+1(cid:112)Sq
+
+δ ¯ρqψ0(cid:105)
+
+(7)
+
+CHS
+
+HFibonacci
+
+HMR
+HGaffnian
+HHaffnian
+HLaughlin-1/3
+HLaughlin-1/5
+
+Model Hamiltonian
+
+V 4bdy
+6
+V 3bdy
+3
+λ1 V 3bdy
++ λ2 V 3bdy
+
+3
++ λ2 V 3bdy
+V 2bdy
+1
+λ1 V 2bdy
++ λ2 V 2bdy
+
+5
+
+1
+
+3
+
+λ1 V 3bdy
+
+3
+
+5
++ λ3 V 3bdy
+
+6
+
+TABLE II. The CHSs are defined as the null spaces of the cor-
+responding model Hamiltonians. Here λi can be any constant
+coefficient.
+
+Virasoro algebra)[32, 33].
+In many cases such Hilbert
+spaces are spanned by degenerate (zero energy) many-
+body states of special local Hamiltonians, including the
+well-known generalised pseudopotentials, that physically
+project into the angular momentum sectors of a cluster of
+electrons[34, 35]. The null spaces of these Hamiltonians
+have conformal symmetry in the thermodynamic limit,
+and those zero energy states are the ground states and
+quasiholes of a particular FQH phase (though some are
+believed to be gapless phases)[36, 37]. More importantly
+like the Hilbert space of the LLL (or any other single
+LL), such CHSs are built up with quasiparticles, which
+are emergent particles from LL projection and strong in-
+teraction. In the LLL, the quasiparticles are simply elec-
+trons projected into a single LL, while in other CHSs,
+they can be abelian or non-abelian anyons[38 -- 44].
+
+Let Hα be one of these CHSs, and the null space of
+the corresponding model Hamiltonian Vα. Just like in
+α , and Hα
+Eq.(2), Vα contains a guiding center metric gab
+continuously depends on it. This is the geometric as-
+pect we would like to introduce to the CHSs, and each
+of them can be completely characterised by a triplet of
+α }. For the special case where Hα = HLLL,
+{Hα, Vα, gab
+the entire Hilbert space of the LLL, Vα is the kinetic en-
+α = gab is the cyclotron metric or
+ergy Hamiltonian and gab
+the effective mass tensor. All other CHSs are subspaces
+of HLLL.
+In Fig.
+(1) we illustrate a hierarchical structure of
+different Hα in the LLL[7]. For a given Hα, it is possible
+to find another Hβ ⊂ Hα.
+α , we can still
+define a Hβ freely parametrized by gab
+β that is completely
+within Hα. This is straightforward for Hα = HLLL, since
+the cyclotron coordinates and guiding center coordinates
+commute. For other pairs of CHSs, such geometric tuning
+can only be realised with the following Hamiltonian:
+
+If we fix gab
+
+Vint = λα Vα + λβ Vβ
+
+(3)
+
+Note that ψg(cid:105) and ψ0(cid:105) are orthogonal, and Sq is the reg-
+ularised guiding center structure factor with limq→0 Sq ∼
+ηq4. The Haldane bound dictates that the value of η
+gives the upper bound to the topological shift of ψ0(cid:105)[45].
+The important question to ask here, is in which CHS
+does ψg(cid:105) reside in. If ψg(cid:105) ∈ Hk and ψg(cid:105) /∈ Hk+1, then
+obviously there is no GM associated with the quantum
+fluctuation around gab
+k , since such fluctuation will bring
+us out of Hk. However, ψg(cid:105) can be decomposed into
+multiple modes, each within Hk(cid:48)>k but outside of the
+Hk(cid:48)+1, associated with the quantum fluctuation around
+k(cid:48)+1, as long as ψ0(cid:105) ∈ Hk(cid:48)+1. This is most easily seen
+gab
+from computing the spectral function defined below:
+
+(cid:88)
+
+n
+
+with λα (cid:29) λβ > 0 (the metric dependence of Vα,β is
+implicit). For any ground state ψ(cid:105) ⊂ Hβ of Eq.(3) we
+
+I(E) =
+
+(cid:104)ψnψg(cid:105)2 δ (E − En)
+
+(8)
+
+4
+
+FIG. 2. (a) An illustration of the hierarchical structure of three CHSs and the ground state ψ0(cid:105) within HIII (red
+sphere) in the Hilbert space. The corresponding GMP mode ψg(cid:105) is outside HI so one can imagine the regularised guiding
+center density operator acting on the ground state goes through three CHSs, leading to three emergent GMs because of the
+fluctuation around the metric of each of the CHSs. (b) PH conjugate of Laughlin states within different CHSs. Here
+Ci denotes the PH conjugate within H2bdy
+and C denotes the PH conjugate within a single LL or a single CF level. Magnetic
+fluxes are represented by arrows, and the CFs denoted by cfn
+ν∗ , consisted of one electron and n fluxes, form a CF FQH state at
+ν∗. Note that the red (cf2
+
+2/3) CFs are anti-CFs with the fluxes opposite to the external field.
+
+4/5) and the yellow (cf4
+
+i
+
+where ψn(cid:105), En are eigenstates and eigenenergies of
+Eq.(6). Given that λk (cid:29) λk+1, we will see m − k dis-
+tinct peaks well separated in energy, corresponding to
+m − k GMs each with transparent geometric interpreta-
+tion as illustrated in Fig.2(a). The spectral sum rule for
+the guiding center structure factor will clearly be satis-
+fied from all the contributions of these GMs, as long as
+ψg(cid:105) lives completely within Hk.
+
+Short-range two-body interaction --  A number of ana-
+lytical results have been derived in our previous works,
+which are rigorous in the thermodynamic limit and use-
+ful in determining which CHS ψg(cid:105) resides in[7]. Let us
+first take Vint in Eq.(6) as a sum of short-range two-body
+interactions as follows:
+
+n(cid:88)
+
+i=1
+
+Vint =
+
+λi V 2bdy
+2i−1
+
+(9)
+
+n
+
+n
+
+(we take H2bdy
+
+2i−1 as the (2i−1)th Haldane PP, where fermionic
+with V 2bdy
+statistics has been considered. Thus the corresponding
+null spaces H2bdy
+is spanned by the Laughlin ground
+state and quasiholes at ν = 1/ (2n + 1). Here we can
+prove analytically[7] that ψg(cid:105) of the Laughlin phase at
+ν = 1/(2n + 1) resides within H2bdy
+n−1 but completely
+= HLLL), which is
+outside of H2bdy
+saturated by the ground state and quasiholes. Thus
+there can only be one GM and one peak in the spec-
+tral function, associated with the metric fluctuation of
+gab
+n . There are, however, many other FQH states that
+are incompressible with Eq.(6) but not in H2bdy
+. These
+include the Jain states at ν = N/(2nN + 1), N > 1 and
+their particle-hole (PH) conjugate states (within H2bdy
+n−1 )
+at ν = N/(2nN − 1), N > 1. Note that all these
+states still resides within H2bdy
+n−1 , though the ground state
+and quasiholes do not saturate H2bdy
+n−1 . One can prove
+
+n
+
+0
+
+n
+
+analytically that their corresponding ψg(cid:105) all satisfies
+ψg(cid:105) ∈ H2bdy
+n−2 . While they are again completely outside
+, now they have spectral weights within H2bdy
+of H2bdy
+n−1 .
+Thus each of those states will have two GMs with re-
+spect to Eq.(6), a generic result agreeing some special
+cases studied before[25, 26]. These two GMs are asso-
+ciated with the fluctuation of the metric gab
+n−1, and
+they can also be understood via clustering properties in
+parton constructions[26].
+
+n , gab
+
+Non-abelian FQH states are particularly interesting in
+strongly correlated topological systems, and their GMs
+can also be predicted in a similar fashion, assuming that
+they can be stabilised by realistic interactions adiabati-
+cally connected to Eq.(6). For example the Pfaffian state
+at ν = 1/(2n) can be understood as a condensate of
+paired composite fermions, each with one electron at-
+tached to 2n magnetic fluxes[46, 47]. The model states
+of these FQH phases all live within H2bdy
+n−1 . For short-
+range two-body interactions they will also all have two
+GMs, one within H2bdy
+
+n−1 , and the other within H2bdy
+n−2 .
+
+It is also interesting to note with short-range two-body
+interaction, all FQH states related to the Laughlin states
+by particle-hole (PH) conjugation will have at most two
+GMs. There can be multiple well-defined PH conjuga-
+tions for each Laughlin state in different Laughlin CHSs,
+not just within LLL (where PH conjugation relates the
+state at ν to 1 − ν). This is because for the Laughlin
+state at ν = 1/(2n + 1), it can also be reinterpreted as
+a Laughlin state of composite fermions (CF) with each
+electron attached to 2k magnetic fluxes (k < n), at the
+CF fractional filling factor ν∗ = 1/(2(n − k) + 1)[48, 49]
+as Fig.2(b) shows. We can thus rigorously define the
+PH conjugate of CFs within H2bdy
+, at the CF filling
+factor of ν∗ = 2(n − k)/(2(n − k) + 1), correspond-
+ing to the interacting CF states at electron filling fac-
+
+k
+
+GIGIIGIII(a)(b)FQH at 1/7FQH at 6/7FQH at 4/13e-e-e-e-e-e-e-cf1/34cf2/34cf2/34FQH at 2/11cf1/52C3C1CCCe-e-e-e-e-e-====2bdyH12bdyH5HLLL2bdyH3cf4/52cf4/52cf4/52cf4/525
+
+it. For k = 0, the anti-Laughlin state at ν = 2n/(2n + 1)
+only has one GM, since there is no additional CHS de-
+fined by the two-body interaction within LLL that also
+contains the CHS of ν = 2n/(2n + 1). An example of
+the PH conjugate state with n = 3, k = 1 (e.g. the PH
+conjugate state of ν = 1/7 within H2bdy
+, at ν = 4/13)
+will be discussed in details later.
+
+1
+
+Few-body non-Abelian interactions --  We now illustrate
+that the number of GMs is a dynamical property strongly
+dependent on the interaction. Let us first look at the
+Jain state at ν = 2/9, corresponding to the ν∗ = 2 state
+of the CFs with each electron bound to four magnetic
+fluxes, or the ν∗ = 2/5 state of the CFs with each electron
+bound to two magnetic fluxes. We have argued before
+that with short-range two-body interactions, this FQH
+state has two GMs.
+It is important to note, however,
+while the CHS of this FQH state is well-defined from
+the CF construction, such construction does not allow an
+exact model Hamiltonian within the LLL. The two-body
+interaction only defines its CHS approximately, though
+to a very good level of accuracy. A better microscopic
+Hamiltonian is given as follows:
+
+n(cid:88)
+
+Vint = V 3bdy
+
+n
+
+=
+
+V 3bdy
+i
+
+(10)
+
+i=3
+
+9
+
+11
+
+, V 3bdy
+
+i
+due to fermionic statistics, and V 2bdy
+
+where V 3bdy
+are the three-body PPs[35]. Note there is no
+V 3bdy
+are
+4
+doubly degenerate, so here we take them as an arbitrary
+linear combination (the CHS is invariant). The unique
+highest density ground state of Eq.(10) with n = 11 has
+very high overlap with the Jain ν = 2/9 state (∼ 0.99
+for eight electrons). While its quasihole counting is non-
+Abelian, one could conjecture that the ground state is
+topologically equivalent to the Jain state, in analogy to
+the Gaffnian state and the Jain ν = 2/5 state that has
+been studied before[33, 50].
+
+n
+
+Such subtleties, while important by themselves, do
+not really affect our discussions about GMs, which are
+gapped excitations. The main message here is that
+the null spaces of V 3bdy
+give a family of CHSs beyond
+the Laughlin CHSs discussed before. The Moore-Read,
+Gaffnian and Haffnian CHSs are illustrated in Fig.1, cor-
+responding to the case of n = 3, 5, 6 respectively. Let the
+null space of V 3bdy
+, and it is easy to check that
+n
+⊂ H2bdy
+11 ⊂ H3bdy
+H3bdy
+. Note that the ground state of
+ν = 2/9 resides in H3bdy
+, and it has very high overlap
+with the ground state of V 2bdy
+. We can thus construct
+the following Hamiltonian:
+
+be H3bdy
+
+11
+
+n
+
+1
+
+9
+
+3
+
+3
+
+9
+
+1
+
++ V 2bdy
+
++ λ2 V 3bdy
+
+Vint = λ1 V 2bdy
+
+(11)
+with λ1 (cid:29) λ2 (cid:29) 1. In addition to the original two GMs
+(one from the metric fluctuation of H3bdy
+, or the CHS of
+the ν = 2/9 phase, and the other from the metric fluctu-
+ation of H2bdy
+), there will be a third GM from the metric
+fluctuation of H3bdy
+, easily observable from the spectral
+function. If we tune λ2 to zero, then the two GMs of the
+
+11
+
+9
+
+1
+
+3
+
+, H2bdy
+
+FIG. 3. Spectral functions of the FQH states with the
+filling factor ν = 2/7, 4/13 and 2/11. The graviton mode
+of the FQH state with filling factor ν is called ν-graviton for
+simplicity. The blue, the turquoise and the red region de-
+note H2bdy
+and its complement correspondingly, from
+which one can clearly see the gaps between different sectors.
+For the FQH states with ν = 2/7 and 4/13, model Hamil-
+tonians show similar signatures of two peaks in the spectral
+functions as coulomb interactions (a small V 2bdy
+is added in
+(b2) for stabilizing the proper ground state, which now has
+an overlap of 0.99 with the model state in (b1)).
+
+1
+
+5
+
+tor ν = 2(n − k)/(2(n − k)(2k + 1) + 1). Each Laugh-
+lin state at ν = 1/(2n + 1) thus have n PH conju-
+gate state with k = 0, 2,··· n − 1, with k = 0 the
+usual PH conjugate state in LLL at ν = 2n/(2n + 1).
+Since the ν = 2(n − k)/(2(n − k)(2k + 1) + 1) state
+lives entirely within H2bdy
+and entirely outside of H2bdy
+k+1 ,
+one can rigorously show[7] its graviton mode lives en-
+tirely within H2bdy
+leading to two GMs.
+k−1
+These two GMs come from the fluctuation of gab
+k , as
+well as the fluctuation of the metric defining the CHS of
+ν = 2(n − k)/(2(n − k)(2k + 1) + 1). Since we are taking
+the PH conjugate within H2bdy
+, the GM within H2bdy
+will also have the opposite chirality as the one outside of
+
+for k > 0,
+
+k
+
+k
+
+k
+
+010E0.00.10.20.30.4ng210V2bdy1+V2bdy3(a1) 2/7-Graviton (8e27o)0.00.10.2E0.00.10.20.30.4Coulomb interaction(a2) 2/7-Graviton (8e27o)0100101102103104E0.00.20.40.6ng2104V2bdy1+V2bdy3+V2bdy5(b1) 4/13-Graviton (8e25o)0.00.10.2E0.00.20.40.6Coulomb interaction+0.01V2bdy5(b2) 4/13-Graviton (8e25o)050100E0.00.20.40.60.8ng2102V2bdy1+10V2bdy3+V2bdy5(c1) 2/11-Graviton (6e30o)0.00.10.2E0.00.20.40.60.8Coulomb interaction(c2) 2/11-Graviton (6e30o)6
+
+FIG. 4. Spectral functions of FQH states at ν = 2/9 with 8 electrons. (a) shows two peaks within H2bdy
+function with respect to the model Hamiltonian, where the green sector denotes the null space of V 3bdy
+after V 3bdy
+show the signature of different CHSs clearly.
+
+in the spectral
+. These peaks will merge
+is removed from the Hamiltonian as (b) shows. A slightly exaggerating ratio between different PPs is adopted to
+
+9
+
+1
+
+9
+
+1
+
+lower energies will gradually merge, to become a single
+GM within H2bdy
+, accounting only for the metric fluctu-
+ation of the CHS of the ν = 2/9 as shown in Fig.4. The
+merging and splitting of GMs can also be expected for
+the non-Abelian Pfaffian state at ν = 1/4, which simi-
+larly has an exact three-body model Hamiltonian[51 -- 53].
+We will discuss in more details next with numerical com-
+putations.
+
+Numerical results and GM interactions --  While the
+main concepts and predictions of the GMs have been
+formulated analytically above, it is also useful to fur-
+ther illustrate the formalism with examples of numerical
+calculations. The spectral functions for the Jain states
+at ν = 2/7, 2/9, 1/4 with Coulomb interaction has been
+computed[25, 26]. Here we compute the spectral func-
+tions of these and additional FQH states with model
+Hamiltonians, to show that two or even more peaks can
+be unambiguously resolved and far separated as com-
+pared to the realistic interactions.
+
+1
+
+1
+
+The first two examples are the Jain state at ν = 2/7
+(the PH conjugate of the Laughlin ν = 1/5 state within
+H2bdy
+) and the interacting CF state at ν = 4/13 (the PH
+conjugate of the Laughlin ν = 1/7 state within H2bdy
+,
+with some experimental evidence[54]). In both cases the
+PH conjugate is defined for CFs, each with one electron
+attached to two fluxes. The CHS of both phases are
+proper subspaces of H2bdy
+. Thus
+there will be a non-zero component of the graviton out-
+side of H2bdy
+. A short-range two-body interaction with
+a very dominant V 2bdy
+can thus easily resolve the two
+GMs as previously predicted (see Fig.(3a,b)). The two
+GMs can also be clearly resolved with VLLL since it is
+dominated by V 2bdy
+
+, but outside of H2bdy
+
+1
+
+1
+
+3
+
+1
+
+.
+
+1
+
+The Jain state at ν = 2/11 offers an interesting con-
+trast, which is the PH conjugate of the Laughlin ν = 1/7
+state within the H2bdy
+, defined for CFs with one electron
+
+3
+
+3
+
+3
+
+3
+
+attached to four fluxes. The two GMs are within and out-
+side of H2bdy
+, so it can be clearly resolved with a model
+Hamiltonian with a dominant V 2bdy
+(and a dominant
+V 2bdy
+to maintain the ground state gap). However with
+1
+VLLL the strength of V 2bdy
+is only slightly larger than
+that of V 2bdy
+, and it cannot clearly resolve the two GMs
+(see Fig.(3c)). This is an example when reducing the
+V 2bdy
+of the interaction leads to the mixing and merging
+3
+of the two GMs into a single GM, while the ground state
+is not affected at all, since it is in the null space of V 2bdy
+.
+Note that the energies of the GMs for this FQH phase
+are not affected by the V 2bdy
+component of the two-body
+interaction.
+
+5
+
+1
+
+3
+
+1
+
+1
+
+1
+
+1
+
+For the Jain state at ν = 2/9, any V 2bdy
+
+dominated
+VLLL) will give two GMs, as can be
+interaction (e.g.
+analytically proven. From numerical studies with eight
+electrons, the spectral weight of the GM outside H2bdy
+is
+small as compared to other Jain states. It is also another
+example where a single GM (here within H2bdy
+) can be
+split into two GMs, this time with the introduction of the
+three-body interactions. We can analytically show that
+within H2bdy
+, there is non-zero graviton spectral weight
+both within and outside of H3bdy
+. Thus an introduc-
+tion of V 3bdy
+to the microscopic Hamiltonian can lead to
+the splitting of the two GMs in total to three GMs, as
+shown in Fig.4. It is worth noting that the GM within
+H3bdy
+dominates, and both the second and the third GM
+have the spectral weights that are more than one order
+of magnitude smaller. This could be a finite size effect,
+since we can analytically show that the spectral weights
+of all three GMs are non-zero for any finite systems. It is
+still possible, however, that in the thermodynamic limit
+the weights of the second and/or third GM vanish. We
+are unable to numerically access system sizes with more
+than eight electrons, and will leave more detailed discus-
+
+9
+
+9
+
+9
+
+0100101102103104E0104103102101100ng2(a) 104V2bdy1+102V3bdy9+V2bdy30100101102103104E(b) 104V2bdy1+V2bdy30.000.050.100.150.20E(c) Coulomb interactionsions to future works.
+
+10
+
+The non-Abelian Pfaffian state at ν = 1/4 is the ex-
+act ground state of V 3bdy
+. Just like the Pfaffian state at
+ν = 1/2 (believed to be stabilised by second LL Coulomb
+interaction)[32, 55], this state can also be stabilised by a
+slightly modified VLLL, with an overlap of 0.91 for eight
+electrons. While this small perturbation may not be
+easily realised in experiments, with this Hamiltonian we
+have the clear understanding that there will be two GMs
+(one inside, and the other outside of H2bdy
+). It is inter-
+esting to note that we have the hierarchical relationship
+that H3bdy
+, and both GMs are within
+H3bdy
+. Thus
+with the model Hamiltonian consisting of only three-
+body PPs, the two GMs will again merge to become
+a single GM, in the absence of V 2bdy
+, as reflected in
+Fig.5. For non-Abelian states there are additional neu-
+tral modes, e.g. the "gravitino" modes at spin s = 3/2 for
+Pfaffian[4, 56], that can be considered as super-partners
+of the gravitons. We expect multiple GMs will also lead
+to multiple gravitino modes, and will leave detailed dis-
+cussions elsewhere.
+
+and at the same time outside of H3bdy
+
+⊂ H2bdy
+
+⊂ H3bdy
+
+8
+
+9
+
+1
+
+8
+
+1
+
+9
+
+1
+
+The experimental relevance --  The experimental detec-
+tion of the multiple GMs in FQH systems and the inter-
+action among them is particularly interesting, because of
+both the topological and geometric aspects of such neu-
+tral excitations. Seeing clean signals of different GMs
+in experiments could be difficult. This is both because
+the GMs are buried in the energy continuum and thus
+are easily scattered by disorders, and also because with
+realistic interactions different GMs can interact and mix
+strongly. The microscopic picture we developed points to
+the crucial role of the hierarchy of energy scales associ-
+ated with different CHSs, that realistic interaction needs
+to imitate to resolve multiple GMs. Thus the realisation
+of robust Hall plateau may not be enough for the detec-
+tion of GMs. The experimental system may need to be
+flexible enough in tuning the effective electron-electron
+interactions, so as to control the dynamics of low-lying
+gapped excitations.
+
+For systems when the LL mixing is negligible (e.g. with
+strong magnetic field), our calculation shows that short-
+range interaction (e.g. the Coulomb interaction in the
+LLL) can at most resolve two GMs both for abelian and
+non-Abelian FQH phases, and we have not found any ex-
+ceptions. The universality of such results is due to the
+algebraic structure of the Laughlin CHSs, and to clearly
+resolve the two GMs, we prefer to have the effective in-
+teraction to be as short-range as possible. Formally if we
+expand the realistic two-body interaction in the Haldane
+PP basis, we should aim to have the ratio consecutive
+PP coefficients (i.e. the ratio of the coefficient of V 2bdy
+over that of V 2bdy
+i+1 ) to be large. This can be achieved by
+screening of electron-electron interaction, or by increas-
+ing the sample thickness in experiments. In particular,
+Jain states at ν = N/(2nN + 1) with N > 1, as well as
+PH conjugate states at ν = 2(n−k)/(2(n−k)(2k +1)+1)
+
+i
+
+7
+
+with k > 0, will all have two GMs. Numerical calcula-
+tions also show such short range interactions favour the
+incompressibility of these FQH states, as compared to
+the bare Coulomb interaction.
+The most easily observed second GM in experiments
+would be the one outside of the V1 null space (i.e. H1),
+which requires a dominant V1 interaction and can be
+realised with the Coulomb interaction within the LLL
+for FQH states around ν = 1/4 as discussed in previous
+works[7]. For FQH states in the SLL, however, the GM
+outside of H1 will mix strongly with the ones inside H1,
+because of the significantly stronger V3 as compared to
+LLL Coulomb interaction. It is also important to note
+while the FQH states around ν = 1/6 (e.g. the ν = 2/11
+state) all in principle have at least two GMs (except for
+the Laughlin state at ν = 1/7), they will be hard to
+observe even with LLL Coulomb interaction. This is be-
+cause such GMs have to be resolved by a dominant V 2bdy
+(as compared to V 2bdy
+k>3 ), which is not the case for LLL
+Coulomb interaction. Thus in general, the observation of
+multiple GMs even for simple two-body interactions will
+necessarily require careful tuning of experimental param-
+eters with Coulomb based interaction.
+
+3
+
+The short-range two-body interactions do not favour
+non-Abelian FQH states, as the compressible composite
+Fermi liquid (CFL) states are generally more competi-
+tive, for example at ν = 1/(2n)[27, 57 -- 62]. For non-
+Abelian FQH states we generally require longer-range
+interactions (e.g. Coulomb interaction in the second
+LL), or few-body interactions from LL mixing[27, 33, 53].
+While it is hard to predict from finite size numerical cal-
+culations how these exotic states can be stabilised by
+the realistic interactions, these additional ingredients are
+necessary if we would like to observe more than two GMs.
+A possible candidate for three GMs seems to be the Jain
+state at ν = 2/9, where we have shown that the proper
+introduction of three-body interactions can lead to three
+peaks in the spectral function. We expect one of the
+peaks resolved by the three-body interaction to be rather
+weak, and the dominant peak resides at low energies. For
+this state our numerical results so far are also inconclu-
+sive due to the small system sizes accessible, and more
+work is needed to establish its behaviour from finite size
+scaling.
+
+Microscopic basis for the effective field theory --  For the
+effective field theory construction, the number of grav-
+itational fields needed (i.e.
+the Haldane modes) for a
+complete description of the response to the metric fluc-
+tuation should be determined by the underlying micro-
+scopic theory. It is important to first identify the physical
+Hilbert space on which the effective field theory is based.
+For example, for the Jain states near ν = 1/(2n), the
+elementary particles are CFs with each electron bound
+to 2n magnetic fluxes (and their PH conjugates, or CF
+holes). The Hilbert space is thus spanned by CF levels
+(the fully filled ones gives the Jain ν = N/(2nN + 1)
+states) and their PH conjugates (giving Jain states with
+ν = N/(2nN − 1)). We can denote it as the base space
+
+8
+
+FIG. 5. Spectral functions of the Pfaffian state at ν = 1/4 with 8 electrons. The turquoise, the orange and the
+pink region denote H2bdy
+and its complement correspondingly. When there is no two-body PP V 2bdy
+in the Hamiltonian, one can clearly observe the merging of peaks from (a) to (b). Considering the coulomb interaction is
+V 2bdy
+-dominated, we can also observe two peaks in (c). A slightly exaggerating ratio between different PPs is adopted to show
+1
+the signature of different CHSs clearly. A small V 2bdy
+
+is added in (c) for stabilizing the non-Abelian Pfaffian state.
+
+1
+
+1
+
+, the null space of V 3bdy
+
+8
+
+5
+
+of the effective field theory. In particular, it is the full
+Hilbert space of LLL for n = 1. For n > 1, the base space
+is H2bdy
+n−1 .
+
+To determine if and how many Haldane modes need
+to be added to effective field theory, it all depends on
+if the long wavelength limit of the GMP mode lives en-
+tirely within the base space. For n = 1 this is definitely
+the case, since the GMP mode lives entirely within the
+LLL as illustrated in Fig.6(a). In particular, the regu-
+larised density operator δ ¯ρq is PH symmetric. For n > 1,
+the GMP modes for all the Laughlin states live entirely
+within the base space, but δ ¯ρq is no longer PH symmet-
+ric within the base space. One can also show rigorously
+from the microscopic point of view that all Jain states at
+ν = N/(2nN ±1) with N > 1 have GMP modes partially
+outside of the base space, thus requiring at least one ad-
+ditional Haldane mode to be added to the effective field
+theory as illustrated in Fig.6(b).
+In principle we can have multiple CHSs containing
+the base space with the hierarchical structure Hbase ⊂
+H1 ··· ⊂ Hk with k > 1, and the GMP mode resides in
+Hk having non-zero weights in all Hk(cid:48)<k. We have not
+found such cases for Jain states with CHSs defined by
+two-body and three-body PPs, but it may be possible for
+other FQH states, or for CHSs defined by few-body PPs
+involving clusters of more than three electrons. These
+cases are illustrated by Fig.6(c), where more than one
+Haldane modes are needed for the effective field theory,
+for it to agree with microscopic Hamiltonians that can
+resolve those CHSs in terms of energy.
+
+Numerical calculations are essential in verifying the ef-
+fective field theory predictions, but it is important to
+note that the number of Haldane modes needed for the
+effective field theory does not necessarily correspond to
+the number of peaks in the graviton spectral function,
+since the latter depends on the microscopic details of
+
+FIG. 6. Number of Haldane modes with different
+structure of CHSs. Laughlin states (N = 1, η = 1)
+are denoted by the white point in the corresponding CHS
+(blue circle). For the Jain states at N/(2nN + η), (a) with
+n = 1, N > 1, η = ±1, (e.g. the FQH state at 2/3 and 2/5,
+etc.), because δ ρq = δ ρ∗
+q, these states will show the same be-
+haviour as the Laughlin state at 1/3, i.e. one peak with no
+Haldane mode required. When n > 1, (b) shows that a single
+Haldane mode is needed in the effective field theory despite
+two peaks observed in the spectral function, among which
+given n, the states with N = 2, η = −1 can be regarded
+as the particle-hole conjugate partner of the corresponding
+Laughlin state within some specific CHS, and the states with
+N > 1, η = 1 are the states in higher CF levels as shown in
+Fig.2(b). (c) and (d) show more possibilities and lead to the
+conclusion that the number of Haldane modes added to the
+effective theory cannot be easily reckoned from the number of
+peaks in the spectral function I(E), which is closely related
+to the microscopic Hamiltonian used.
+
+0100101102103104105106E0.00.10.20.30.40.5ng2(a) 1063bdy8+104V2bdy1+102V3bdy9+V3bdy100100101102103104105106E0.00.10.20.30.4(b) 1063bdy8+102V3bdy9+V3bdy100.000.050.100.15E0.00.10.20.30.4(c) Coulomb interaction+0.02V2bdy5(a) (b)(c)(d)**''0Haldane Mode1 Peak in I(E)n=1n>12 Haldane Mode3 Peak in I(E)1 Haldane Mode3 Peak in I(E)1 Haldane Mode2 Peaks in I(E)PHConjugatePeaksthe Hamiltonian. Fig.6(d) is another example that even
+within the base space there can be multiple CHSs, which
+can be resolved by proper model Hamiltonians. With
+such interactions the GM within the base space (which is
+the conventional graviton, not the Haldane modes) can
+lead to multiple spectral weight peaks well separated in
+energy, though the total weight is captured by the cou-
+pling of the composite particles with the Hall manifold
+metric in the effective theory.
+
+In fact, from an effective theory point of view, we
+can always use a single Haldane mode to capture all the
+GM weights outside of the base space, while all the GM
+weights within the base space can be captured by the
+usual composite particle action. While the known Dirac
+CF description for the Haldane mode strictly speaking
+only applies to the FQH states very close to ν = 1/(2n)
+
+9
+(i.e. for Jain states ν = N/(2nN ± 1) with N → ∞, and
+definitely does not apply for Laughlin states at N = 1),
+the general arguments here with the relationship between
+the GMP modes and the base space should apply to all ef-
+fective field theory description, with or without particle-
+hole symmetry.
+
+ACKNOWLEDGMENTS
+
+We are grateful to A. Balram and Dung X. Nguyen
+for helpful discussions. This work is supported by the
+Singapore National Research Foundation (NRF) under
+NRF fellowship award NRF-NRFF12-2020-0005, and a
+Nanyang Technological University start-up grant (NTU-
+SUG).
+
+[1] F. Dyson. Is a graviton detectable? In XVIIth Interna-
+tional Congress on Mathematical Physics, pages 670 -- 682.
+World Scientific, 2014.
+
+[2] T. Rothman and S. Boughn. Can gravitons be detected?
+
+Foundations of Physics, 36(12):1801 -- 1825, 2006.
+
+[3] S. M. Girvin, A. H. MacDonald, and P. M. Platz-
+man. Magneto-roton theory of collective excitations in
+the fractional quantum hall effect. Physical Review B,
+33(4):2481, 1986.
+
+[4] B. Yang, Z.-X. Hu, Z. Papi´c, and F. D. M. Haldane.
+Model wave functions for the collective modes and the
+magnetoroton theory of the fractional quantum hall ef-
+fect. Phys. Rev. Lett., 108:256807, Jun 2012.
+
+[5] F. D. M. Haldane. Geometrical description of the frac-
+tional quantum hall effect. Physical Review Letters, 107,
+9 2011.
+
+[6] Q. T. Ha and B. Yang. Fractionalization and dynamics
+of anyons and their experimental signatures in the ν =
+n + 1/3 fractional quantum hall state. Phys. Rev. Lett.,
+127:046402, Jul 2021.
+
+[7] Y. Wang and B. Yang. Analytic exposition of the gravi-
+ton modes in fractional quantum hall effects and its phys-
+ical implications. arXiv preprint arXiv:2109.08816, 2021.
+[8] Dam T. Son. Newton-cartan geometry and the quantum
+
+hall effect. arXiv preprint arXiv:1306.0638, 6 2013.
+
+[9] Luo X., Y. S. Wu, and Yu Y. Noncommutative chern-
+simons theory and exotic geometry emerging from the
+lowest landau level. Physical Review D, 93, 6 2016.
+
+[10] S. Golkar, Dung X. Nguyen, and Dam T. Son. Spectral
+sum rules and magneto-roton as emergent graviton in
+fractional quantum hall effect. Journal of High Energy
+Physics, 2016:1 -- 15, 1 2016.
+
+[11] A. Gromov and Dam T. Son. Bimetric theory of frac-
+tional quantum hall states. Physical Review X, 7, 11
+2017.
+
+[12] S. F. Liou, F. D. M. Haldane, Yang K., and E. H. Rezayi.
+Chiral gravitons in fractional quantum hall liquids. Phys-
+ical Review Letters, 123, 9 2019.
+
+[13] F. D. M. Haldane, E. H. Rezayi, and Kun Yang. Graviton
+chirality and topological order in the half-filled landau
+level. Phys. Rev. B, 104:L121106, Sep 2021.
+
+[14] Z. Liu, A. C. Balram, Z. Papi´c, and A. Gromov. Quench
+
+dynamics of collective modes in fractional quantum hall
+bilayers. Phys. Rev. Lett., 126:076604, Feb 2021.
+
+[15] A.r Kirmani, K. Bull, C.-Y. Hou, Z. Papi´c, A. Rah-
+mani, and P. Ghaemi. Realizing fractional-quantum-
+hall gravitons on quantum computers. arXiv preprint
+arXiv:2107.10267, 2021.
+
+[16] Dung X. Nguyen and Dam T. Son. Probing the spin
+structure of the fractional quantum hall magnetoroton
+with polarized raman scattering. Phys. Rev. Research,
+3:023040, Apr 2021.
+
+[17] Dung X. Nguyen and Dam T. Son. Dirac composite
+fermion theory of general jain sequences. Phys. Rev. Re-
+search, 3:033217, Sep 2021.
+
+[18] U. Wurstbauer, K. W. West, L. N. Pfeiffer, and
+A. Pinczuk. Resonant inelastic light scattering investi-
+gation of low-lying gapped excitations in the quantum
+fluid at ν= 5/2. Physical review letters, 110(2):026801,
+2013.
+
+[19] A. Pinczuk, B. S. Dennis, L. N. Pfeiffer, and K. W.
+West. Light scattering by collective excitations in the
+fractional quantum hall regime. Physica B: Condensed
+Matter, 249:40 -- 43, 1998.
+
+[20] A. Pinczuk, B. S. Dennis, L. N. Pfeiffer, and K. West. Ob-
+servation of collective excitations in the fractional quan-
+tum hall effect. Physical review letters, 70(25):3983, 1993.
+[21] U. Wurstbauer, A. L. Levy, A. Pinczuk, K. W. West,
+L. N. Pfeiffer, M. J. Manfra, G. C. Gardner, and J. D.
+Watson. Gapped excitations of unconventional fractional
+quantum hall effect states in the second landau level.
+Physical Review B, 92(24):241407, 2015.
+
+[22] A. Pinczuk, B. S. Dennis, L. N. Pfeiffer, and K. W. West.
+Inelastic light scattering in the regimes of the integer and
+fractional quantum hall effects. Semiconductor science
+and technology, 9(11S):1865, 1994.
+
+[23] K. Yang. Acoustic wave absorption as a probe of dy-
+namical geometrical response of fractional quantum hall
+liquids. Physical Review B, 93, 4 2016.
+
+[24] B. Yang. Microscopic theory for nematic fractional quan-
+tum hall effect. Phys. Rev. Research, 2:033362, Sep 2020.
+[25] Dung X. Nguyen, F. D. M. Haldane, E. H. Rezayi,
+Dam T. Son, and K. Yang. Multiple magnetorotons and
+spectral sum rules in fractional quantum hall systems.
+
+arXiv preprint arXiv:2111.10593, 2021.
+
+[26] A. C. Balram, Z. Liu, A. Gromov, and Z. Papi´c. Very
+high-energy collective states of partons in fractional
+quantum hall liquids. arXiv preprint arXiv:2111.10395,
+2021.
+
+[27] B. Yang. Three-body interactions in generic fractional
+quantum hall systems and impact of galilean invariance
+breaking. Phys. Rev. B, 98:201101, Nov 2018.
+
+[28] F. D. M. Haldane and K. Yang. Landau level mixing and
+levitation of extended states in two dimensions. Physical
+review letters, 78(2):298, 1997.
+
+[29] I. Sodemann and A. H. MacDonald. Landau level mixing
+and the fractional quantum hall effect. Physical Review
+B, 87(24):245425, 2013.
+
+[30] S. H. Simon and E. H. Rezayi. Landau level mixing in
+the perturbative limit. Physical Review B, 87(15):155426,
+2013.
+
+[31] M. R. Peterson and C. Nayak. More realistic hamiltoni-
+ans for the fractional quantum hall regime in gaas and
+graphene. Phys. Rev. B, 87:245129, Jun 2013.
+
+[32] G. Moore and N. Read. Nonabelions in the fractional
+quantum hall effect. Nuclear Physics B, 360(2-3):362 -- 
+396, 1991.
+
+[33] B. Yang. Gaffnian and haffnian: Physical relevance of
+nonunitary conformal field theory for the incompress-
+ible fractional quantum hall effect. Physical Review B,
+103(11):115102, 2021.
+
+[34] F. D. M. Haldane. Fractional quantization of the hall ef-
+fect: A hierarchy of incompressible quantum fluid states.
+Phys. Rev. Lett., 51:605 -- 608, Aug 1983.
+
+[35] S. H. Simon, E. H. Rezayi, and N. R. Cooper. General-
+ized quantum hall projection hamiltonians. Phys. Rev.
+B, 75:075318, Feb 2007.
+
+[36] G. Cristofano, G. Maiella, R. Musto, and F. Nicodemi.
+Topological order in quantum hall effect and two-
+dimensional conformal field theory. Nuclear Physics B-
+Proceedings Supplements, 33(3):119 -- 133, 1993.
+
+[37] S. H. Simon, E. H. Rezayi, N. R. Cooper, and I. Berd-
+nikov. Construction of a paired wave function for spin-
+less electrons at filling fraction ν = 2/5. Phys. Rev. B,
+75:075317, Feb 2007.
+
+[38] D. Arovas, J. R. Schrieffer, and F. Wilczek. Fractional
+statistics and the quantum hall effect. Physical review
+letters, 53(7):722, 1984.
+
+[39] N. Read and E. Rezayi. Quasiholes and fermionic zero
+modes of paired fractional quantum hall states: The
+mechanism for non-abelian statistics. Physical Review
+B, 54(23):16864, 1996.
+
+[40] R. L. Willett, L. N. Pfeiffer, and K. W. West. Alterna-
+tion and interchange of e/4 and e/2 period interference
+oscillations consistent with filling factor 5/2 non-abelian
+quasiparticles. Physical Review B, 82(20):205301, 2010.
+[41] K. T. Law. Probing non-abelian statistics in ν = 12/5
+quantum hall state. Phys. Rev. B, 77:205310, May 2008.
+[42] B. Parsa, V. Gurarie, and C. Nayak. Plasma analogy and
+non-abelian statistics for ising-type quantum hall states.
+Phys. Rev. B, 83:075303, Feb 2011.
+
+[43] B. A. Bernevig and F. D. M. Haldane. Properties of non-
+abelian fractional quantum hall states at filling ν = k/r.
+Phys. Rev. Lett., 101:246806, Dec 2008.
+
+[44] B. A. Bernevig and F. D. M. Haldane. Clustering prop-
+erties and model wave functions for non-abelian frac-
+
+10
+
+tional quantum hall quasielectrons. Phys. Rev. Lett.,
+102:066802, Feb 2009.
+
+[45] F. D. M. Haldane. "hall viscosity" and intrinsic metric
+of incompressible fractional hall fluids. arXiv preprint
+arXiv:0906.1854, 2009.
+
+[46] B. I. Halperin, Patrick A. Lee, and Nicholas Read. The-
+ory of the half-filled landau level. Phys. Rev. B, 47:7312 -- 
+7343, Mar 1993.
+
+[47] G. Moller and S. H. Simon. Paired composite-fermion
+
+wave functions. Phys. Rev. B, 77:075319, Feb 2008.
+
+[48] J. K. Jain and V. J. Goldman. Hierarchy of states in
+the fractional quantum hall effect. Physical Review B,
+45(3):1255, 1992.
+
+[49] J. K. Jain. Composite fermions. Cambridge University
+
+Press, 2007.
+
+[50] B. Yang, Y.-H. Wu, and Z. Papi´c. Effective abelian
+theory from a non-abelian topological order in the ν=
+2/5 fractional quantum hall effect. Physical Review B,
+100(24):245303, 2019.
+
+[51] E. Fradkin, C. Nayak, A. Tsvelik, and F. Wilczek. A
+chern-simons effective field theory for the pfaffian quan-
+tum hall state. Nuclear Physics B, 516(3):704 -- 718, 1998.
+[52] N. Read and E. Rezayi. Beyond paired quantum hall
+states: Parafermions and incompressible states in the
+first excited landau level. Physical Review B, 59(12):8084,
+1999.
+
+[53] B. Yang. Fractional quantum hall effect from frustration-
+free hamiltonians. Phys. Rev. Lett., 125:176402, Oct
+2020.
+
+[54] W. Pan, H. L. Stormer, D. C. Tsui, L. N. Pfeiffer, K. W.
+Baldwin, and K. W. West. Fractional quantum hall effect
+of composite fermions. Phys. Rev. Lett., 90:016801, Jan
+2003.
+
+[55] R. H. Morf. Transition from quantum hall to compress-
+ible states in the second landau level: New light on the
+ν = 5/2 enigma. Phys. Rev. Lett., 80:1505 -- 1508, Feb
+1998.
+
+[56] A. Gromov, E. J. Martinec, and S. Ryu. Collective exci-
+tations at filling factor 5/2: The view from superspace.
+Phys. Rev. Lett., 125:077601, Aug 2020.
+
+[57] M. Levin, B. I. Halperin, and B. Rosenow. Particle-hole
+symmetry and the pfaffian state. Physical review letters,
+99(23):236806, 2007.
+
+[58] S.-S. Lee, S. Ryu, C. Nayak, and M. P.A. Fisher. Particle-
+hole symmetry and the ν = 5/2 quantum hall state.
+Physical review letters, 99(23):236807, 2007.
+
+[59] E. H. Rezayi. Landau level mixing and the ground state
+of the ν = 5/2 quantum hall effect. Phys. Rev. Lett.,
+119:026801, Jul 2017.
+
+[60] Ajit C. Balram, Csaba Toke, A. W´ojs, and J. K. Jain.
+Spontaneous polarization of composite fermions in the
+n = 1 landau level of graphene. Phys. Rev. B, 92:205120,
+Nov 2015.
+
+[61] W. N. Faugno, Ajit C. Balram, Maissam Barkeshli, and
+J. K. Jain. Prediction of a non-abelian fractional quan-
+tum hall state with f -wave pairing of composite fermions
+in wide quantum wells. Phys. Rev. Lett., 123:016802, Jul
+2019.
+
+[62] B. Yang and A. C. Balram. Elementary excitations in
+fractional quantum hall effect from classical constraints.
+New Journal of Physics, 23(1):013001, 2021.
+
+

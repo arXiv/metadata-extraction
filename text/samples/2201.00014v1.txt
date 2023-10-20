@@ -1,0 +1,1469 @@
+
+Exploiting Bi-directional Global Transition Patterns and Personal Preferences for
+
+Missing POI Category Identification
+
+Dongbo Xia,c, Fuzhen Zhuangb,a,∗, Yanchi Liue, Hengshu Zhuf, Pengpeng Zhaog, Chang Tanh, Qing Hea,d
+
+aKey Lab of Intelligent Information Processing of Chinese Academy of Sciences (CAS),
+
+Institute of Computing Technology, CAS, Beijing 100190, China
+
+bXiamen Data Intelligence Academy of ICT, CAS, China
+
+cMeituan-Dianping Group, China
+
+dUniversity of Chinese Academy of Sciences, Beijing 100049, China
+
+eManagement Science & Information Systems, Rutgers University, USA
+
+fBaidu Inc., Beijing, China
+gSoochow University, China
+
+hiFLYTEK, China
+
+Abstract
+Recent years have witnessed the increasing popularity of Location-based Social Network (LBSN) services, which
+provides unparalleled opportunities to build personalized Point-of-Interest (POI) recommender systems. Existing
+POI recommendation and location prediction tasks utilize past information for future recommendation or prediction
+from a single direction perspective, while the missing POI category identification task needs to utilize the check-in
+information both before and after the missing category. Therefore, a long-standing challenge is how to effectively
+identify the missing POI categories at any time in the real-world check-in data of mobile users. To this end, in
+this paper, we propose a novel neural network approach to identify the missing POI categories by integrating both bi-
+directional global non-personal transition patterns and personal preferences of users. Specifically, we delicately design
+an attention matching cell to model how well the check-in category information matches their non-personal transition
+patterns and personal preferences. Finally, we evaluate our model on two real-world datasets, which clearly validate
+its effectiveness compared with the state-of-the-art baselines. Furthermore, our model can be naturally extended to
+address next POI category recommendation and prediction tasks with competitive performance.
+
+Keywords: Global Transition Patterns, Personal Preferences, Missing POI Category Identification
+
+1. Introduction
+
+The rapid development and increasing popularity of
+Location-based Social Network (LBSN) services en-
+courage more and more users to share their real-life
+experiences. Data collected by various LBSN services
+have been effectively leveraged for studying users' on-
+line activities and mobility patterns, which provide un-
+paralleled opportunities to built personalized POI rec-
+ommender systems. Generally, the user's historical vis-
+iting records can be regarded as a set of check-ins that
+each one contains a POI, a timestamp, a POI category,
+and so on.
+Indeed, the category information is con-
+
+∗Corresponding author: Fuzhen Zhuang
+Email addresses: xidongbo@meituan.com (Dongbo Xi),
+
+zhuangfuzhen@ict.ac.cn (Fuzhen Zhuang)
+
+Preprint submitted to Neural Networks
+
+ducive to explaining users' activities and plays a crucial
+role in various POI-oriented tasks.
+
+Most of the existing POI-oriented studies mainly fo-
+cus on recommending or predicting the category of POI
+where a user may go in the future or improve the per-
+formance of next POI recommendation. Recently, con-
+siderable efforts have been made to address next POI
+category prediction (Zhang et al., 2017a), and utilize
+the category information to solve POI recommendation
+and location prediction problems (Chen et al., 2015; He
+et al., 2017; Ye et al., 2013). However, these methods
+utilize past information for future prediction or recom-
+mendation from a single direction perspective, while the
+missing POI category identification task needs to utilize
+the check-in information before and after the missing
+category, which naturally calls for a bi-directional so-
+lution. Therefore, a long-standing challenge is how to
+
+January 4, 2022
+
+effectively identify the missing POI categories at any
+time in the real-world check-in data of mobile users.
+
+Along this line, we propose a novel Bi-directional
+Global Transition Patterns and Personal Preferences
+model named Bi-GTPPP for missing POI category iden-
+tification. The proposed model takes both non-personal
+and personal preferences into consideration. On the one
+hand, users' check-in activities usually have some pub-
+lic transition patterns, which are non-personal prefer-
+ences. For example, users often go to dinner after work
+and watch a movie after dinner. The transition patterns
+work → dinner, dinner → movie are global and non-
+personal for all users. Our model is designed to capture
+bi-directional global transition patterns. On the other
+hand, different users have personal preferences that af-
+fect the check-in behaviors of users. These two pref-
+erences are integrated through a delicately designed at-
+tention matching cell between the output of LSTM net-
+work (Hochreiter and Schmidhuber, 1997) and the pref-
+erences. With the bi-directional global transition pat-
+terns and users' personal preferences, the Bi-GTPPP
+can yield more accurate missing POI category identi-
+fication.
+
+The main contributions of this work are listed as fol-
+
+lows:
+
+• The proposed model can address the non-trivial
+missing POI category identification task via uti-
+lizing bi-directional global transition patterns and
+users' personal preferences, and existing next POI
+category prediction methods are not suitable for
+our task.
+
+• The existing next POI category prediction task can
+be seen as a special case of the missing POI cate-
+gory identification task. The proposed model can
+be easily extended to address the next POI category
+prediction task by only using forward sequence
+information, while the existing prediction models
+can not address the identification task well.
+
+• Based on the experiments conducted on real-world
+datasets, the proposed Bi-GTPPP model achieves
+significantly better performance compared with
+existing various state-of-the-art baselines.
+
+2. Related Work
+
+In POI-oriented studies, two important tasks are POI
+recommendation and location prediction.
+In this sec-
+tion, we present the related work in threefold: general
+
+2
+
+POI recommendation and location prediction, category-
+aware POI recommendation and location prediction,
+and neural network-based methods.
+
+2.1. General POI Recommendation and Location Pre-
+
+diction
+
+Factoring Personalized Markov Chains and Local-
+ized Regions (Cheng et al., 2013) takes users' move-
+ment constraint into account via exploiting the person-
+alized Markov chain in the check-in sequence. Person-
+alized Ranking Metric Embedding (PRME) (Feng et al.,
+2015) integrates sequential information, individual pref-
+erence, and geographical influence to improve the rec-
+ommendation performance. Graph-based Embedding
+(Xie et al., 2016) jointly captures the sequential effect,
+geographical influence, temporal cyclic effect and se-
+mantic effect by embedding into low dimensional space.
+More informations such as temporal effects (Gao et al.,
+2013), spatial-aware (Yin et al., 2017), behavior patterns
+(He et al., 2016), various contexts (Yang et al., 2017a)
+also have been studied accordingly in POI recommen-
+dation and location prediction tasks.
+
+2.2. Category-aware POI Recommendation and Loca-
+
+tion Prediction
+
+Real-life POI-oriented tasks usually suffer from huge
+search space, which is because the number of POIs is
+large and needs a lot of computational costs, while the
+POI category can help filter candidate POIs and thus re-
+duce the search space for efficiency and improve the rec-
+ommendation performance. Context-Aware POI Cat-
+egory Prediction (Zhang et al., 2017a) emphasizes the
+significance of category information in large-scale POI
+recommendation. More and more efforts have been
+made to utilize the category information. Ye et al. (Ye
+et al., 2013) proposed a framework which exploits re-
+gion categories to predict the most likely location of
+users given their previous activities. Liu et al. (Liu et al.,
+2013) employed matrix factorization to predict a user's
+preference on locations in the corresponding categories.
+A new POI recommendation problem, namely top-K lo-
+cation category based POI recommendation (Chen et al.,
+2015), has been formulated considering that users are
+more interested in tasting a wide range of location cat-
+egories. Listwise Bayesian Personalized Ranking ap-
+proach (He et al., 2017) has been proposed to predict the
+category ranking to filter candidate POIs. Category in-
+formation has also been considered in (Zhou and Wang,
+2014) and extended to more applications (Xiao et al.,
+2010; Rodrigues et al., 2012).
+
+2.3. Neural Network for POI Recommendation and Lo-
+
+cation Prediction
+
+Neural networks have been used in the field of POI
+recommendation and location prediction (Liu et al.,
+2016; Wang et al., 2017; Yin et al., 2017). For exam-
+ples, a method called Spatial Temporal Recurrent Neu-
+ral Networks (STRNN) (Liu et al., 2016) was proposed
+to model temporal and spatial contexts in each layer.
+Heterogeneous features and spatial-aware personal pref-
+erences were utilized by Spatial-Aware Hierarchical
+Collaborative Deep Learning model (Yin et al., 2017).
+Some LSTM-based approaches (Zhu et al., 2017; Zhao
+et al., 2018) try to capture short-term and long-term
+characteristics via specifically designed gates. User
+preference over POIs and context associated with users
+and POIs were predicted simultaneously in PACE (Pref-
+erence And Context Embedding) (Yang et al., 2017a).
+More neural network-based approaches (Wang et al.,
+2017; Zhang et al., 2017b; Yang et al., 2017b) have also
+been adopted to address POI recommendation and lo-
+cation prediction. However, the above methods are not
+specially designed for missing POI category identifica-
+tion and these efforts fail to capture both bi-directional
+global transition patterns and users' personalized pref-
+erences for missing POI category identification. So they
+can not address the identification task well.
+
+Besides, the most relevant task to missing POI cate-
+gory identification is the missing POI check-in identifi-
+cation. The work (Xi et al., 2019) is the first to address
+the missing POI check-in identification by modelling
+of bi-directional spatio-temporal dependence and users'
+dynamic preferences (Bi-STDDP). However, the miss-
+ing POI category check-ins identification is different
+from the missing POI check-in identification in many
+ways. Therefore, the model is not suitable for missing
+POI category check-ins identification task.
+
+3. Methodology
+
+In this section, we first formulate the problem of
+missing POI category identification, and then present
+the details of the proposed Bi-GTPPP model, which
+contains three parts of attention matching cell, bi-
+directional global transition patterns, and personal pref-
+erences.
+
+3.1. Problem Statement
+
+Let U = {u1, u2, ..., uN} is a set of N users and
+C = {c1, c2, ..., cM} is a set of M POI categories. Each
+sample is associated with a category check-ins list of
+
+3
+
+1, cu
+
+user u Cu = {cu
+L}, where cu
+2, ..., cu
+l means user u's l-
+th check-in category is cu
+l . Assume the l-th check-in
+category cu
+l of user u is missing, the task is to identify
+which POI category the user u visited according to the
+forward sequence {cu
+l−1} and the backward se-
+1, cu
+2, ..., cu
+L}.
+quence {cu
+l+2, ..., cu
+
+l+1, cu
+
+3.2. Attention Matching cell
+
+Firstly, we formalize a delicately designed attention
+matching cell which is adopted in our model to weight
+different preference features:
+
+cell(a, b) = (1 − s) × a + s × b,
+s = 0.5 + 0.5 × cos(a, b)
+= 0.5 + 0.5 × a(cid:62)b
+(cid:107)a(cid:107)(cid:107)b(cid:107) ,
+
+(1)
+(2)
+
+(3)
+
+where a is the feature extracted based on the existing
+data (e.g., check-in categories sequence) by LSTM net-
+work, b expresses the preferences which are global tran-
+sition patterns or personal preferences in our model, and
+a and b are in the same space RM. The weight s is the
+normalized cosine similarity between a and b, and in-
+dicates how much a matches b. If feature a matches
+preference b well, then preference b should have a big-
+ger weight s, otherwise the feature a should be retained
+more. Note that cell(a, b) is not equal to cell(b, a).
+
+3.3. Bi-directional Global Transition Patterns
+
+In this subsection, we first extract features from
+users' check-in categories sequence, and then integrate
+global transition patterns.
+
+Firstly, we capture POI category information with
+embedding layer. The embedding layer can be seen as
+performing the latent factor modeling for category pop-
+ularity. It learns one matrix Ec, each row of which rep-
+resents a POI category. If we use one-hot encoded cat-
+l+k ∈ RM as input vectors, the outputs of
+egory cu
+embedding layer can be expressed as
+
+l−k, cu
+l−k) = E(cid:62)
+c cu
+l+k) = E(cid:62)
+c cu
+
+e(cu
+e(cu
+
+l−k,
+l+k,
+
+(4)
+(5)
+where 1 ≤ k ≤ w, and w is the window width, Ec ∈
+RM×d denotes the embedding matrix for categories, d is
+the dimension of embedding vectors.
+
+LSTM (Hochreiter and Schmidhuber, 1997) is capa-
+ble of learning short and long-term dependencies and
+has become an effective and scalable model for sequen-
+tial prediction problems, we use the basic LSTM to cap-
+ture user's forward and backward check-in information:
+(6)
+(7)
+
+= LS T M(e(cu
+= LS T M(e(cu
+
+l−w:l−1)),
+l+w:l+1)),
+
+lu
+l−1
+lu
+l+1
+
+l−w:l−1) and e(cu
+
+where e(cu
+l+w:l+1) are the embedded for-
+ward and backward check-in sequences respectively,
+l+1 ∈ Rh are the bi-directional features
+l−1 ∈ Rh and lu
+lu
+extracted from users' check-in categories sequence by
+LSTM and h is the dimension of the LSTM output
+space.
+
+Next, we add a hidden layer to transform the output of
+LSTM network to another space for applying attention
+matching cell:
+
+hu
+l−1
+hu
+l+1
+
+= f (W f lu
+= f (Wblu
+
+(8)
+(9)
+where W f ∈ RM×h and Wb ∈ RM×h are the parameters
+of transformation matrices.
+
+l−1),
+l+1),
+
+Then, user's check-in activities usually have some
+public transition patterns, for example, users often go to
+dinner after work and watch a movie after dinner. The
+transition patterns work → dinner, dinner → movie are
+global for all users. Our Bi-GTPPP model is designed to
+capture the global transition patterns from bi-direction.
+For the missing category cu
+l , we need to capture the most
+l−1 → cu
+relevant forward global transition patterns cu
+l+1 → cu
+l
+and backward cu
+l :
+gl−1 = f (E(cid:62)
+f cu
+l−1),
+gl+1 = f (E(cid:62)
+b cu
+l+1),
+
+(10)
+(11)
+where E f ∈ RM×M and Eb ∈ RM×M denote the for-
+ward transition embedding matrix and backward transi-
+tion embedding matrix respectively, the activation func-
+tion f (x) is chosen as a tanh function f (x) = ex−e−x
+ex+e−x . The
+output gl−1 ∈ RM can be normalized and expresses the
+transition distribution from category cu
+l−1 to all candi-
+date categories, and gl+1 ∈ RM is the same. However,
+we don't do the normalization considering the expres-
+sive power.
+
+Now, we can apply the delicately designed attention
+matching cell in Equation (1) to model how well the
+user's bi-directional check-in information matches the
+global transition patterns:
+
+l+1.
+
+mu
+l−1
+mu
+l+1
+mu
+l
+
+l−1, gl−1),
+l+1, gl+1),
++ mu
+
+= cell(hu
+= cell(hu
+= mu
+l−1
+
+(12)
+(13)
+(14)
+l−1 and gl−1,
+The attention matching cell interpolates hu
+l+1 and gl+1 respectively, and indicates how much hu
+hu
+l−1
+matches gl−1 or hu
+l+1 matches gl+1. If user u's forward
+check-in information hu
+l−1 matches forward preference
+gl−1 well, then forward preference gl−1 should have a
+bigger weight, otherwise the feature hu
+l−1 should be re-
+l+1, gl+1) is also the same. Fi-
+tained more, and cell(hu
+
+4
+
+nally, the bi-directional informations are added to cap-
+ture the bi-directional global transition patterns mu
+l .
+
+3.4. Personal Preferences and the Final Bi-GTPPP
+
+Model
+
+Different users have personal preferences which
+much affect the check-in behaviors of users. For exam-
+ple, most users usually watch a movie after dinner, but
+some users have a dinner after the movie. If we iden-
+tify the missing category of the personalized users as
+the global transition pattern dinner → movie, the model
+will have an erroneous identification. So here we need
+to capture users' personal preferences. If we use one-hot
+encoded user u ∈ RN as input vectors, then the personal
+preference of user u can be expressed as:
+
+pu = f (E(cid:62)
+
+p u),
+
+(15)
+where Ep ∈ RN×M, each row of which represents a
+user's personal preferences for M categories. And the
+whole embedding matrix Ep can be seen as performing
+the latent factor modeling for all users' personal cate-
+gory preferences. We can initialize the matrix Ep via
+counting users' visiting history on all training data and
+fine-tune during model training.
+
+Then, the same structure attention matching cell can
+be adopted to model how well the user's recent bi-
+directional check-in information and global transition
+patterns match his or her personal preferences:
+
+nu
+l
+
+= cell(mu
+
+l , pu).
+
+(16)
+
+Finally, the prediction of the l-th category the user u
+
+has been can be computed as:
+
+ou
+l
+
+= so f tmax(Wonu
+l ),
+
+(17)
+where Wo ∈ RM×M are the parameters in the softmax
+layer. The ou
+is a distribution which indicates differ-
+l
+ent probability of all possible candidate categories the
+user u might visit l-th. And the categories correspond-
+ing to the k maximum probabilities are the top-k identi-
+fications for the missing category.
+
+We present the final neural network architecture of
+Bi-GTPPP in Figure 1. First, bi-directional category
+sequence features are captured by two basic LSTM
+network, and then the inputs of categories and user
+are fed into embedding layer to capture bi-directional
+global transition patterns and personal preferences in
+Equations (10), (11) and (15) respectively. Moreover,
+three same structure attention matching cells model how
+well the user's bi-directional category sequence fea-
+tures match the global transition patterns and how well
+
+Figure 1: The proposed Bi-GTPPP model
+
+the user's recent bi-directional check-in information and
+global transition patterns match his or her personal pref-
+erences in Equations (14) and (16) respectively. Finally,
+the softmax layer makes the identification for the miss-
+ing l-th category.
+
+Dataset
+NYC
+TKY
+
+Table 1: Statistics of the two datasets.
+#user
+1,083
+2,293
+
+#check in
+227,428
+573,703
+
+#POI
+38333
+61858
+
+#category
+
+251
+247
+
+#Avg.check-in
+
+210.0
+250.2
+
+We need to minimize the cross entropy of predicted
+
+distribution and the actual distribution:
+
+S(cid:88)
+
+M(cid:88)
+
+i=1
+
+j=1
+
+J(θ) = − 1
+S
+
+yi, j log(ou
+
+l, jxi, θ),
+
+(18)
+
+where S is the number of samples, M is the number of
+categories, yi ∈ RM is the one-hot label of sample xi and
+θ is the parameters set.
+
+The training is performed in an end-to-end manner
+and the Equation (18) is used to train globally the whole
+architecture. Training is done through stochastic gradi-
+ent descent over shuffled mini-batches with the Adam
+(Kingma and Ba, 2014) update rule.
+
+4. Experiments
+
+In this section, we perform experiments to evaluate
+the proposed Bi-GTPPP model against various baseline
+methods on two real-world LBSNs datasets. We first in-
+troduce the datasets, baseline methods, implementation
+details and evaluation metrics of our experiments. Fi-
+nally, we present our experimental results and analysis.
+
+4.1. Datasets
+
+• NYC1 (Yang et al., 2015) is a dataset from
+Foursquare, which includes long-term (about 10
+months) check-in data in New York city collected
+from April 2012 to February 2013.
+
+• TKY1 (Yang et al., 2015) is a dataset similar to
+
+NYC except from Tokyo.
+
+We eliminate users with fewer than 10 check-ins in
+these two datasets. Then, we sort each user's check-
+in records according to timestamp order, taking the first
+80% as training set, the following 10% for the validation
+set and the remaining 10% for the test set. The users'
+history category information is intentionally removed as
+ground truth for testing the identification performance,
+this is consistent for all experiments for fair comparison.
+
+4.2. Baselines
+
+We compare the proposed method with counting
+based methods (Forward, Backward, TOP1, TOP2),
+traditional POI recommendation algorithms (PRME,
+PRME-G), neural network-based approaches (RNN,
+LSTM, GRU, STRNN, PACE, Bi-STDDP). Some ear-
+lier methods likes PMF (Salakhutdinov and Mnih,
+2007), FPMC (Rendle et al., 2010), FPMC-LR (Cheng
+et al., 2013) have been proved to be not as good as
+
+The statistics of the two public LBSNs datasets are
+
+listed in Table 1.
+
+1https://sites.google.com/site/yangdingqi/home/foursquare-
+
+dataset
+
+5
+
+Softmax LayerPersonalized PreferencesUser uForward Transition Patternsc(l-1)Backward Transition Patternsc(l+1)Category EmbeddingLSTMLSTMc(l+w:l+1)c(l-w:l-1)Hidden LayerHidden LayerMatching CellMatching CellMatching CellBi-GTPPP OutputEmbeddingAttention Matching InputSequence FeaturesSumPRME-G (Feng et al., 2015; Liu et al., 2016; He et al.,
+2017), so we don't compare them with our model.
+
+• Forward: The forward transition probability be-
+tween categories is taken as the prediction for all
+users.
+
+• Backward: The backward transition probability
+between categories is taken as the prediction for
+all users.
+
+• TOP1: The most popular categories in the training
+
+set are selected as the prediction for all users.
+
+• TOP2: The most popular categories in the training
+
+set are selected as the prediction for each user.
+
+• PRME(Feng et al., 2015): User and POIs are em-
+bedded into the same latent space to capture the
+user transition patterns.
+
+• PRME-G(Feng et al., 2015): It takes the distance
+between destination POIs and recent visited ones
+into consideration on the basis of PRME.
+
+• RNN(Zhang et al., 2014): This is a neural network
+method which directly models the dependency on
+user's sequential behaviors into the click prediction
+process through the recurrent structure in RNN.
+
+• LSTM(Hochreiter and Schmidhuber, 1997): This
+is a special RNN model, which contains a mem-
+ory cell and three multiplicative gates to learn long-
+term dependency.
+
+• GRU(Cho et al., 2014): This is another special
+RNN model, which contains two gates and is sim-
+pler than LSTM.
+
+• STRNN(Liu et al., 2016): This is a RNN-based
+model for next POI recommendation. It incorpo-
+rates both the time-specific transition matrices and
+distance-specific transition matrices within recur-
+rent architecture.
+
+• PACE(Yang et al., 2017a): This is a deep neural
+architecture that jointly learns the embeddings of
+users and POIs to predict both user preference over
+POIs and various context associated with users and
+POIs.
+
+• Bi-STDDP(Xi et al., 2019): This is the state-of-
+the-art missing POI check-in identification model
+which captures bi-directional spatio-temporal de-
+pendence and users' dynamic preferences.
+
+4.3. Implementation Details
+
+For all datasets we use: embedding dimension d of
+128, LSTM output space h of 512, window width w of
+18, mini-batch size of 128 and learning rate of 0.001.
+All these values are chosen via a grid search on the NYC
+validation set. The parameters of Ep are initialized via
+counting users' visiting history on training data, and all
+other parameters in the neural network are initialized
+from glorot uniform distributions (Glorot and Bengio,
+2010). We do not perform any datasets-specific tuning
+except early stopping on validation sets.
+
+4.4. Evaluation Metrics
+
+To evaluate the performance of our proposed Bi-
+GTPPP model and the baselines described above, we
+follow the existing works (Liu et al., 2016) to use several
+standard metrics: Recall@K, F1-score@K and Mean
+Average Precision (MAP). Recall@K is 1 if the cate-
+gory visited appears in the top-K ranked list; otherwise
+is 0. The final Recall@K is the average value over all
+test ground truth instances. MAP is a global evaluation
+for ranking tasks, and it is usually used to evaluate the
+quality of the whole ranked lists. We report Recall@K
+and F1-score@K with K = 1, 5 and 10 in our experi-
+ments. The larger the value, the better the performance
+for all the evaluation metrics. All the metrics reported
+in the experiment are the mean over five runs.
+
+4.5. Performance Comparison and Discussion
+
+We present the experimental results evaluated by Re-
+call@K and MAP on NYC and TKY datasets in Table
+2. Besides, we also present the scatter and box plots
+of different methods in term of MAP over five runs in
+Figure 2 and Figure 3. From these results, we have the
+following insightful observations,
+
+- The counting-based methods Forward and Back-
+ward have acceptable performances on all two
+datasets. Similarly, counting-based personalized
+TOP2 also has a good performance on NYC and
+TKY, and these results are even better than PRME
+and PRME-G. This makes sense that users' behav-
+ior patterns are usually regular and follow the long-
+tailed distribution. While the non-personalized
+TOP1 performs differently on two datasets, this
+seems to show that the users' preferences in Tokyo
+are more consistent than those in New York City.
+
+- PRME-G slightly improves the results comparing
+with PRME via incorporating distance informa-
+tion. And RNN-based methods (RNN, LSTM,
+GRU) obtain similar performance improvement
+
+6
+
+NYC
+
+RNN
+LSTM
+GRU
+
+STRNN
+PACE
+
+Bi-STDDP
+
+Forward
+Backward
+
+TOP1
+TOP2
+PRME
+PRME-G
+
+Recall@1 Recall@5 Recall@10
+
+F1-score@1
+
+F1-score@5
+
+Table 2: Evaluation of missing category identification in terms of Recall@K, F1-score@K and MAP. Bi-GTPPP-rand means that our model
+parameters Ep are initialized from glorot uniform distributions, and Bi-GTPPP-nonstatic means that parameters Ep are initialized via counting
+users' visiting history on training data and fine-tune during training. Underlined results indicate the best baselines over each dataset and metric.
+"*" indicates that the improvement is statistically significant compared with the best baselines at p-value < 0.05 over independent samples t-tests.
+F1-score@10 MAP
+0.2636
+0.2601
+0.1756
+0.3009
+0.2163
+0.2334
+0.3292
+0.3555
+0.3596
+0.3787
+0.3769
+0.3796
+0.3898
+0.4030*
+0.4962
+0.4965
+0.4694
+0.5109
+0.4512
+0.4558
+0.5298
+0.5458
+0.5445
+0.5576
+0.5568
+0.5571
+0.5652
+0.5721*
+
+0.4877
+0.4868
+0.4127
+0.5017
+0.4442
+0.4818
+0.6164
+0.6504
+0.6493
+0.6689
+0.6675
+0.6677
+0.6702
+0.6922*
+0.6899
+0.6919
+0.6385
+0.7013
+0.6128
+0.6204
+0.7808
+0.7930
+0.7912
+0.8036
+0.8033
+0.8022
+0.8069
+0.8146*
+
+0.1576
+0.1566
+0.0594
+0.1688
+0.1039
+0.1180
+0.1873
+0.2095
+0.2162
+0.2331
+0.2330
+0.2345
+0.2425
+0.2580*
+0.3920
+0.3924
+0.3806
+0.3967
+0.3612
+0.3638
+0.4051
+0.4203
+0.4189
+0.4325
+0.4251
+0.4283
+0.4412
+0.4454*
+
+0.3593
+0.3505
+0.2888
+0.3842
+0.3249
+0.3532
+0.4954
+0.5191
+0.5234
+0.5408
+0.5401
+0.5409
+0.5591
+0.5745*
+0.5950
+0.5973
+0.5376
+0.6225
+0.5265
+0.5358
+0.6773
+0.6956
+0.6929
+0.7071
+0.6930
+0.7065
+0.7088
+0.7211*
+
+0.1198
+0.1168
+0.0963
+0.1281
+0.1083
+0.1177
+0.1651
+0.1730
+0.1745
+0.1803
+0.1800
+0.1803
+0.1864
+0.1915*
+0.1983
+0.1991
+0.1792
+0.2075
+0.1755
+0.1786
+0.2258
+0.2319
+0.2310
+0.2357
+0.2310
+0.2355
+0.2363
+0.2404
+
+0.1576
+0.1566
+0.0594
+0.1688
+0.1039
+0.1180
+0.1873
+0.2095
+0.2162
+0.2331
+0.2330
+0.2345
+0.2425
+0.2580*
+0.3920
+0.3924
+0.3806
+0.3967
+0.3612
+0.3638
+0.4051
+0.4203
+0.4189
+0.4325
+0.4251
+0.4283
+0.4412
+0.4454*
+
+0.0887
+0.0885
+0.0750
+0.0912
+0.0808
+0.0876
+0.1121
+0.1183
+0.1181
+0.1216
+0.1214
+0.1214
+0.1219
+0.1259*
+0.1254
+0.1258
+0.1161
+0.1275
+0.1114
+0.1128
+0.1420
+0.1442
+0.1439
+0.1461
+0.1461
+0.1459
+0.1467
+0.1481
+
+Forward
+Backward
+
+TOP1
+TOP2
+PRME
+PRME-G
+
+Bi-GTPPP-rand
+
+Bi-GTPPP-nonstatic
+
+TKY
+
+RNN
+LSTM
+GRU
+
+STRNN
+PACE
+
+Bi-STDDP
+
+Bi-GTPPP-rand
+
+Bi-GTPPP-nonstatic
+
+over PRME-G because of their sequence modeling
+capability.
+
+- PACE predicts user preference over POIs, user
+context and POI context together to achieve further
+improvement over RNN-based methods. Another
+great improvement is achieved by STRNN. It in-
+corporates both the time-specific transition matri-
+ces and distance-specific transition matrices within
+recurrent architecture in each layer. Bi-STDDP
+achieves similar performance improvement over
+STRNN via incorporating both the bi-directional
+spatio-temporal dependence and users' dynamic
+preferences, and they are the best methods among
+the baselines on the two datasets. However, the
+missing POI category check-ins identification is a
+little different from the missing POI check-in iden-
+
+7
+
+tification. POI check-ins are more dependent on
+spatio-temporal information (e.g., it is impossible
+that two POI check-ins of the same user are far
+apart in space distance, but the time interval is very
+short.), but POI category check-ins do not have the
+obvious spatio-temporal dependence due to POIs
+at different distances may belong to the same cat-
+egory. Therefore, the Bi-STDDP can not address
+the missing POI category identification well.
+
+- Bi-GTPPP-rand outperforms the baseline methods
+over all evaluation metrics on all two datasets. And
+Bi-GTPPP-nonstatic further improves the perfor-
+mance via utilizing priori information and fine-
+tuning during training. On NYC dataset,
+the
+performance improvement of Bi-GTPPP-nonstatic
+on Recall@1, Recall@5, Recall@10 comparing
+
+Figure 2: The scatter plot of different methods in term of MAP over five runs.
+
+with Bi-GTPPP-rand are 6.39%, 2.75%, 3.28% re-
+spectively, and comparing with best baseline Bi-
+STDDP are 10.02%, 6.21% and 3.67% respec-
+tively which indicates that the Bi-GTPPP-nonstatic
+improves even more on the higher ranking list.
+Similar results can also be observed on TKY
+dataset. Besides, the baseline Bi-STDDP is de-
+signed for missing POI identification and captures
+bi-directional spatio-temporal dependence, which
+is unsuitable for the missing POI category identi-
+fication task. Because POIs in different locations
+may belong to the same category, which results
+in the spatio-temporal dependence is poor in miss-
+ing POI category identification task. As aforesaid,
+POI-oriented tasks usually suffer from huge search
+space due to the large amount of POIs, while the
+POI category can help filter candidate POIs and
+thus reduce the search space for efficiency. For
+the TKY dataset, the numbers of the POIs and cat-
+egories are 61858 and 247, respectively, and one
+category corresponds to 250 POIs on average. If
+we adopt the top 10 categories, the recall@10 is
+0.8146 and we can reduce the candidate POIs from
+
+Table 3: Impact of forward and backward sequences on NYC dataset
+evaluated by Recall@K and MAP.
+
+F-GTPPP
+B-GTPPP
+Bi-GTPPP
+
+0.2394
+0.2403
+0.2580
+
+Recall@1 Recall@5 Recall@10 MAP
+0.3866
+0.3869
+0.4030
+
+0.5584
+0.5590
+0.5745
+
+0.6787
+0.6785
+0.6922
+
+61858 to 10 × 250 = 2500, which is a 25 times
+reduction.
+
+Overall, these improvements indicate the fact that the
+baseline methods fail to capture both global transition
+patterns and users' personal preferences, while our pro-
+posed Bi-GTPPP can do this.
+
+4.6. Impact of Different Parts
+
+In this subsection, we investigate the influence of
+the forward and backward sequences in our Bi-GTPPP
+model. An intuitive feeling is that bi-directional se-
+quences can bring more useful additional
+informa-
+tion and should have a better performance than sin-
+gle sequence. The results shown in Table 3 confirm
+
+8
+
+ForwardBackwardTOP1TOP2PRMEPRME-GRNNLSTMGRUSTRNNPACEBi-STDDPBi-GTPPP-randBi-GTPPP-nonstaticFPR0.150.200.250.300.350.40MAPNYCForwardBackwardTOP1TOP2PRMEPRME-GRNNLSTMGRUSTRNNPACEBi-STDDPBi-GTPPP-randBi-GTPPP-nonstaticFPR0.440.460.480.500.520.540.560.58MAPTKYFigure 3: The box plot of different methods in term of MAP over five runs.
+
+(a) Fine-tuned Forward Transition Patterns
+
+(b) Fine-tuned Backward Transition Patterns
+
+(c) Fine-tuned Personal Preference
+
+Figure 4: Performance of fine-tuned bi-directional global transition patterns and personal preference on NYC dataset evaluated by Recall@K.
+
+this. The Bi-GTPPP achieves further improvement by
+utilizing bi-directional sequences comparing with F-
+GTPPP and B-GTPPP which only utilize forward or
+backward information respectively.
+It must be noted
+that, although with the single sequence, our proposed
+model still achieves substantial performance improve-
+ment over various kinds of state-of-the-art methods.
+Based on this fact, we can say that our Bi-GTPPP can be
+naturally extended to address next POI category recom-
+
+mendation and prediction tasks with competitive perfor-
+mance.
+
+Next, we show that our Bi-GTPPP model can cap-
+ture bi-directional global transition patterns and user's
+personal preferences. The E f , Eb and Ep denote the
+forward transition embedding matrix, backward transi-
+tion embedding matrix and user's personal preferences
+respectively which can be used directly for missing POI
+category identification. The Recall@K performance of
+
+9
+
+ForwardBackwardTOP1TOP2PRMEPRME-GRNNLSTMGRUSTRNNPACEBi-STDDPBi-GTPPP-randBi-GTPPP-nonstatic0.150.200.250.300.350.40MAPNYCForwardBackwardTOP1TOP2PRMEPRME-GRNNLSTMGRUSTRNNPACEBi-STDDPBi-GTPPP-randBi-GTPPP-nonstatic0.440.460.480.500.520.540.560.58MAPTKY1510K0.000.050.100.150.200.25Recall@KInitializationFine-tuned1510K0.000.050.100.150.200.25Recall@KInitializationFine-tuned1510K0.00.10.20.30.40.50.6Recall@KInitializationFine-tuned(a) Impact of Embedding Dimension d
+
+(b) Impact of LSTM Output Space h
+
+(c) Impact of Window Width w
+
+Figure 5: Performance of Bi-GTPPP with varying embedding dimension, LSTM output space and window width on NYC dataset evaluated by
+MAP.
+
+initialization and fine-tuned E f , Eb and Ep is shown in
+Figure 4. We observe that fine-tuned E f and Eb in Fig-
+ure 4(a) and 4(b) greatly improve the identification per-
+formance comparing with random initialized. And fine-
+tuned Ep in Figure 4(c) also performs better than initial-
+ization which counts users' visiting history. It turns out
+that bi-directional global transition patterns and user's
+personalized preferences can be captured in our novel
+model.
+
+Besides, we can obviously see that Ep obtains more
+gain than E f and Eb.
+It is intuitive that user's per-
+sonal preferences should play a more important role
+in the model than the bi-directional transition patterns.
+Because user's personal preference (Ep) captures per-
+sonal preferences for each user while the bi-directional
+transition patterns (E f and Eb) are global and non-
+personalized for all users, and personalized identifica-
+tion can obtain more performance improvement.
+
+4.7. Impact of Parameters
+
+Tuning model parameters is critical to the perfor-
+mance of the proposed model, such as the embedding
+dimension d, LSTM output space h and window width
+w in our Bi-GTPPP model. Figure 5(a), 5(b) and 5(c)
+show the results under different settings of d, h and
+w. We present the MAP performance of Bi-GTPPP on
+NYC test set. Note that the best parameters are selected
+by grid search on NYC validation set, while the impact
+of parameters is evaluated on NYC test set. Validation
+and test results are similar under different settings.
+
+The embedding dimension d and LSTM output space
+h have similar performance as shown in Figure 5(a) and
+5(b). We observe that as the embedding dimension and
+LSTM output space increase, the performance of the
+model is quickly improved, and then becomes stable.
+The embedding dimension and LSTM output space are
+
+related to model complexity, smaller values are difficult
+to fit the data, and larger values result in more complex
+model and require more computing resources. Making
+a balance between performance and efficiency, d = 128
+and h = 512 are proper parameters.
+
+Figure 5(c) investigates the impact of window width
+on NYC dataset evaluated by MAP. From the experi-
+mental results, we observe that the performance first im-
+proves quickly with the increase of window width w and
+then drops down gradually. The reason is that, smaller
+value of w prunes too many useful history information,
+and larger value of w brings little useful additional in-
+formation and may even hurt the model performance by
+introducing noise information due to the long interval.
+We finally select w = 18 as the window width.
+
+According to Table 2 and Figure 5, we can see that
+even without the best parameters, Bi-GTPPP still out-
+performs other baseline methods. In a word, the perfor-
+mance of Bi-GTPPP stays stable in a large range of val-
+ues of parameters and is not very sensitive to embedding
+dimension, LSTM output space and window width.
+
+5. Conclusion and Outlook
+
+In this paper, we proposed a novel neural network
+model named Bi-GTPPP to identify the missing cate-
+gory of POI where a user has visited at any time in
+the past. The Bi-GTPPP integrated bi-directional global
+transition patterns and personal preferences via deli-
+cately designed attention matching cells. Specifically,
+the attention matching cell first bi-directionally models
+how well the check-in category information captured
+by LSTM network matches the global transition pat-
+terns. And then another attention matching cell models
+how well the recent check-in category information and
+global transition patterns of users match their personal
+
+10
+
+0128200300400500Embedding Dimension0.3800.3850.3900.3950.400MAP020051280011001400LSTM Output Space0.3750.3800.3850.3900.3950.400MAP02468101214161820Window Width0.3800.3850.3900.3950.400MAPpreferences. Finally, the proposed model blue is evalu-
+ated on two large-scale real-world datasets and the re-
+sults demonstrate the performance improvement of our
+proposed model compared with various kinds of state-
+of-the-art baseline methods. Also, the proposed model
+can be naturally extended to address next POI category
+prediction task with competitive performance by only
+using forward sequence.
+
+Several directions are available for future research
+in the area. First, the missing POI category identifica-
+tion task can be further explored and applied to a wider
+range of applications, such as the urban function zone
+dividing and urban planning, and even used for crimi-
+nal activities analysis. Second, using POI category in-
+formation to assist POI-oriented research will have a
+broader application scenario in various real-world ap-
+plications. Third, the explanation and interpretability of
+POI-oriented research will become more and more im-
+portant. Finally, the identification performance can be
+improved by combining with other disciplines, for ex-
+ample, by learning relevant experience from nonlinear
+systems (Sun et al., 2020a, 2019, 2020b).
+
+6. Acknowledgements
+
+The research work supported by the National Key
+Research and Development Program of China under
+Grant No. 2018YFB1004300, the National Natural Sci-
+ence Foundation of China under Grant No. U1836206,
+U1811461, 61773361, the Project of Youth Innovation
+Promotion Association CAS under Grant No. 2017146.
+
+References
+
+Chen, X., Zeng, Y., Cong, G., Qin, S., Xiang, Y., Dai, Y., 2015. On
+information coverage for location category based point-of-interest
+recommendation., in: AAAI, pp. 37 -- 43.
+
+Cheng, C., Yang, H., Lyu, M.R., King, I., 2013. Where you like to
+go next: Successive point-of-interest recommendation., in: IJCAI,
+pp. 2605 -- 2611.
+
+Cho, K., Van Merrienboer, B., Gulcehre, C., Bahdanau, D., Bougares,
+F., Schwenk, H., Bengio, Y., 2014. Learning phrase representa-
+tions using rnn encoder-decoder for statistical machine translation.
+Computer Science doi:10.3115/v1/D14-1179.
+
+Feng, S., Li, X., Zeng, Y., Cong, G., Chee, Y.M., Yuan, Q., 2015.
+Personalized ranking metric embedding for next new poi recom-
+mendation., in: IJCAI, pp. 2069 -- 2075.
+
+Gao, H., Tang, J., Hu, X., Liu, H., 2013. Exploring temporal effects
+for location recommendation on location-based social networks,
+in: RecSys, pp. 93 -- 100. doi:10.1145/2507157.2507182.
+
+Glorot, X., Bengio, Y., 2010. Understanding the difficulty of training
+
+deep feedforward neural networks, in: AISTATS, pp. 249 -- 256.
+
+He, J., Li, X., Liao, L., 2017. Category-aware next point-of-interest
+recommendation via listwise bayesian personalized ranking, in: IJ-
+CAI, pp. 1837 -- 1843. doi:10.24963/ijcai.2017/255.
+
+11
+
+Kingma, D., Ba, J., 2014. Adam: A method for stochastic optimiza-
+
+tion. Computer Science .
+
+He, J., Li, X., Liao, L., Song, D., Cheung, W.K., 2016.
+
+Inferring
+a personalized next point-of-interest recommendation model with
+latent behavior patterns., in: AAAI, pp. 137 -- 143.
+
+Hochreiter, S., Schmidhuber, J., 1997.
+
+Neural computation 9, 1735 -- 1780.
+
+ory.
+978-3-642-24797-2_4.
+
+Long short-term mem-
+doi:10.1007/
+
+Liu, Q., Wu, S., Wang, L., Tan, T., 2016. Predicting the next location:
+A recurrent model with spatial and temporal contexts., in: AAAI,
+pp. 194 -- 200.
+
+Liu, X., Liu, Y., Aberer, K., Miao, C., 2013. Personalized point-of-
+interest recommendation by mining users' preference transition,
+in: CIKM, pp. 733 -- 738. doi:10.1145/2505515.2505639.
+
+Rendle, S., Freudenthaler, C., Schmidt-Thieme, L., 2010. Factorizing
+personalized markov chains for next-basket recommendation, in:
+WWW, pp. 811 -- 820. doi:10.1145/1772690.1772773.
+
+Rodrigues, F., Pereira, F.C., Alves, A., Jiang, S., Ferreira, J., 2012.
+Automatic classification of points-of-interest for land-use analysis,
+in: Proceedings of the fourth international conference on advanced
+geographic information systems, applications, and services (GEO-
+Processing), pp. 41 -- 49.
+
+Salakhutdinov, R., Mnih, A., 2007. Probabilistic matrix factorization,
+
+in: NIPS, pp. 1257 -- 1264.
+
+Sun, K., Jianbin, Q., Karimi, H.R., Fu, Y., 2020a. Event-triggered ro-
+bust fuzzy adaptive finite-time control of nonlinear systems with
+prescribed performance.
+IEEE Transactions on Fuzzy Systems
+doi:10.1109/TFUZZ.2020.2979129.
+
+Sun, K., Liu, L., Qiu, J., Feng, G., 2020b. Fuzzy adaptive finite-time
+fault-tolerant control for strict-feedback nonlinear systems. IEEE
+Transactions on Fuzzy Systems doi:10.1109/TFUZZ.2020.
+2965890.
+
+Sun, K., Qiu, J., Karimi, H.R., Gao, H., 2019. A novel finite-time con-
+trol for nonstrict feedback saturated nonlinear systems with track-
+ing error constraint. IEEE Transactions on Systems, Man, and Cy-
+bernetics: Systems doi:10.1109/TSMC.2019.2958072.
+
+Wang, F., Qu, Y., Zheng, L., Lu, C.T., Philip, S.Y., 2017. Deep and
+broad learning on content-aware poi recommendation, in: CIC, pp.
+369 -- 378. doi:10.1109/CIC.2017.00054.
+
+Xi, D., Zhuang, F., Liu, Y., Gu, J., Xiong, H., He, Q., 2019. Modelling
+of bi-directional spatio-temporal dependence and users' dynamic
+preferences for missing poi check-in identification, in: AAAI, pp.
+5458 -- 5465. doi:10.1609/aaai.v33i01.33015458.
+
+Xiao, X., Zheng, Y., Luo, Q., Xie, X., 2010.
+
+Finding similar
+users using category-based location history, in: Proceedings of
+the 18th SIGSPATIAL International Conference on Advances in
+Geographic Information Systems, pp. 442 -- 445. doi:10.1145/
+1869790.1869857.
+
+Xie, M., Yin, H., Wang, H., Xu, F., Chen, W., Wang, S., 2016. Learn-
+ing graph-based poi embedding for location-based recommenda-
+tion, in: CIKM, pp. 15 -- 24. doi:10.1145/2983323.2983711.
+Yang, C., Bai, L., Zhang, C., Yuan, Q., Han, J., 2017a. Bridg-
+ing collaborative filtering and semi-supervised learning: a neu-
+ral approach for poi recommendation, in: KDD, pp. 1245 -- 1254.
+doi:10.1145/3097983.3098094.
+
+Yang, C., Sun, M., Zhao, W.X., Liu, Z., Chang, E.Y., 2017b. A neural
+network approach to jointly modeling social networks and mobile
+trajectories. ACM Transactions on Information Systems (TOIS)
+35, 36. doi:10.1145/3041658.
+
+Yang, D., Zhang, D., Zheng, V.W., Yu, Z., 2015. Modeling user activ-
+ity preference by leveraging user spatial temporal characteristics
+in lbsns. IEEE Transactions on Systems, Man, and Cybernetics:
+Systems 45, 129 -- 142. doi:10.1109/TSMC.2014.2327053.
+Ye, J., Zhu, Z., Cheng, H., 2013. What's your next move: User activity
+prediction in location-based social networks, in: SDM, pp. 171 -- 
+
+179. doi:10.1137/1.9781611972832.19.
+
+Yin, H., Wang, W., Wang, H., Chen, L., Zhou, X., 2017. Spatial-aware
+hierarchical collaborative deep learning for poi recommendation.
+IEEE Transactions on Knowledge and Data Engineering 29, 2537 -- 
+2551. doi:10.1109/TKDE.2017.2741484.
+
+Zhang, D.Y., Wang, D., Zheng, H., Mu, X., Li, Q., Zhang, Y.,
+2017a. Large-scale point-of-interest category prediction using nat-
+ural language processing models, in: Big Data, pp. 1027 -- 1032.
+doi:10.1109/BigData.2017.8258026.
+
+Zhang, Y., Dai, H., Xu, C., Feng, J., Wang, T., Bian, J., Wang, B., Liu,
+T.Y., 2014. Sequential click prediction for sponsored search with
+recurrent neural networks., in: AAAI, pp. 1369 -- 1375.
+
+Zhang, Z., Li, C., Wu, Z., Sun, A., Ye, D., Luo, X., 2017b.
+recom-
+arXiv preprint arXiv:1704.04576 doi:10.1007/
+
+a neural network framework for next poi
+
+Next:
+mendation.
+s11704-018-8011-2.
+
+Zhao, P., Zhu, H., Liu, Y., Li, Z., Xu, J., Sheng, V.S., 2018. Where to
+go next: A spatio-temporal lstm model for next poi recommenda-
+tion. arXiv preprint arXiv:1806.06671 .
+
+Zhou, D., Wang, X., 2014. Probabilistic category-based location
+recommendation utilizing temporal influence and geographical in-
+fluence, in: DSAA, pp. 115 -- 121. doi:10.1109/DSAA.2014.
+7058061.
+
+Zhu, Y., Li, H., Liao, Y., Wang, B., Guan, Z., Liu, H., Cai, D., 2017.
+What to do next: Modeling user behaviors by time-lstm, in: IJCAI,
+pp. 3602 -- 3608. doi:10.24963/ijcai.2017/504.
+
+12
+
+

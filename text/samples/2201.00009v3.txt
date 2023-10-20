@@ -1,0 +1,1440 @@
+
+Improving Deep Neural Network Classification Confidence using
+Heatmap-based eXplainable AI
+Erico Tjoa1, Hong Jing Khok1, Tushar Chouhan2 and Guan Cuntai2
+
+Nanyang Technological University, 50 Nanyang Ave, Singapore, 639798, , Singapore
+ARTICLE INFO
+Keywords:
+explainable artificial intelligence
+interpretability
+medical AI
+Image processing
+
+ABSTRACT
+This paper quantifies the quality of heatmap-based eXplainable AI (XAI) methods w.r.t image
+classification problem. Here, a heatmap is considered desirable if it improves the probability of
+predicting the correct classes. Different XAI heatmap-based methods are empirically shown to
+improve classification confidence to different extents depending on the datasets, e.g. Saliency works
+best on ImageNet and Deconvolution on Chest X-Ray Pneumonia dataset. The novelty includes a
+new gap distribution that shows a stark difference between correct and wrong predictions. Finally,
+the generative augmentative explanation is introduced, a method to generate heatmaps capable of
+improving predictive confidence to a high level.
+
+1. Introduction
+Artificial intelligence (AI) and machine learning (ML)
+models have been developed with various levels of trans-
+parency and interpretability. Recent issues related to the
+responsible usage of AI have been highlighted by large
+companies like Google [13] and Meta [18]; this may reflect
+the increasing demand for transparency and interpretability,
+hence the demand for eXplainable Artificial Intelligence
+(XAI). In particular, the blackbox nature of a deep neural
+network (DNN) is a well-known problem in XAI. Many
+attempts to tackle the problem can be found in surveys like
+[1, 7, 9, 33].
+Popular XAI methods include post-hoc methods such
+asLocalInterpretableModel-agnosticExplanations(LIME)
+[21] and SHapley Additive exPlanations (SHAP) that uses
+a game-theoretical concept [14]. Many heatmap-generating
+XAI methods have also been developed for DNN, in partic-
+ular Class Activation Mappings (CAM) [36, 24], Layerwise
+Relevance Propagation (LRP) [3] and many other well-
+known methods, as listed in aforementioned surveys papers.
+These methods are appealing because heatmap-like attribu-
+tions are intuitive and easy to understand. Although there
+are other remarkable ways to investigate interpretability and
+explainability e.g. methods that directly attempt to visualize
+the inner working of a DNN [34, 16, 17], we do not cover
+them here. This paper focuses on heatmap-based methods.
+How good are heatmap-based XAI methods. Several
+existing efforts have also been dedicated to quantitatively
+measure the quality of heatmaps and other explanations. For
+example, heatmaps have been measured by their potentials
+to improve object localization performance [36, 24]. The
+pointing game [8, 20] is another example where localization
+concept is used to quantify XAI's performance. The "most
+relevant first" (MORF) framework has also been introduced
+
+Cuntai)
+
+ORCID(s): 0000-0002-1599-1594 (E. Tjoa); 0000-0002-0872-3276 (G.
+1Also affiliated with Alibaba Inc.
+2School of Computer Science and Engineering (SCSE), NTU
+
+to quantify the explainability of heatmaps by ordered re-
+moval of pixels based on their importance [23]; the MORF
+paper also emphasizes that there is a difference between
+computational relevance and human relevance i.e. objects
+which algorithms find salient may not be necessarily salient
+for a human observer. Others can be found e.g. in [32]. This
+paper quantifies the quality of a heatmap based on how much
+the heatmap improves classification confidence.
+Using heatmaps to improve the classification con-
+fidence of DNN. Heatmaps have been said to not "[tell]
+us anything except where the network is looking at" [22].
+In this work, we would like to refute such claims and
+show that heatmaps can be computationally useful. To test
+the usefulness of heatmaps in a direct way, we perform
+the Augmentative eXplanation (AX) process: combine an
+image  with its heatmap Ò to obtain higher probability
+of predicting the correct class, e.g. if () gives a 60%
+probability of making a correct prediction, we consider
+using Ò such that ( + Ò) yields 65%. We empirically
+show existing XAI methods have the potential to improve
+classificationconfidence.However,heatmapsareusuallynot
+designed to explicitly improve classification performance,
+hence improvements are not observed in general. This im-
+provement is quantified through a metric we call the Confi-
+dence Optimization (CO) score. Briefly speaking, CO score
+is a weighted difference between raw output values before
+and after heatmaps/attributions modify the images  + Ò.
+The metric assigns a positive/negative score if  + Ò in-
+creases/decreases the probability of making the correct pre-
+diction.
+This paper is arranged as the following. In the next
+section, AX and Generative AX (GAX) are demonstrated
+through a two-dimensional toy example. Explicit form of
+heatmaps/attribution values can be obtained in the toy ex-
+ample, useful for lower level analysis and direct observa-
+tion.Thefollowingsectiondescribesdatasetpre-processing,
+computation of CO scores for AX process on existing XAI
+methods, formal definition GAX process and the results.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 1 of 14
+
+0
+
+We then present our results, starting with the novel find-
+ing: distribution gap as correctness indicators, CO scores
+distribution for common XAI methods, followed by high
+scores attained by GAX heatmaps and finally qualitative
+aspects of the methods. Our results on ImageNet and Chest
+X-Ray Images for Pneumonia detection will be presented in
+the main text. Similar results on other datasets (1) COVID-
+19 Radiography Database (2) credit card fraud detection
+(3) dry bean classification can be found in the appendix.
+All codes are available in https://github.com/ericotjo001/
+explainable_ai/tree/master/gax.
+
+2. Formulation in Low Dimensional Space
+
+Figure 1: Solid red (blue) lines are 1(2) components of
+sample data . Dotted red (blue) lines are Ò1(Ò2) components
+of heatmaps Ò with  = 1.2. Heatmap values or attribute
+importances are assigned large values when either (1) the true
+components 1, 2 differ significantly (2) the  transforms the
+data heterogenously i.e. not  ࣈ (2 + 1) 
+4 . See interpretations
+in the main text for more details.
+
+0
+
+1
+
+ 0
+
+The application presented in this paper is based on
+the following concept. We illustrate the idea using binary
+classification of data sample  ࢠ Ó2, a 2D toy example. Let
+ =  −1 where  ࢠ Ó2 and  ࢠ Ó2×2 is invertible. Let
+the true label/category of sample  be  =  so
+ 1
+ +
+that it is compatible with one-hot encoding usually used in a
+DNN classification task. Conventions:
+, clearly an element of a vector space. The shape of
+1. Output space  . Let the output variable be  = 1
+
+Basis of  is  =(1) = 1
+
+2
+this vector is the same as the output shape of the last fully
+connected layer for the standard binary classification.
+Classpredictioncanbeperformedinthewinner-takes-all
+manner, for example, if 1 = 1, 2 = 0, then the label is
+ =  = 1. If 1 = 0.1, 2 = 0.5, then  = 2.
+2. Sample space  is a vector space with the corresponding
+basis  = {  ࢼ  ࢠ  } = {(1) =  (1), (2) =
+ (2)} so  = 1(1) + 2(2) ࢠ .
+3. Pixelwise sample space is the same sample space, but
+we specifically distinguish it as the sample space with
+the canonical basis. We will need this later, because
+pixelwise space has "human relevance", since human ob-
+servers perceive the components (pixels) directly, rather
+than automatically knowing the underlying structure (i.e.
+
+, (2) = 0
+
+.
+
+0
+
+1
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+ 1
+
+0
+
+ + 2
+
+ 0
+
+1
+
+.
+
+(2)
+
+ 0
+
+1
+
+.
+
+) =
+
+ (1)
+
+ + 2
+
+we cannot see 1, 2 directly). We denote a sample in this
+basis with  = 1
+4. A heatmap or attribute vector Ò in this paper has the
+same shape as  and can be operated directly with 
+via component-wise addition. Thus, they also belong to
+sample space or the pixelwise sample space. Writing a
+heatmap in the sample space Ò = (1) + (2) is useful
+for obtaining a closed form expression later.
+The perfect classifier, . Define (, Ǝ) = (Ǝ) as
+a trainable classifier with parameters Ǝ ࢠ Ó2×2. Let Ǝ =
+ −1 and the activation  be any strictly monotonic func-
+tion, like the sigmoid function. Then, the classifier () =
+( −1) ࢠ Ó2 is perfect, in the sense that, if 1 > 2, then
+ = () = 1; likewise if 1 < 2, then  = 2 and,
+for 1 = 2 either decision is equally probable. This is easily
+ 1
+seen as the following: () = ( −1(1(1) + 2(2))) =
+(1
+Confidence optimization score (CO score), . In this
+section, we show a simple explicit form of CO score for
+better illustration; in the experimental method section, for-
+mal definition will be given. The score increases if  + Ò
+leads to an improvement in the probability of correctly pre-
+dicting label , hence the score's definition depends on the
+groundtruth label. Throughout this section, for illustration,
+we use  = 1(1) + 2(2) with groundtruth label  = 1, i.e.
+1 > 2. Define the CO score as
+
+ ( + Ò) − ()
+1 increases the score. For  = 2, replace 1
+
+(1)
+For the perfect classifier, see that 1( + Ò) > 1() and
+2( + Ò) < 2() contribute to a larger . In other words,
+increasing the probability of predicting the correct label  =
+Augmentative explanation. AX is defined here as any
+modification on  by Ò that is intended to yield positive
+the CO score, i.e to increase the probability of making
+a correct classification. This paper mainly considers the
+simplest implementation, namely  + Ò. Let us consider a
+few possibilities. Suppose  =  and Ò = .
+= 1 − 2 > 0.
+In other words, choosing the image as the heatmap itself
+improves the score. However, as a heatmap or attribute
+vector, Ò is useless, since it does not provide us with any
+informationabouttherelativeimportanceofthecomponents
+of  in canonical basis, which is the part of data directly
+visible to the observer. Even so, Ò =  has computational
+relevance to the model, since 1, 2 are modified in the
+correctdirection.Ouraimistofindcomputationallyrelevant
+Ò that does not score zero in "human relevance", figuratively
+speaking. We therefore rule out obviously uninformative
+heatmap in the upcoming sections. Further, consider similar
+situation but set  to sigmoid function. Simply setting Ò = 
+will no longer increase the score significantly all the time.
+Since sigmoid is asymptotic, when 1, 2 are sufficiently
+far away from zero, the increase will be so negligible, the
+
+We get  =  1
+
+(, Ò) = 1
+
+ (21)−(1)
+
+ with −1
+
+ 
+
+(22)−(2)
+
+.
+
+
+
+−1
+
+1
+
+−1
+
+−1
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 2 of 14
+
+1 − 2 may be large. Hence, we use the raw DNN output
+
+heatmapwillbeuninformativeeventhoughthemagnitudeof
+in our main experiment, without sigmoid, softmax etc (in
+our experiment, we provide a comparison with the softmax
+version).
+Generative Augmentative EXplanation (GAX) is an
+AX process where the heatmap Ò =  ࢩ  is generated by
+tuning the trainable parameter  so that  is optimized; ࢩ
+denotes component/pixel-wise multiplication. Here we will
+define Ɗ = 1 as the term that we maximize by hand,
+for clarity and illustration. By comparison, in the main
+experiment, we directly perform gradient descent on −1
+(plus regularization terms) to generate GAX heatmaps, i.e.
+we minimizeatotalloss.TostartwithGAX,recallourchoice
+of heatmap written in sample space basis,
+
+Ò =  ࢩ  = (1) + (2)
+
+. We thus have 
+
+than the pixelwise sample space form Ò =  1122
+ 
+ 111+212
+ ࢩ  of eq. (2), we obtain 12
+
+(2)
+This form is desirable as it can be manipulated more easily
+following. From RHS of eq. (2), get  (1) +  (2) =
+score, the aim is to find parameter  that maximizes  − ,
+i.e. find ࢩ = ( − ). Expanding the terms in
+221+222
+the difference between the components gives us
+
+, as the
+ =  −1( ࢩ ). To increase CO
+. Taking
+
+ ࢩ
+
+
+
+
+
+Ò =( + ) ࢩ 
+
+= + 
+
+ ( −1
+
+(4)
+
+ ࢩ 
+. Examples
+
+11 − −1
+22 − −1
+
+21 )(111+212)
+12 )(121+222)
+
+−( −1
+
+ 
+
+ is the rotation matrix  =   −
+
+To visualize the heatmap, here we use the example where
+of heatmaps plotted along with the input  are shown in
+Figure 1, to be discussed in the next subsection. If  = 0, 
+are identical to , so binary classification is straightforward
+and requires no explanation. Otherwise, consider  being
+a small deviation from 0. Such slightly rotated system is a
+good toy-example for the demonstration of component-wise
+"importance attribution". This is because if  belongs to
+category  = 1 with high 1 component, then it still has a
+more significant first component 1 after the small rotation.
+Thus,aheatmapthatcorrespondinglygivesahigherscoreto
+the first component is "correct" in the sense that it matches
+
+Ɗ ࣕ − 
+=1( −1
+
+11 −  −1
+
+21 )(111 + 212)
+
+− 2( −1
+
+22 −  −1
+
+12 )(121 + 222)
+
+(3)
+
+Maximizing Ɗ to a large Ɗ > 0 will clearly optimize
+(, Ò) = (1) − (2) + () − (), assuming  is
+strictly monotonously increasing.
+Heatmap obtained through optimization using gradient
+࢟Ɗ with the choice  = ࢟Ɗ, hence Ɗ + ࢟Ɗ2 ࣙ
+ascent. Recall that gradient ascent is done by Ɗ ࢐ Ɗ +  
+Ɗ. Hence, the heatmap after  steps of optimization is given
+by
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+4 =  
+
+the intuition of attribute importance: high Ò1 emphasizes the
+fact that high 1 literally causes high 1. Furthermore, if the
+systemrotatesby ࢧ4,weseethattheclassificationbecomes
+harder. This is because the components 1 and 2 start to
+4, and consequently,
+look more similar because  
+the attribution values will be less prominent as well.
+2.1. Interpretability
+DISCLAIMER: some reviewers who are familiar with a
+heatmap as the explanation or a localization map tend to fo-
+cus their attention on localization. While we do observe our
+resulting heatmaps, the formulas here are in no way aimed
+to improve object localization; we do not claim to achieve
+good localization. To reiterate, in this paper, heatmaps are
+evaluated based on their ability to computationally optimize
+the classification confidence.
+Homogenous and Heterogenous transformations. For
+the lack of better words, we refer to transformations like
+4 for  = ..., −1, 0, 1, ...as
+ ࣈ ࢧ4ormoregenerally (2+1) 
+homogenous transformations, since the components become
+more indistinguishable (recall:  
+4). Otherwise,
+4 =  
+the transformation is called heterogenous. These definitions
+are given here with the intention of drawing parallels be-
+tween (1) the toy data that have been homogenously trans-
+formed (hence hard to distinguish) and (2) samples in real
+datasets that look similar to each other, but are categorized
+differently due to a small, not obvious difference.
+Interpretation of attribute values for distinct non-negative
+components. In the pixelwise sample space, we will be more
+interested in non-negative data sample 1, 2 ࣙ 0 since we
+only pass [0, 1]-normalized images for GAX. Figure 1 left
+shows a data sample with distinct components, indicated
+by high 1 = 0.95 component and low 2. Non-negative
+data samples are found around  ࢠ [0, ࢧ2]. High 1
+value is given high Ò1 attribution score while low 2 is
+given a suppressed value of Ò2 near  = 0, matching our
+intuition as desired. As rotation proceeds to ࢧ4, there is
+a convergence between 1 and 2, making the components
+more indistinguishable. At  = ࢧ4 exactly, we still see high
+Ò1 that picks up high signal due to high 1, also as desired.
+Between ࢧ4and ࢧ2,rotationstartstoflipthecomponents;
+in fact, at ࢧ2,  = [0, 1] is categorized as  = 1 and
+ = [1, 0] as  = 2. The attribution value Ò2 becomes more
+prominent,highlighting 2,alsoasdesiredforourprediction
+ofclass  = 1.InFigure1middle,decreased/increased 1, 2
+areassignedlessprominent Ò1, Ò2 respectivelythanFigure1
+left,sincethemodelbecomeslessconfidentinitsprediction,
+also consistent with our intuition.
+The other extreme. Figure 1 right shows 1 and 2 that
+do not differ significantly. At homogeneous transformation
+4, heatmaps are almost equal to the input . As
+ ࣈ ± 
+expected, it will be difficult to pick up signals that are very
+similar, although very close inspection might reveal small
+differences that could probably yield some information (not
+in the scope of this paper). Other interpretations can be
+found in appendix More interpretations in low dimensional
+example.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 3 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 2: Distribution of CO scores obtained through AX process on existing XAI methods. Classification probability is improved
+if the score is positive. All distributions show gaps between CO scores of data whose classes are correctly and wrongly predicted
+(e.g. red arrows); correct prediction tends to yield higher CO scores. The result is obtained using Resnet34_1 on Pneumonia
+dataset. [sum] denotes AX process with  + Ò.
+
+Table 1
+Fine-tuning results for pre-trained models on Chest X-Ray
+Pneumonia test dataset. The architectures marked with _sub
+are deliberately trained to achieve lower validation accuracy for
+comparison.
+
+Resnet34_1
+
+Resnet34_sub Alexnet _sub
+
+0.800
+0.757
+1.000
+0.99
+
+0.636
+0.632
+1.000
+0.8
+
+0.745
+0.726
+0.951
+0.8
+
+accuracy
+precision
+
+recall
+
+val. acc.
+
+3. Experimental Method and Datasets
+In the previous section, we described how heatmap Ò
+can be used to improve classification probability. More pre-
+cisely,  + Ò yields higher confidence in making a correct
+prediction compared to  alone when used as the input to
+the model . We apply the same method to real dataset
+ImageNet [6] and Chest X-Ray Images (Pneumonia) from
+Kaggle[15].ThePneumoniadatasetneedsreshuffling,since
+Kaggle's validation dataset consists of only of 16 images
+for healthy and pneumonia cases combined. We combined
+the training and validation datasets and then randomly draw
+266/1083 healthy and 790/3093 pneumonia images for vali-
+dation/training. There are 234/390 healthy/pneumonia im-
+ages in the test dataset. Images are all resized to 256 ×
+256. The X-Ray images are black and white, so we stack
+them to 3 channels. Images from ImageNet are normalized
+according to suggestion in the pytorch website, with  =
+[0.485, 0.456, 0.406],  = [0.229, 0.224, 0.225].
+For both datasets, we use pre-trained models Resnet34
+[10] and AlexNet [12] available in Pytorch. The models
+are used on ImageNet without fine-tuning. Resnet34 is fine-
+tuned for Pneumonia binary classifications, where the first
+8 modules of the pre-trained model (according to pytorch's
+
+arrangement)areused,plusanewfully-connected(FC)layer
+with two output channels at the end. Similarly, for Alexnet,
+thefirst6modulesareusedwithatwo-channelFCattheend.
+For Resnet34, we will use Resnet34_1 and Resnet34_sub
+respectively trained to achieve 99% and 80% validation
+accuracies for comparison. The same targets were specified
+for Alexnet, but only 80% validation accuracy was achieved,
+thus only Alexnet_sub will be used. Adam optimizer is
+used with learning rate 0.001,  = (0.5, 0.999). The usual
+weight regularization is not used during optimization i.e. in
+pytorch's Adam optimizer, weight decay is set to zero be-
+cause we allow zero attribution values in large patches of the
+images. No number of epochs are specified. Instead, training
+is stopped after the max number of iterations (240000)
+or the specified validation accuracy is achieved after 2400
+iterations have passed. At each iteration, samples are drawn
+uniform-randomly with batch size 32.
+Further details on COVID-19 Radiography Database,
+credit card fraud detection and dry bean classification can
+be found in the appendix.
+Multi-class CO scores on existing XAI methods via
+AX process. Denote the deep neural network as DNN,
+define the CO score as the weighted difference between the
+predictive scores altered by AX process and the original
+predictive scores,
+
+(, Ò) =  ( + Ò) − ()
+
+(5)
+where  ࢠ Ó is defined as the score constants,  the
+number of classes,  = 1 if the groundtruth belongs to
+label/category  and  = −1ࢧ( − 1) for all  ࣔ .
+This equation is the general form of eq. (1). In our im-
+plementation, each DNN's output is raw, i.e. last layer is
+FC with  channels without softmax layer etc (the softmax
+version is available in the appendix). A heatmap Ò that
+yields  = 0 is uninformative (see appendix). We compute
+CO scores for heatmaps generated by six different exist-
+ing heatmap-based XAI methods (all available in Pytorch
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 4 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+applied Ò ࢐ Òࢧ(Ò)beforeweperformtheAXprocess.
+
+Captum), namely, Saliency [27], Input*Gradient [26], Layer
+GradCAM [24], Deconvolution [34], Guided Backpropaga-
+tion [28] and DeepLift [25]. Each heatmap is generated w.r.t
+predicted target, not groundtruth e.g. if y_pred=DNN(x)
+predicts class , then h=DeepLIFT(net).attribute(input, tar-
+get=n) in Pytorch Captum notation. Then normalization is
+Note: For ImageNet,  = 1000, chest X-Ray,  = 2. We
+also consider ( ࢩ Ò), where ࢩ denotes component-wise
+multiplication. The idea is generally to interact Ò with 
+so that, for any interaction , higher probability of correct
+prediction is achieved by ((, Ò)); see appendix for their
+results. GradCAM of 'conv1' layer is used in this paper.
+Othermethodsanddifferentarbitrarysettingsaretobetested
+in future works.
+Achieving high  with GAX. Here, GAX is the  + Ò
+AX process where heatmaps Ò = Ò( ࢩ ) are generated
+by training parameters  to maximize . Maximizing 
+indefinitely is impractical, and thus we have chosen  = 48
+for ImageNet dataset, a score higher than most  attained
+by existing XAI methods we tested in this experiment.
+Tanh activation is used both to ensure non-linearity and to
+ensure that the heatmap is normalized to [−1, 1] range, so
+that we can make a fair comparison with existing heatmap-
+based XAI methods. For ImageNet, 10000 data samples are
+randomly drawn from the validation dataset for evaluating
+GAX. For pneumonia, all data samples are used. Optimiza-
+tion is done with Adam optimizer with learning rate 0.1,
+ = (0.9, 0.999). This typically takes less than 50 steps of
+optimization, a few seconds per data sample using a small
+GPU like NVIDIA GeForce GTX 1050.
+Similarity loss and GAX bias. In our implementation,
+we minimize −. However, this is prone to producing
+heatmaps that are visually imperceptible from the image.
+Since  is initialized as an array of 1s with exactly the same
+shape (, Ò, ) = (3, 256, 256) as , the initial heatmap is
+simply Ò =  ࢩ  = . Possibly, small changes in  over
+the entire pixel space is enough to cause large changes in
+the prediction, reminiscent of adversarial attack [29, 2]. We
+solve this problem by adding the similarity loss, penalizing
+Ò = . The optimization is now done by minimizing the
+modified loss, which is negative CO score plus similarity
+loss
+
+(Ò −  + )2
+
+−1
+
+ + 
+
+(6)
+
+ = − + 
+
+where  = 100 is the similarity loss factor. computes
+
+the average over all pixels. Division ࢧ and square 2 are
+performed component/pixel-wise. Pixel-wise division by 
+normalizes the pixel magnitude, so that small pixel values
+can contribute more significantly to the average value. The
+small term  = 10−4 is to prevent division by zero and
+possibly helps optimization by ensuring that zero terms
+do not make the gradients vanish. Furthermore, for X-Ray
+images, with many zeros (black region), the similarity factor
+seems insufficient, resulting in heatmaps that mirror the
+input images. GAX bias is added for the optimization to
+
+work, so that Ò =  ࢩ  + , where  is 0.01 array
+of the same shape (, Ò, ) as well. Note: the similarity
+loss is positive, since  used here is [0, 1] normalized (by
+comparison, the standard Resnet34 normalization can result
+in negative pixels).
+
+4. Results and Discussions
+Recall that we use pre-trained models for ImageNet.
+For pneumonia dataset, the predictive results of fine-tuning
+models are shown in table 1. AX and GAX processes will be
+applied on top of these models. Here, we observe possibly
+novel gaps in CO scores distribution and show that GAX
+can possibly be used to detect false distinct features. Similar
+results on COVID-19 Radiography Database, credit card
+fraud detection and dry bean classification will be presented
+in the appendix.
+4.1. Gaps in CO Scores Distribution
+Here, we present the main novel finding: the gap in CO
+distribution. AX process does not optimize any losses to
+distinguish correct predictions from the wrong ones, but
+Figure 2 shows distinct gaps between them (shown by the
+red arrows). Possible reason is as the following. Heatmaps
+used in AX process are generated for the class  pre-
+dicted by the DNN, e.g. h=DeepLIFT(net).attribute(input,
+target=); recall: we use Pytorch Captum notation. If the
+prediction is correct, there is a match between  and the
+groundtruth label  that that affects CO score through .
+What's the significance of the distribution gap? The
+different distributions found in Figure 2 and 3 indicate
+that some existing XAI methods possess more information
+to distinguish between correct and wrong predictions than
+the others. With this, we might be able to debunk some
+claims that heatmaps are not useful [22]: regardless of the
+subjective assessment of heatmap shapes, heatmaps might
+be relatively informative after some post-processing. In the
+absence of such information, we expect to see uniformly
+random distribution of scores. Since we have observed dis-
+tinct distributional gaps on top of general difference in the
+statistics, we have shown that some heatmap-based XAI
+methods combined with CO score might be a new indicator
+tohelpsupportclassificationdecisionmadebytheparticular
+DNN architecture.
+What's its application? In practice, when new samples
+are provided for clinical support, human data-labeling might
+still be needed, i.e. assign ground-truth . However, errors
+sometimes happen. AX method can be used to flag any such
+errorbymatchingtheCOscore(checkwhetherthescorelies
+above or before the large gap).
+Variation. Furthermore, the extent of CO score distri-
+bution gap is clearly dependent on the dataset and DNN
+architecture. As it is, the discriminative capability of differ-
+ent XAI methods is thus comparable only within the same
+system of architecture and dataset. ImageNet dataset shows
+asmallergapcomparedtopneumoniadatasetandthelargest
+gapinImageNetisproducedbytheSaliencymethod,asseen
+inFigure3(B).Bycomparison,thelargestgapinpneumonia
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 5 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 3: Similar to Figure 2, but the results are obtained from (A) Resnet34 architecture on Pneumonia dataset, but with less
+fine-tuning (Resnet34_sub). (B) Resnet34 on ImageNet.
+
+theXAImethodisdetermined,itcanbeusedasasupporting
+tool and indicator for the correctness of prediction.
+4.2. Improvement in Predictive Confidence with
+
+GAX
+The higher the CO scores are, the better is the improve-
+ment in predictive probability. Is it possible to achieve even
+higher improvement, i.e. higher CO score? Figure 2 and 3
+show the boxplots of CO scores for AX process applied on
+allsixXAImethodswetestedinthisexperiment;histograms
+applied on select XAI methods are also shown. Different
+XAI methods achieve different CO scores. For pneumonia
+dataset, very high CO scores (over 80) are attained by
+Deconvolution methods. For ImageNet, highest CO scores
+attained are around 10. To attain even higher scores, Gener-
+ative AX (GAX) will be used.
+Using GAX on ImageNet,  ࣙ 48 can be attained as
+shown in Figure 4, where the time evolution of CO score for
+each image is represented by a curve. For Resnet34, most
+of the images attains  ࣙ 48 within 50 iterations. Alexnet
+GAXoptimizationgenerallytakesmoreiterationstoachieve
+the target. High  implies high confidence in making the
+correct prediction. We have thus obtained heatmaps and
+attribution values with computational relevance i.e. they can
+be used to improve the model's performance. Note: (1) all
+
+Figure 4: CO score optimization through GAX  + Ò( ࢩ
+) on ImageNet data using pre-trained Resnet34 (blue) and
+Alexnet (red), where each curve corresponds to a single image.
+The target  is set to 48, exceeding most CO scores of other
+methods.
+
+dataset is produced by Deconvolution. Comparing Figure 2
+and Figure 3(A), the gaps appear to be wider when DNN is
+better trained. Further investigation is necessary to explain
+the above observations, but, to leverage this property, users
+are encouraged to test AX process on different XAI methods
+tofindtheparticularmethodthatshowsthelargestgap.Once
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 6 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 5: (A) GAX dynamic heatmaps displayed with a slider for users to observe the evolution of heatmaps through time
+steps. (B-E) GAX heatmaps generated on Resnet34 for (B) healthy chest X-Ray and (C) chest X-Ray of a patient with bacterial
+pneumonia; and for ImageNet images (D) a sheep dog image and (E) a planetarium image. (F) An instance of bacterial pneumonia
+chest X-Ray showing an irregular posture with heavy noise (top right). The empty space might have been used as a false distinct
+feature for pneumonia classification. Three heatmaps for each image correspond to the attribution values assigned to R, G and
+B color channels respectively. "Abs max" specifies the maximum absolute value attained by the heatmap throughout all three
+channels (max is 1, due to Tanh activation). Positive/negative heatmap or attribution values (red/blue) indicate pixels to be
+increased/reduced in intensity to attain higher prediction confidence. At higher CO scores, negative values emerge.
+
+images tested do attain the target  (not shown), although
+some of the images took a few hundreds iterations (2)
+we exclude images where predictions are made incorrectly
+by the pre-trained or fine-tuned model. By comparison, in
+general, using heatmaps derived from existing methods for
+AX process does not yield positive CO scores i.e. does not
+improve predictive probability for the correct class (see es-
+pecially Figure 3(B)). Furthermore, for ImageNet, typically,
+ ࣘ 10. Other boxplots are shown in appendix (including
+results run with pytorch v2.0).
+The improvement of predictive accuracy across the en-
+tire samples within a particular dataset has been limited.
+As shown in table 2 (appendix), we only observe small
+improvementsforinstanceswheretheoriginalperformances
+are sub-optimal (coloured blue). To be fair, some of them
+can even be ruled out as noise. Some other methods retain
+their classification accuracy, which means they effectively
+improve the classification confidence at no cost, but some
+methodssuchasInputXGradienthavedegradedtheaccuracy
+across all datasets and models.
+4.3. Qualitative Assessment of GAX Heatmaps
+Heatmaps in GAX are obtained through a process opti-
+mization through a finite number of time steps. We provide
+matplotlib-based graphic user interface (GUI) for users to
+
+observe the evolution of heatmap pixels through GAX; see
+Figure 5(A). This provides users some information about
+the way the DNN architecture perceives input images. But,
+how exactly can user interpret this? Recall that the main
+premiseofthispaperisthecomputationalrelevance:GAXis
+designed to generate heatmaps that improve the confidence
+in predicting the correct label numerically. Hence, the visual
+cues generated by the GAX heatmaps show which pixels
+can be increased or decreased in intensity to give higher
+probability of making the correct prediction.
+DNN optimizes through extreme intensities.Heatmapsin
+Figure 5(B-E) show that predictive confidence is improved
+generally through optimizing regions of extreme intensity.
+For example, to improve CO scores through GAX, the pix-
+els corresponding to white hair of the dog in Figure 5(D)
+are assigned positive values (red regions in the heatmaps).
+Dark region of healthy chest X-Ray in (B) are subjected
+to stronger optimization (intense red or blue) to achieve
+better predictive confidence. The DNN architecture seems
+to be more sensitive to changes in extreme values in the
+image. In a positive note, this property might be exploited
+duringtraining:thisisprobablywhynormalizationto [−1, 1]
+range in the standard practice of deep learning optimization
+works compared to [0, 1]. On the other hand, this might be a
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 7 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+problem to address in the future as well: heatmaps that boost
+algorithmic confidence are not intuitive to human viewers.
+We can ask the question: is it possible to train DNN such
+that its internal structure is inherently explainable (e.g. if
+localization is accepted as an explanation, does there exist
+an architecture whose predictive confidence is tied directly
+to localization?). For comparison, existing XAI methods
+typically specify extra settings to obtain these explanations.
+Unfortunately, the settings can be arbitrary, e.g. GradCAM
+paper [24] sets an arbitrary 15% threshold of max intensity
+for binarization. To obtain explanation with better integrity,
+thesettingsmightneedtobespecifiedincontextbeforehand.
+In this paper, we do NOT address such arbitrary settings
+taylored to attain subjectively acceptable explanation or to
+maximize high IoU for bounding boxes.
+Discriminatory but unrefined patterns.Pneumoniadataset
+consists of chest X-Ray of healthy patients and patients
+with several types of pneumonia with different recognizable
+patterns. Bacterial pneumonia has a focal lobar consolida-
+tion, while viral pneumonia has diffuse interstitial patterns;
+normal chest X-Ray has neither. This turns out to affect the
+shapeofGAXheatmaps.Figure5(B)showsatypicalnormal
+Chest X-Ray pattern. By comparison, Figure 5(C) shows a
+heatmap generated on bacterial pneumonia. In the latter, we
+see the drastic change in the heatmap features, especially
+high-intensity stripes around the lobar consolidation. There
+is a possibility that novel class-discriminatory patterns lie
+hidden within heatmaps generated by GAX. The heatmaps
+appear unrefined, but this might be related to the internal
+structures of the DNN architecture itself, as described in the
+following section.
+Limitations and Future works. (1) Optimized regions
+prefer extreme intensities (very bright or very dark regions).
+The heatmaps in Figure 5(B-E) indicate that we are able
+to optimize predictive probability through relative intensity
+manipulationofpixelpatternsthatarenothumanlyintuitive.
+Totrulycapturevariationsinpatternsandnotrelyheavilyon
+large difference in intensity, a layer or module specifically
+designed to output very smooth representation might be
+helpful. Training might take longer, but we hypothesize
+that skewed optimization through extreme intensity can be
+prevented.(2)Someoptimizedfeaturesarerifewithartifact-
+looking patterns. An immediate hypothesis that we can offer
+isthefollowing.TheinternalstructureoftheDNN(thesetof
+weights)isnoisy,thus,eveniffeaturesareproperlycaptured,
+theyareamplifiedthroughnoisychannels,yieldingartifacts.
+This is indicative of the instability of high dimensional
+neuron activations in a DNN, a sign of fragility against
+adversarial attack we previously mentioned. How should we
+address this? We need DNN that are robust against adversar-
+ial attack; fortunately, many researchers have indeed worked
+on this problem recently. (3) The regularity of data distri-
+bution is probably an important deciding factor in model
+training. In cases where the X-Ray images are not taken
+in a regular posture, the empty space can become a false
+"distinct feature", as shown in Figure 5(F). While this may
+indicate a worrying trend in the flawed training of DNN or
+
+data preparation (hence a misguided application) we believe
+GAX can be used to detect such issue before deployments.
+Related future studies maybe aimed at quantifying the effect
+of skewed distribution on the appearance of such "false
+prediction" cases. (4) In the future, GAX can be tested on
+different layers of a DNN e.g. we can leverage the weakly
+supervised localization of CAM to attain visually sensible
+heatmaps. Also see appendix for more, e.g. implementation-
+specific limitations etc.
+
+5. Conclusion
+We have investigated a method to use heatmap-based
+XAI methods to improve DNN's classification performance.
+The method itself is called the AX process, and the im-
+provement is measured using a metric called the CO score.
+Some heatmaps can be directly used to improve model's
+prediction better than the others as seen by the boxplots
+of score distribution. The distribution of scores shows a
+novel gap distribution, an interesting feature that develops
+without any specific optimization. GAX is also introduced
+to explicitly attain high improvement in predictive perfor-
+mance or help detect issues. This work also debunks claims
+that heatmaps are not useful through the improvement of
+predictive confidence. We also give explanations on DNN
+behaviour consistent with the standard practice of deep
+learning training. From the results, we support the notion
+that computationally relevant features are not necessarily
+relevant to human.
+Summary of novelties and contributions: (1) CO scores
+provideempiricalevidenceforinformativecontentofheatmaps
+(2) the distribution gap in CO scores may be a new indicator
+in predictive modelling (3) distinct (albeit unrefined) class-
+dependentpatternsthatemergeonGAX-generatedheatmaps
+could be used as discriminative signals. Overall, we also
+provide insights into the DNN's behaviour.
+
+6. Acknowledgment
+This research was supported by Alibaba Group Hold-
+ing Limited, DAMO Academy, Health-AI division under
+Alibaba-NTU Talent Program, Alibaba JRI. The program
+is the collaboration between Alibaba and Nanyang Techno-
+logical university, Singapore. This work was also supported
+by the RIE2020 AME Programmatic Fund, Singapore (No.
+A20G8b0102).
+
+References
+[1] Adadi, A., Berrada, M., 2018. Peeking inside the black-box: A survey
+IEEE Access 6, 52138 -- 
+on explainable artificial intelligence (xai).
+52160. doi:10.1109/ACCESS.2018.2870052.
+[2] Akhtar, N., Mian, A., 2018. Threat of adversarial attacks on deep
+learning in computer vision: A survey. IEEE Access 6, 14410 -- 14430.
+doi:10.1109/ACCESS.2018.2807385.
+[3] Bach, S., Binder, A., Montavon, G., Klauschen, F., Müller, K.R.,
+Samek, W., 2015. On pixel-wise explanations for non-linear classifier
+decisions by layer-wise relevance propagation. PLOS ONE 10, 1 -- 
+46. URL: https://doi.org/10.1371/journal.pone.0130140, doi:10.
+1371/journal.pone.0130140.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 8 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Discovery and Data Mining, Association for Computing Machinery,
+New York, NY, USA. p. 1135 -- 1144. URL: https://doi.org/10.1145/
+2939672.2939778, doi:10.1145/2939672.2939778.
+[22] Rudin, C., 2019. Stop explaining black box machine learning models
+for high stakes decisions and use interpretable models instead. Nature
+Machine Intelligence 1, 206 -- 215. URL: https://doi.org/10.1038/
+s42256-019-0048-x, doi:10.1038/s42256-019-0048-x.
+[23] Samek, W., Binder, A., Montavon, G., Lapuschkin, S., Müller, K.,
+2017. Evaluating the visualization of what a deep neural network
+IEEE Transactions on Neural Networks and Learning
+has learned.
+Systems 28, 2660 -- 2673.
+[24] Selvaraju, R.R., Das, A., Vedantam, R., Cogswell, M., Parikh,
+D., Batra, D., 2016. Grad-cam: Why did you say that? visual
+explanations from deep networks via gradient-based localization.
+CoRR abs/1610.02391.
+URL: http://arxiv.org/abs/1610.02391,
+arXiv:1610.02391.
+[25] Shrikumar, A., Greenside, P., Kundaje, A., 2017. Learning important
+features through propagating activation differences, PMLR, Interna-
+tional Convention Centre, Sydney, Australia. pp. 3145 -- 3153. URL:
+http://proceedings.mlr.press/v70/shrikumar17a.html.
+[26] Shrikumar, A., Greenside, P., Shcherbina, A., Kundaje, A., 2016. Not
+just a black box: Learning important features through propagating
+activation differences. ArXiv abs/1605.01713.
+[27] Simonyan, K., Vedaldi, A., Zisserman, A., 2014. Deep inside
+convolutional networks: Visualising image classification models and
+saliency maps, in: Workshop at International Conference on Learning
+Representations.
+[28] Springenberg, J.T., Dosovitskiy, A., Brox, T., Riedmiller, M.A.,
+2015. Striving for simplicity: The all convolutional net. CoRR
+abs/1412.6806.
+[29] Szegedy, C., Zaremba, W., Sutskever, I., Bruna, J., Erhan, D., Good-
+fellow, I., Fergus, R., 2014. Intriguing properties of neural networks.
+CoRR abs/1312.6199.
+[30] Tjoa, E., Cuntai, G., 2021a. Self reward design with fine-grained
+interpretability. arXiv preprint arXiv:2112.15034 .
+[31] Tjoa,E.,Cuntai,G.,2021b. Twoinstancesofinterpretableneuralnet-
+work for universal approximations. arXiv preprint arXiv:2112.15026
+.
+[32] Tjoa, E., Cuntai, G., 2022. Quantifying explainability of saliency
+methods in deep neural networks with a synthetic dataset.
+IEEE
+Transactions on Artificial Intelligence .
+[33] Tjoa, E., Guan, C., 2020. A survey on explainable artificial intelli-
+gence (xai): Toward medical xai. IEEE Transactions on Neural Net-
+works and Learning Systems , 1 -- 21doi:10.1109/TNNLS.2020.3027314.
+[34] Zeiler, M.D., Fergus, R., 2014. Visualizing and understanding con-
+volutional networks, in: Fleet, D., Pajdla, T., Schiele, B., Tuytelaars,
+T. (Eds.), Computer Vision  --  ECCV 2014, Springer International
+Publishing, Cham. pp. 818 -- 833.
+[35] Zhang,Y.,Wu,J.,Cai,Z.,Du,B.,Philip,S.Y.,2019. Anunsupervised
+parameter learning model for rvfl neural network. Neural Networks
+112, 85 -- 97.
+[36] Zhou, B., Khosla, A., Lapedriza, A., Oliva, A., Torralba, A., 2016.
+Learning deep features for discriminative localization, in: 2016 IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR),
+pp. 2921 -- 2929. doi:10.1109/CVPR.2016.319.
+
+[8] Fong, R.C., Vedaldi, A., 2017.
+
+[4] Chowdhury, M.E., Rahman, T., Khandakar, A., Mazhar, R., Kadir,
+M.A., Mahbub, Z.B., Islam, K.R., Khan, M.S., Iqbal, A., Al Emadi,
+N., et al., 2020. Can ai help in screening viral and covid-19 pneumo-
+nia? IEEE Access 8, 132665 -- 132676.
+[5] Dal Pozzolo, A., Caelen, O., Johnson, R.A., Bontempi, G., 2015.
+Calibrating probability with undersampling for unbalanced classifica-
+tion, in: 2015 IEEE symposium series on computational intelligence,
+IEEE. pp. 159 -- 166.
+[6] Deng, J., Dong, W., Socher, R., Li, L.J., Li, K., Fei-Fei, L.,
+Imagenet: A large-scale hierarchical image database, in:
+2009.
+2009 IEEE conference on computer vision and pattern recog-
+nition,
+Ieee. pp. 248 -- 255.
+URL: https://www.kaggle.com/c/
+imagenet-object-localization-challenge.
+[7] Došilovik, F.K., Br
+ik, M., Hlupik, N., 2018. Explainable artificial
+intelligence: A survey, in: 2018 41st International Convention on
+Information and Communication Technology, Electronics and Mi-
+croelectronics (MIPRO), pp. 0210 -- 0215. doi:10.23919/MIPRO.2018.
+8400040.
+Interpretable explanations of black
+boxes by meaningful perturbation, in: 2017 IEEE International Con-
+ference on Computer Vision (ICCV), pp. 3449 -- 3457. doi:10.1109/
+ICCV.2017.371.
+[9] Gilpin, L.H., Bau, D., Yuan, B.Z., Bajwa, A., Specter, M., Kagal,
+L., 2018. Explaining explanations: An overview of interpretability
+of machine learning, in: 2018 IEEE 5th International Conference on
+Data Science and Advanced Analytics (DSAA), pp. 80 -- 89. doi:10.
+1109/DSAA.2018.00018.
+[10] He, K., Zhang, X., Ren, S., Sun, J., 2016. Deep residual learning for
+image recognition. 2016 IEEE Conference on Computer Vision and
+Pattern Recognition (CVPR) , 770 -- 778.
+[11] Koklu, M., Ozkan, I.A., 2020. Multiclass classification of dry beans
+using computer vision and machine learning techniques. Computers
+and Electronics in Agriculture 174, 105507.
+[12] Krizhevsky, A., 2014. One weird trick for parallelizing convolutional
+neural networks. ArXiv abs/1404.5997.
+2021.
+L.,
+[13] Lakshmanan,
+ex-
+learning models.
+plain machine
+why-you-need-to-explain-machine-learning-models.
+[14] Lundberg, S.M., Lee, S.I., 2017. A unified approach to inter-
+preting model predictions, in: Guyon, I., Luxburg, U.V., Bengio,
+S., Wallach, H., Fergus, R., Vishwanathan, S., Garnett, R. (Eds.),
+Advances in Neural Information Processing Systems 30. Curran As-
+sociates, Inc., pp. 4765 -- 4774. URL: http://papers.nips.cc/paper/
+7062-a-unified-approach-to-interpreting-model-predictions.pdf.
+[15] Mooney, P., 2018. Chest x-ray images (pneumonia). URL: https:
+//www.kaggle.com/paultimothymooney/chest-xray-pneumonia.
+[16] Olah, C., Mordvintsev, A., Schubert, L., 2017. Feature visualization.
+Distill 2. URL: https://doi.org/10.23915%2Fdistill.00007, doi:10.
+23915/distill.00007.
+[17] Olah, C., Satyanarayan, A., Johnson, I., Carter, S., Schubert, L., Ye,
+K., Mordvintsev, A., 2020. The building blocks of interpretability.
+URL: https://distill.pub/2018/building-blocks.
+[18] Pesenti,
+re-
+five
+sponsible
+facebooks-five-pillars-of-responsible-ai/.
+[19] Rahman, T., Khandakar, A., Qiblawey, Y., Tahir, A., Kiranyaz, S.,
+Kashem, S.B.A., Islam, M.T., Al Maadeed, S., Zughaier, S.M., Khan,
+M.S., et al., 2021. Exploring the effect of image enhancement tech-
+niques on covid-19 detection using chest x-ray images. Computers in
+biology and medicine 132, 104319.
+There and
+back again: Revisiting backpropagation saliency methods, in: 2020
+IEEE/CVF Conference on Computer Vision and Pattern Recognition
+(CVPR), pp. 8836 -- 8845. doi:10.1109/CVPR42600.2020.00886.
+[21] Ribeiro, M.T., Singh, S., Guestrin, C., 2016. "why should i trust
+you?": Explaining the predictions of any classifier, in: Proceedings
+of the 22nd ACM SIGKDD International Conference on Knowledge
+
+[20] Rebuffi, S.A., Fong, R., Ji, X., Vedaldi, A., 2020.
+
+cloud.google.com/blog/products/ai-machine-learning/
+
+Facebook's
+URL:
+
+https://ai.facebook.com/blog/
+
+J.,
+
+2021.
+
+ai.
+
+Why
+
+you
+
+need
+URL:
+
+to
+
+https://
+
+pillars
+
+of
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 9 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+A. Appendix
+README.md, given as command line input, such as:
+
+All codes are available in the supplementary materials. All instructions to reproduce the results can be found in
+
+1. python main_pneu.py  -- mode xai_collect  -- model resnet34  -- PROJECT_ID pneu256n_1  -- method Saliency  -- split train
+
+ -- realtime_print 1  -- n_debug 0
+
+2. python main_pneu.py  -- mode gax  -- PROJECT_ID pneu256n_1  -- model resnet34  -- label NORMAL  -- split test  -- 
+
+first_n_correct 100  -- target_co 48  -- gax_learning_rate 0.1
+
+The whole experiment can be run on small GPU like NVIDIA GeForce GTX 1050 with 4 GB dedicated memory.
+The codes are run on Python 3.8.5. The only specialized library used is Pytorch (specifically torch==1.8.1+cu102,
+torchvision==0.9.1+cu102) and Pytorch Captum (captum==0.3.1). Other libraries are common python libraries.
+Regarding Captum. We replace Pytorch Captum "inplace relu" so that some attribution methods will work properly (see
+adjust_for_captum_problem in model.py where applicable).
+We also manually edit non-full backward hooks in the source codes to prevent the gradient propagation issues. For
+example, from Windows, see Lib \site-packages \captum \attr \_core \guided_backprop_deconvnet.py, function def _regis-
+ter_hooks(self,module:Module).Thereisaneedtochangefromhook=module.register_backward_hook(self._backward_hook)
+to hook = module. register_full_backward_hook(self._backward_hook).
+A.1. More interpretations in low dimensional example
+Interpretation of attribute values for non-negative less distinct components. Now, we consider data sample with lower
+1 = 0.7 (i.e. less distinct) but components are still non-negative. Figure 1 middle shows that components are still non-
+negative around  ࢠ [ࢧ8, 3ࢧ8]. Similar attribution of Ò1 and suppression of Ò2 are observed similarly although with
+lower magnitude around  ࣈ 0. At  ࣈ ࢧ4, similar difficulty in distinguishing homogenous transformation is present,
+naturally. Further rotation to 3ࢧ8 will give higher Ò2 as well. Figure 6 right shows similar behavior even for 1 ࣈ 2, though
+non-negative values are observed for rotations around [−ࢧ4, ࢧ4]. The sample is barely categorized as  = 1 since 1 > 2.
+However, the resulting attribution values still highlights the positive contribution 1, primarily through higher Ò1 attribution
+value, even though the magnitudes are lower compared to previous examples.
+Interpretation of attribute values for negative components. Beyond the rotation range that yields non-negative compo-
+nents, we do see negative components  < 0 assigned highly negative Ò values. For example, Figure 6 left at  ࣈ 
+shows a rotation of the components to the negatives. In this formulation, negative attribution values are assigned to negative
+components naturally, because  ࢩ  starts with  = 1 and  < 0, as  is optimized, our example shows an instance
+where, indeed, we need higher , very negative Ò1. Recall the main interpretation. In the end, this high negative attribution
+is aimed at improving CO score. The large negative Ò1 component increases the likelihood of predicting  = 1; conversely,
+the relatively low Ò2 magnitude increases the same likelihood. Therefore, we do not immediately conclude that negative
+attribution values contribute "negatively" to prediction, which is a term sometimes ambiguously used in XAI community. In
+practice, case by case review may be necessary.
+More relevant works. There have been many different papers on interpretable models not included here, particularly
+because they are not directly related to heatmap-based XAI. Regardless, some models interpretable in different ways include
+[35, 31] and some other related to reinforcement learning have been described in [30].
+A.2. Zero CO scores and other scores
+Zero CO score might occur when when Ò yields uniform change to the output, i.e. ( + Ò) = () +  for
+some constant . This is obtained by simply plugging into the CO score formula. Special case may occur when Ò is constant
+over all pixels, especially when (( + Ò)) = (()) for some intermediate normalization layer  and intermediate
+pre-normalized composition of layers  = −1 … 1.
+Positive CO score indicates that the component [], where  corresponds to the groundtruth label, is increased by Ò
+at a greater magnitude than the average of all other components, which in turn means that the component ( + Ò)
+is similarly increased at greater magnitude compared to the average of other components. Hence, the prediction favours
+component  relatively more, i.e. the probability of predicting the correct class is increased. Negative CO score is simply the
+reverse: probability of predicting the correct class has been reduced relatively.
+A.3. More Boxplots of CO Scores.
+Figure 7 shows more variations of CO scores in our experiments, similar to the ones shown in the main text. Some scores
+clearly demonstrate distinct gaps in CO scores between the correct and wrong predictions.
+From Figure 8, AX process is applied to the heatmaps generated in different layers of ResNet34. We expect higher
+improvement of CO scores for AX process using heatmaps from deeper layers that are known to detect more features. We do
+observe a difference in  ࢩ Ò AX process, but not in  + Ò for Layer Grad CAM.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 10 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 6: Solid red (blue) lines are 1(2) components of sample data . Dotted red (blue) lines are Ò1(Ò2) components of heatmaps
+Ò with  = 1.2. Heatmap values or attribute importances are assigned large values when either (1) the true components 1, 2
+differ significantly (2) the  transforms the data heterogenously i.e. not  ࣈ (2 + 1) 
+4 .
+
+Figure 7: Boxplots of CO scores for existing XAI methods, including another GAX implementation  ࢩ Ò =  ࢩ ( ࢩ )
+
+.
+
+We have re-run the experiments in the main text with version 2 of the codes. The only difference is the use of pytorch
+
+version 2; the results are virtually the same.
+A.4. Experiments and Results on more datasets
+Here, we describe similar experiments on 3 other datasets (1) COVID-19 Radiography Database [4, 19] 1 (2) credit card
+fraud detection2 [5] (3) dry bean classification3 [11]. All details can be found in our github; we will describe them briefly
+here. Note: we also tested CO scores on output with softmax, as shown in the respective CO score distribution plots. We
+initially expected the CO scores distribution with softmax to be much less distinct since softmax squashed the magnitudes,
+causing output channels to have more similar values. Interestingly, while this is true for some cases, it appears that some
+softmax versions produce clear distribution gaps as well.
+COVID-19 Radiography Database
+We model COVID-19 Radiography Database (henceforth COVID) classification problem with CXCMultiSPA, a small
+
+1https://www.kaggle.com/datasets/tawsifurrahman/covid19-radiography-database
+2https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+3https://www.kaggle.com/datasets/muratkokludataset/dry-bean-dataset
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 11 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 8: Boxplots of CO scores for heatmaps from Layer GradCAM for ResNet34 and ImageNet dataset. CO scores of heatmaps
+generated from different layers (and resized accordingly) are shown.
+
+.
+
+convolutional neural network with Spatial Product Attention (SPA) [32]. The choice of model is almost completely arbitrary,
+and our intention is to use such a small network (only 50565 parameters) to demonstrate that reasonably high accuracy can
+still be attained.
+The task is to classify chest X-ray images and to predict if the patient is normal or suffers from COVID-19, lung opacity
+or viral pneumonia (hence there are four classes). The train, validation and test splits are constructed in a deterministic way
+as the following. For each folder (corresponding to one of the four classes), iterate through all data samples indexed by ,
+ = 0 to  =  − 1 where  is the total number of images in the folder. Let ߰ =   3, if ߰ = 0, 1, 2, then the sample is
+put into the train, val and test folders respectively. The training and validation settings are as the following. Batch size is 16,
+images are resized to (256,256), Adam optimizer is used with learning rate of 0.001 and the training is allowed to run for 256
+epochs or until validation accuracy of 0.85 is achieved. The final test accuracy is 0.865. CO scores distribution are shown
+in Figure 14. The trend is similar to our previous results: there are distributional gaps between the CO scores of correct and
+wrong predictions. Softmax version appears squashed i.e. some gaps are less obvious, and the difference between the scores
+of correct and wrong predictions is less distinct.
+Creditcard Fraud Detection
+Wemodel creditcardfrauddetection withccfFPA,a modelbasedon FeatureProductAttention(FPA). FPAispractically a1D
+convolutional version of SPA. This choice of model is also arbitrary, and it is also a small model with only 506 parameters.
+Here, we use the 28 PCA features available in the dataset (V1-V28) to predict whether the given transaction is genuine or
+fraudulent.
+Since this dataset is highly imbalanced, only 492 frauds (positive) out of 284,807 samples, we use a slightly different
+augmentation technique, which we call the cross projective augmentation. Let  denote the set of samples with positive
+following. First, we arbitrarily collect  ࣪  such that =  ×, where  = 5 is called the cross factor. Then, for
+label (fraud) and  the set of samples with negative label (normal transaction). The training dataset is constructed as the
+every sample  ࢠ , pick  ࢠ  for  = 1, 2, … ,  and let  = { + ( − ) = 1, … , } where  = 0.95 so that 
+. In essence, we use some synthetic
+and ߰ do not intersect for any , ߰ ࢠ . The training dataset is then  Þ
+samples near the test samples as the data for training. Validation dataset is constructed similarly.
+The training and validation settings are as the following. Adam optimizer is used with learning rate of 0.001 and the
+training is allowed to run for 256 epochs or until validation accuracy of 0.9 is achieved. The final test accuracy is 0.895. CO
+scores distribution are shown in Figure 15. The trend is similar to our previous results.
+Drybean dataset
+We model drybean classification dataset with an FPA-based model as well, namely drybeanFPA. This choice of model is also
+
+
+
+ 
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 12 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 9: Boxplots of CO scores and histograms for ImageNet with Resnet34, rerun using pytorch version 2. 1/0 denote
+correct/wrong respectively.
+
+Table 2
+Comparison of validation or testing accuracies before and after augmentative explanation process  + Ò. IMN: ImageNet Pneu:
+chest x-ray for pneumonia detection. COVID: COVID-19 Radiography Database. CCF: credit card fraud detection . DB: dry bean
+classification. IXG: InputXGradient. LGC: LayerGradCam. GBP: GuidedBackprop.
+
+IMN, Resnet34
+IMG, Alexnet
+Pneu, Resnet34
+Pneu, Resnet34_sub
+
+Pneu, Alexnet
+
+COVID, CXCMultiSPA
+
+CCF, ccfFPA
+
+DB, drybeanFPA
+
+Baseline
+0.722
+0.551
+0.691
+0.708
+0.628
+0.865
+0.895
+0.877
+
+Saliency
+0.715
+0.53 0
+0.691
+0.708
+0.628
+0.821
+0.872
+0.868
+
+IXG
+0.526
+0.347
+0.601
+0.643
+0.51
+0.624
+0.813
+0.708
+
+LGC
+0.703
+0.542
+0.671
+0.713
+0.606
+0.784
+0.692
+0.646
+
+Deconvolution
+
+0.659
+0.364
+0.691
+0.700
+0.636
+0.245
+0.282
+0.817
+
+GBP
+0.706
+0.484
+0.689
+0.712
+0.635
+0.578
+0.188
+0.777
+
+DeepLift
+
+0.610
+0.407
+0.619
+0.668
+0.546
+0.562
+0.785
+0.712
+
+arbitrary, and it is also a small model with only 2121 parameters. The drybean dataset consists of samples with 1D vector of
+features, and there are 7 classes of beans.
+Thedataisreasonablybalanced,soweconstructthetrain,validationandtestdatasetlikehowwedidwithCOVIDdataset.
+For every class of bean Bombay, Seker, Barbunya, Dermason, Cali, Horoz and Sira, we go through each sample indexed with
+ = 0 to  =  − 1 where  is the number of samples in that class. Then let ߰ =   3. If ߰ = 0, 1, 2, then the sample is put
+into the train, val and test folders respectively.
+The training and validation settings are as the following. Adam optimizer is used with learning rate of 0.001 and the
+training is allowed to run for 256 epochs or until validation accuracy of 0.85 is achieved. The final test accuracy is 0.868. CO
+scores distribution are shown in Figure 16. The trend is similar to our previous results
+A.5. Accuracy comparison
+We compare the classification result AX process applied on all of the above XAI methods, datasets and architectures
+in table 2. Baseline refers to the original accuracy without AX process. Unfortunately, improvement has been limited as
+mentioned in the main text.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 13 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 10: Boxplots of CO scores and histograms for ImageNet with Alexnet, rerun using pytorch version 2.
+
+A.6. More Considerations, Limitations and Future Works
+Different GAX and empirical choices in implementation.Partsoftheimplementations,suchastheinitializationof to1.0,
+are nearly arbitrary, though it is the first choice made from the 2D example that happens to work. Different implementations
+come with various trade-offs. Most notably, the choice of learning rate 0.1 is manually chosen for its reliable and fast
+convergence, although convergence is attainable for smaller learning rate like 0.001 after longer iterations. However, we
+need to include more practical considerations. For example, saving heatmaps iteration by iteration will generally consume
+around 5-12 MB of memory for current choices. Longer optimization iterations may quickly cause a blow-up, and there
+is no known fixed number of iterations needed to achieve convergence to the target CO score. Saving heatmaps at certain
+CO scores milestones can be considered, though we might miss out on important heatmap changes in between. Parameter
+selection process is thus not straightforward. For practical purposes, learning rates can be tested in order of ten, 10, and other
+parameters can be tested until a choice is found where each optimization process converges at a rate fast enough for nearly
+instantaneous, quick diagnosis. Other choices of optimizers with different parameters combination can be explored as well,
+though we have yet to see dramatic changes.
+GAX, different DNN architectures and different datasets. Comparisons are tricky, since different architectures might
+behave differently at their FC end. For example, for Saliency method on ImageNet, Alexnet's boxplot of CO scores in
+appendix Figure 7(A) right (AX process  +  ࢩ ) shows a wider range of CO scores than that of Resnet34 in Figure
+7. Comparison of CO scores on Chest X-Ray dataset shows even larger variability. Furthermore, recall that we illustrated
+using the 2D example the reason we avoid sigmoid function: suppressed change in the CO score due to its asymptotic part.
+From here, the ideal vision is to develop a model that scales with CO score in not only a computationally relevant way, but
+also in a human relevant way: we want a model that increases predictive probability when the heatmap highlights exactly the
+correct localization of the objects or highly relevant features related to the objects. This is a tall effort, particularly because
+explanations are highly context dependent. Transparent and trustworthy applications of DNN may benefit from the combined
+improvements in humanly understandable context and computationally relevance attributions built around that context.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 14 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 11: Boxplots of CO scores and histograms for chest X-Ray dataset for pneumonia classification with Resnet34, rerun using
+pytorch version 2.
+
+Figure 12: Boxplots of CO scores and histograms for chest X-Ray dataset for pneumonia classification with Resnet34, trained
+sub-optimally, rerun using pytorch version 2.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 15 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 13: Boxplots of CO scores and histograms for chest X-Ray dataset for pneumonia classification with Alexnet rerun using
+pytorch version 2.
+
+Figure 14: Boxplots of CO scores and histograms for COVID-19 Radiography Database with CXCMultiSPA. 1/0 denote
+correct/wrong respectively.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 16 of 14
+
+Improving DNN Classification Confidence using Heatmap-based XAI
+
+Figure 15: Boxplots of CO scores and histograms for creditcard fraud dataset with ccfFPA model. 1/0 denote correct/wrong
+respectively.
+
+Figure 16: Boxplots of CO scores and histograms for dry bean dataset with drybeanFPA model. 1/0 denote correct/wrong
+respectively.
+
+E. Tjoa, Guan C.: Preprint submitted to Elsevier
+
+Page 17 of 14
+
+

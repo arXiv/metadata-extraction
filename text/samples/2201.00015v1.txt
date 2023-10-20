@@ -1,0 +1,1599 @@
+Device Activity Detection for Massive Grant-Free
+Access Under Frequency-Selective Rayleigh Fading
+
+Yuhang Jia
+
+Ying Cui
+
+Wuyang Jiang
+
+Shanghai Jiao Tong Univ., China
+
+Shanghai Jiao Tong Univ., China
+
+Shanghai Univ. of Engineering Science, China
+
+Jay Yoga@sjtu.edu.cn
+
+cuiying@sjtu.edu.cn
+
+jiang-wuyang@sues.edu.cn
+
+1
+2
+0
+2
+
+ 
+c
+e
+D
+ 
+1
+3
+
+ 
+ 
+]
+T
+I
+.
+s
+c
+[
+ 
+ 
+
+1
+v
+5
+1
+0
+0
+0
+
+.
+
+1
+0
+2
+2
+:
+v
+i
+X
+r
+a
+
+Abstract -- Device activity detection and channel estimation for
+massive grant-free access under frequency-selective fading have
+unfortunately been an outstanding problem. This paper aims
+to address the challenge. Specifically, we present an orthogonal
+frequency division multiplexing (OFDM)-based massive grant-
+free access scheme for a wideband system with one M -antenna
+base station (BS), N single-antenna Internet of Things (IoT)
+devices, and P channel
+taps. We obtain two different but
+equivalent models for the received pilot signals under frequency-
+selective Rayleigh fading. Based on each model, we formulate
+device activity detection as a non-convex maximum likelihood
+estimation (MLE) problem and propose an iterative algorithm
+to obtain a stationary point using optimal techniques. The two
+proposed MLE-based methods have the identical computational
+complexity order O(N P L2), irrespective of M , and degrade to
+the existing MLE-based device activity detection method when
+P = 1. Conventional channel estimation methods can be readily
+applied for channel estimation of detected active devices under
+frequency-selective Rayleigh fading, based on one of the derived
+models for the received pilot signals. Numerical results show
+that the two proposed methods have different preferable system
+parameters and complement each other to offer promising device
+activity detection design for grant-free massive access under
+frequency-selective Rayleigh fading.
+
+I. INTRODUCTION
+
+Driven by the proliferation of the Internet of Things (IoT),
+massive machine-type communication (mMTC) plays a vital
+role in the fifth generation (5G) cellular technologies and
+beyond. It is incredibly challenging to support enormous IoT
+devices which are energy-limited and sporadically active, and
+have little data to send once activate. Massive grant-free access
+with multiple-input multiple-output (MIMO) has been recently
+proposed to address the challenge. Specifically, devices are
+pre-assigned specific non-orthogonal pilots, active devices
+directly send their pilots, and the base station (BS) detects
+the active devices and estimates their channel conditions from
+the received signal of non-orthogonal pilots [1]. Unfortunately,
+vast potential non-orthogonal pilots complicate the signal
+processing at the BS.
+
+Due to inherent sparse device activities in massive grant-free
+access, joint device activity detection and channel estimation
+can be formulated as compressed sensing (CS) problems and
+solved by CS-based algorithms [2] -- [4]. Specifically, [2] pro-
+poses an approximate message passing (AMP) algorithm with
+
+This work was supported in part by the National Key Research and
+Development Program of China under Grant 2018YFB1801102 and in part
+by the Natural Science Foundation of Shanghai under Grant 20ZR1425300.
+
+a minimum mean square error (MMSE) estimation denoiser.
+In [4], the authors propose an alternating direction method
+of multipliers (ADMM)-based algorithm for GROUP LASSO
+[3]. Besides, several works focus only on device activity
+detection, as conventional channel estimation methods can
+be directly applied for estimating channel conditions of the
+detected active devices. For instance, [5] formulates device
+activity detection as a maximum likelihood estimation (MLE)
+problem and proposes a coordinate descent method to obtain
+a stationary point. This MLE-based method is also analyzed
+in [5], [6]. Motivated by [5], [7] formulates device activity
+detection with prior activity distribution as a maximum a
+posteriori probability (MAP) estimation problem and extends
+the coordinate descent method in [5] to obtain a stationary
+point.
+
+It is worth noting that all existing works [2], [4] -- [7] consider
+massive grant-free access for a narrow band system under flat
+fading. However, due to the signal corruption under frequency-
+selective fading, the existing methods for activity detection
+and channel estimation designed for a narrow band system
+under flat fading are no longer applicable for a wideband
+system under frequency-selective fading. On the other hand,
+orthogonal frequency division multiplexing (OFDM) provides
+a high degree of robustness against channel-frequency se-
+lectivity. It hence is an attractive choice for 4G-LTE and
+5G-NR. In this paper, we would like to shed some light
+toward this direction. Specifically, we present an orthogonal
+frequency division multiplexing (OFDM)-based massive grant-
+free access scheme with one M -antenna BS, N single-antenna
+IoT devices, and P channel taps. We obtain two different
+but equivalent models for the received pilot signals under
+frequency-selective Rayleigh fading. Based on each model,
+we formulate device activity detection as a non-convex MLE
+problem and propose an iterative algorithm to obtain a station-
+ary point using optimal techniques. The two proposed MLE-
+based device activity detection methods have the identical
+
+computational complexity order O(N P L2) and degrade to the
+existing MLE-based device activity detection method [5], [6]
+when P = 1. Notice that conventional channel estimation
+methods can be readily applied for channel estimation of
+detected active devices under frequency-selective Rayleigh
+fading, based on one of the derived models for the received
+pilot signals. Numerical results show that the two proposed
+methods offer promising device activity detection design for
+
+frequency-selective Rayleigh fading. Furthermore, one method
+always achieves a lower error rate than the other with a shorter
+computation time if P is small and a longer computation time
+otherwise. This is the first work investigating massive grant-
+free access under frequency-selective fading to the best of our
+knowledge.
+
+Notation : We represent vectors by boldface lowercase
+letters (e.g., x), matrices by boldface uppercase letters (e.g.,
+X), scalar constants by non-boldface letters (e.g., x), and sets
+by calligraphic letters (e.g., X ). The notation xi represents
+the i-th element of vector x, Xi,: represents the i-th row of
+matrix X, and X:,i represents the i-th column of matrix X.
+X:,1:K represents the matrix consisting of the first K columns
+of the matrix X. XH and tr (X) denote the conjugate transpose
+and trace of the matrix X, respectively. diag (x) is a diagonal
+matrix with the entries of x on its main diagonal. · denotes
+the modulus of a complex number. The complex field and
+real field are denoted by C and R, respectively. ⊗ denotes
+the Kronecker product. IL and en denotes the L × L identity
+matrix and a unit vector whose n-th component is 1, all others
+0. Pr[x] denotes the probability of the event x.
+
+II. SYSTEM MODEL
+
+We consider a single-cell cellular network with one M -
+antenna BS and N single-antenna IoT devices. Let M ,
+{1, 2,··· , M} and N , {1, 2,··· , N} denote the sets of
+device and antenna indices, respectively. For all n ∈ N , let
+gn > 0 denote the large-scale fading power of the channel
+between device n and the BS. Small-scale fading follows the
+block fading model, i.e., small-scale fading coefficients remain
+constant within each coherence block and are independent
+and identically distributed (i.i.d.) over coherence blocks. We
+consider a wideband system and adopt the frequency-selective
+Rayleigh fading channel model for small-scale fading. Let P
+denote the number of channel taps, and let P , {1, 2,··· , P}
+denote the set of channel tap indices. Denote hn,m,p ∈ C as the
+p-th coefficient of the channel impulse response (CIR) of the
+channel between device n and the BS over antenna m, for all
+n ∈ N , m ∈ M, p ∈ P. We assume hn,m,p ∼ CN (0, 1), n ∈
+N , m ∈ M, p ∈ P.
+We study the massive access scenario arising from mMTC,
+where very few devices among a large number of potential
+devices are active and access the BS in each coherence block.
+For all n ∈ N , let αn ∈ {0, 1} denote the activity state of
+device n, where αn = 1 indicates that device n is active and
+αn = 0 otherwise. In the considered massive access scenario,
+Pn∈N
+αn ≪ N , i.e., α , (αn)n∈N ∈ {0, 1}N is sparse.
+Let L denote the number of subcarriers, and denote L ,
+{1, 2,··· , L} as the set of subcarrier indices. Assume P < L.
+Each device n ∈ N is pre-assigned a specific pilot sequence
+sn , (sn,ℓ)ℓ∈L ∈ CL consisting of L ≪ N OFDM symbols,
+each carried by one subcarrier. In the pilot transmission phase,
+active devices simultaneously send their length-L pilots to the
+BS over the L subcarriers, and the BS detects the activity states
+of all devices and estimates the channel states of all active
+
+We adopt an OFDM-based massive grant-free access scheme.
+
+devices from the LM received OFDM symbols over the M
+antennas. In this paper, we focus on device activity detection
+under frequency-selective Rayleigh fading, which is more
+challenging than device activity detection under flat Rayleigh
+fading [1], [2], [4] -- [7]. We shall see that based on one of
+the derived models for the received pilot signals, conventional
+channel estimation methods can be readily applied for channel
+estimation of detected active devices.
+
+The time domain representation of the OFDM symbols
+
+in sn ∈ CL, i.e., the normalized inverse discrete Fourier
+transform (IDFT) of sn, is given by:
+
+sn = FHsn ∈ CL, n ∈ N .
+
+(1)
+
+Here, F , (Fℓ,ℓ′ )ℓ,ℓ′∈L ∈ CL×L denotes the discrete Fourier
+transform (DFT) matrix where Fℓ,ℓ′ , 1√L
+. At
+each device n ∈ N , a cyclic prefix is appended to sn before
+transmission. After removing the signal corresponding to the
+cyclic prefixes, the received signal over the L signal dimen-
+sions at antenna m ∈ M, denoted as rm , (rℓ,m)ℓ∈L ∈ CL,
+
+e− j2π(ℓ−1)(ℓ′
+
+−1)
+
+L
+
+can be written as [8]:
+
+rm = Xn∈N
+= Xn∈N
+
+
+
+...
+
+hn,m,1
+hn,m,2
+
+where
+
+Hn,m ,
+
+αng
+
+1
+2
+
+n Hn,msn + nm
+
+αng
+
+1
+2
+
+n Hn,mFHsn + nm, m ∈ M,
+
+hn,m,L
+hn,m,1
+
+...
+
+··· hn,m,2
+··· hn,m,3
+. . .
+··· hn,m,1
+
+...
+
+
+ ∈ CL×L,
+
+hn,m,L hn,m,L−1
+
+(2)
+
+(3)
+
+and nm , (nℓ,m)l∈L ∈ CL with nℓ,m ∼ CN (0, σ2) is the
+additive white Gaussian noise (AWGN). Here, for notation
+convenience, we let hn,m,p = 0, p ∈ L\P, n ∈ N , m ∈ M.
+Note that for all n ∈ N , m ∈ M, each of hn,m,l, l ∈ L
+appears L times in Hn,m.
+
+1
+2
+
+αng
+
+n FHn,mFHsn + nm
+
+we obtain the received signal in the frequency domain, i.e.,
+
+For tractability, we obtain an equivalent expression of rm
+in (2) in the following [8]. Define nm , Fnm ∈ CL. First,
+rm =Frm = Xn∈N
+= Xn∈N
+
+n diag(sn)F(Hn,m):,1 + nm, m ∈ M, (4)
+where the last equality is due to the fact that FHn,mFH ∈
+CL×L is a diagonal matrix [8, Lemma 1]. Define Sn ,
+(FH diag(sn)F):,1:P and hn,m , (hn,m,p)p∈P . Then, apply-
+ing normalized IDFT to rm in (4), we rewrite rm in (2) as:
+n FH diag(sn)F(Hn,m):,1 + nm
+
+αng
+
+αng
+
+1
+2
+
+1
+2
+
+rm =FHrm = Xn∈N
+= Xn∈N
+
+αng
+
+1
+2
+
+n Snhn,m + nm, m ∈ M,
+
+(5)
+
+where the last equality is due to FH F = IL and hn,m,p = 0,
+p ∈ L\P, n ∈ N , m ∈ M. In contrast with Hn,m, n ∈
+N , m ∈ M, all elements of hn,m, n ∈ N , m ∈ M are i.i.d.
+according to CN (0, 1), making device activity detection from
+rm in (5) more tractable than from rm in (2).
+
+f (1)
+α,n(d) , log IP + dgnSH
+α,n(d) ,d2P−1Xp∈P
+g(1)
+
+n Σ(1)−1
+
+α
+
+Sn + dgntr(cid:16)(IP + dgnSH
+
+n Σ(1)−1
+
+α
+
+Sn)−1SH
+
+n Σ(1)−1
+
+α
+
+v2
+ph(v−p, 2P − 1) +
+
+(v2
+p + vp − up)h(v−p, t)
+
+2P−2Xt=0
+
+dtXp∈P
+
+Sn(cid:17)
+
+α
+
+bΣRΣ(1)−1
+
+(11)
+
+(12)
+
+For ease of exposition, we assume that the large-scale fading
+powers, gn, n ∈ N , are known to the BS and propose two
+MLE-based device activity detection methods in Section III
+and Section IV, respectively. The proposed methods can be
+readily extended to device activity detection with unknown
+large-scale fading powers [5]. Later in Section V, we shall
+see that compared to the method in Section IV, the method in
+Section III achieves high detection accuracy for all P , short
+computation time for small P , and long computation time for
+large P . Therefore, we can apply them according to practical
+system parameters and requirements.
+
+III. MLE-BASED DEVICE ACTIVITY DETECTION USING
+
+COORDINATE DESCENT METHOD
+
+In this section, we propose an MLE-based device activity
+detection method based on the expression of rm in (5) and
+the coordinate descent method.
+
+A. Problem Formulation
+
+hn,m, n ∈ N , m ∈ M are i.i.d. according to CN (0, IP ).
+Thus, when αn, gn, n ∈ N are given, rm, m ∈ M, with rm
+α (cid:17) [5], where
+given by (5), are i.i.d. according to CN(cid:16)0, Σ(1)
+
+Σ(1)
+α
+
+αngnSnSH
+
+n + σ2IL.
+
+(6)
+
+, Xn∈N
+
+Note that Σ(1)
+α depends on α. Let R with R:,m , rm, m ∈ M
+denote the received signal over the M antennas. Thus, the
+likelihood function of R, viewed as a function of α, is given
+by:
+
+p(1)(R; α) ,
+
+.
+
+(7)
+
+α RRH(cid:17)(cid:17)
+exp(cid:16)−tr(cid:16)Σ(1)−1
+πLMΣ(1)
+α M
+
+The maximization of p(1)(R; α) is equivalent to the minimiza-
+tion of f (1)(α), where
+
+f (1)(α) , − log p(1)(R; α) − L log π
+
+= log Σ(1)
+
+α  + tr(cid:16)Σ(1)−1
+
+α
+
+bΣR(cid:17) .
+
+M RRH represents the sample covariance matrix
+
+Here, bΣR , 1
+of rm, m ∈ M. Note that bΣR is a sufficient statistics since
+f (1)(α) depends on R only through bΣR. Thus, the MLE
+
+problem of α can be formulated as:1
+
+Problem 1 (MLE for Activity Detection of Actual Devices):
+
+(8)
+
+Problem 1 is a non-convex optimization problem. When
+P = 1, Problem 1 is equivalent to the MLE problem for
+activity detection of N devices under flat Rayleigh fading in
+[5] and can be converted to the same form as the one in [5].
+When P ∈ {2, 3, ...}, Problem 1 is different from the one in
+n ∈ CL×L
+[5] and cannot be converted to its form (as SnSH
+is not a rank-one matrix). Later, we shall see that this slight
+difference causes a significant challenge for solving Problem 1.
+
+B. Solution
+
+The goal of solving a non-convex problem is usually
+to obtain a stationary point of the problem. We adopt the
+coordinate descent method to obtain a stationary point of
+Problem 1. Specifically, given α obtained in the previous step,
+the coordinate descent optimization w.r.t. αn is equivalent to
+the optimization of the increment d in αn [5]:
+f (1)(α + den).
+
+min
+
+(10)
+
+d∈[−αn,1−αn]
+
+We shall see that it is more challenging to solve the coordinate
+descent optimization for P ∈ {2, 3, ...} in (10) than to solve
+that for P = 1. In the following, we define two important
+functions based on which we can characterize the optimal
+solution of the problem in (10). Specifically, we first define
+f (1)
+α,n(d) in (11), as shown at the top of this page. Applying
+eigenvalue decomposition, we can write SH
+Sn as
+n , where v , (vp)p∈P ∈ RP represents the
+Undiag(v)UH
+eigenvalues and Un ∈ CP×P represents the corresponding
+eigenvectors. For all p ∈ P, let up denote the p-th diagonal
+n . Define v−p ,
+element of UnSH
+(vp′ )p′∈P,p′6=p ∈ RP−1,
+S(t) ,(cid:26)(x, y)x, y ∈ {0, 1}P−1, xp + yp ≤ 1, p ∈ P\{P},
+
+n Σ(1)−1
+
+n Σ(1)−1
+
+SnUH
+
+α
+
+α
+
+α
+
+bΣRΣ(1)−1
+(xp + 2yp) = t(cid:27),
+P−1Yp=1
+
+2xp zxp+2yp
+
+p
+
+Xp∈P\{P}
+h(z, t) , X(x,y)∈S(t)
+
+, z ∈ RP−1
+++ ,
+
+α,n(d) in (12), as shown at the top of this page.
+
+where t = 0, ..., 2P − 2. Based on the above definitions, we
+define g(1)
+Theorem 1 (Optimal Solution of Coordinate Descent Opti-
+mization in (10)): Given α, the optimal solution of the problem
+in (10) is given by:
+
+α
+
+f (1)(α)
+
+min
+s.t. αn ∈ [0, 1], n ∈ N .
+
+(9)
+
+1In this paper, binary condition αn ∈ {0, 1} is relaxed to continuous
+condition αn ∈ [0, 1] in each estimation problem, and binary detection results
+are obtained by performing thresholding after solving the estimation problem
+as in [5], [6].
+
+f (1)
+α,n(d),
+
+(13)
+
+, arg
+
+d(1)∗n
+n ∪{−αn,1−αn}
+n , {d ∈ [−αn, 1 − αn] : g(1)
+
+d∈D(1)
+
+min
+
+Proof
+
+where D(1)
+(Σ(1)
+n Σ(1)−1
+dgnSH
+f (1)(α) + f (1)
+
+α
+
+First,
+
+(Sketch):
+
+n )−1 = Σ(1)−1
+
+and
+(8),
+Sn(IP +
+α [5], we show f (1)(α + den) =
+α,n(d). Thus, the problem in (10) is equivalent
+
+Sn)−1SH
+
+n Σ−1
+
+α
+
+α,n(d) = 0}.
+by
+− dgnΣ(1)−1
+
+(6),
+
+α
+
+α + dgnSnSH
+
+Algorithm 1 Coordinate Descent Algorithm for Problem 1
+
+Input: empirical covariance matrix bΣR.
+
+= 1
+
+σ2 IL, α = 0.
+
+Output: α.
+1: Initialize Σ(1)−1
+2: repeat
+3: for n ∈ N do
+
+α
+
+4:
+
+5:
+
+6:
+
+7:
+
+Calculate d(1)∗n
+and numerically if P ≥ 3.
+If d(1)∗n
+Update αn = αn + d(1)∗n .
+Update Σ(1)−1
+= Σ(1)−1
+n Σ(1)−1
+Sn)−1SH
+
+6= 0
+
+gnSH
+
+α
+
+α
+
+α
+
+d(1)∗n
+end
+
+8:
+9: end for
+10: until α satisfies some stopping criterion.
+
+− d(1)∗n gnΣ(1)−1
+
+α
+
+n Σ(1)−1
+
+α
+
+.
+
+according to (13) analytically if P ≤ 2
+
+device i, for all i ∈ I. Virtual devices (n − 1)P + 1, ..., nP
+share the same activity state and channel condition as actual
+device n, for all n ∈ N . Thus, we have:
+
+β(n−1)P +1 = ... = βnP , n ∈ N ,
+βi ∈ [0, 1], i ∈ I,
+αn = Pp∈P
+
+β(n−1)P +p
+P
+
+, n ∈ N .
+
+(14)
+
+(15)
+
+(16)
+
+Therefore, the received signal rm from the N devices, rm in
+(5), can be equivalently rewritten as the received signal from
+the N P virtual devices as follows:
+
+Sn(IP +
+
+rm =SBG
+
+1
+
+2 hm + nm, m ∈ M,
+
+(17)
+
+to
+
+min
+
+f (1)
+α,n(d). Next, based on eigenvalue
+
+d∈D(1)
+
+n ∪{−αn,1−αn}
+
+decomposition, we show (cid:16)f (1)
+
+α,n(d)(cid:17)′
+
+the optimal solution of
+
+min
+
+n ∪{−αn,1−αn}
+by (13). Therefore, we complete the proof.
+
+d∈D(1)
+
+=
+
+g(1)
+α,n(d)
+
+Qp∈P (1+vpd)2 . Thus,
+f (1)
+α,n(d) is given
+
+g(1)
+α,n(d) is a polynomial with degree 2P − 1 and hence
+has 2P − 1 roots. Note that the roots of a polynomial with
+degree q can be obtained analytically if q ∈ {1, 2, 3, 4} and
+numerically otherwise [9]. Besides, note that the computa-
+tional complexities for obtaining the roots of a polynomial
+with degree q analytically and numerically are O(q) and
+O(q3), respectively [9]. Thus, D(1)
+n can be obtained in closed-
+form with computational complexity O(P ) if P ∈ {1, 2} and
+numerically with computational complexity O(P 3) otherwise.
+The details of the coordinate descent algorithm are summa-
+rized in Algorithm 1. If each coordinate optimization in (10)
+has a unique optimal solution, Algorithm 1 converges to a
+stationary point of Problem 1, as the number of the iteration
+goes to infinity [10, Proposition 2.7.1]. The complexities of
+
+Step 4, Step 6, and Step 7 are O(P L2), O(1), and O(P L2),
+respectively (note that P < L). Thus,
+complexity of each iteration of Algorithm 1 is O(N P L2).
+
+the computational
+
+IV. MLE-BASED DEVICE ACTIVITY DETECTION USING
+PENALTY METHOD AND COORDINATE DESCENT METHOD
+
+In this section, we propose an MLE-based device activity
+detection method based on an equivalent form of the received
+signal rm in (5). Notice that based on this equivalent form,
+conventional channel estimation methods can be directly ap-
+plied for channel estimation of detected active devices under
+frequency-selective Rayleigh fading.
+
+A. Problem Formulation
+
+First, we formulate an MLE problem for activity detection
+
+of N P virtual devices. Let I , {1, ..., N P} denote the set
+of virtual devices. Let βi denote the activity states of virtual
+
+where S , [S1, ..., SN ] ∈ CL×N P , B , diag (β) with β ,
+(βi)i∈I , G , diag (g)⊗ IP ∈ RNP×NP
+with g , (gn)n∈N ∈
++ . Noting that hm ,(cid:2)hT
+N,m(cid:3)T
+∈ CN P , hm, m ∈
+RN
+M are i.i.d. according to CN (0, IN P ). Thus, when βi, i ∈ I,
+gn, n ∈ N are given, rm, m ∈ M, with rm given by (17), are
+β (cid:17) [5], where
+i.i.d. according to CN (cid:16)0, Σ(2)
+
+++
+1,m, ..., hT
+
+(18)
+Thus, the likelihood function of R, viewed as a function of
+β, can also be expressed as:
+
+, SBGSH + σ2IL.
+
+Σ(2)
+β
+
+p(2)(R; β) ,
+
+.
+
+(19)
+
+(2)−1
+
+exp(cid:16)−tr(cid:16)Σ
+πLMΣ
+
+β RRH(cid:17)(cid:17)
+β M
+
+(2)
+
+The maximization of p(2)(R; β) is equivalent to the minimiza-
+tion of f (2)(β), where
+
+f (2)(β) , − log p(2)(R; β) − L log π
+
+= log Σ(2)
+
+β  + tr(cid:16)Σ(2)−1
+
+β
+
+bΣR(cid:17) .
+
+Thus, the MLE problem of β from R given by (19) can be
+formulated as follows.
+
+(20)
+
+Problem 2 (MLE for Activity Detection of Virtual Devices):
+
+min
+
+β
+
+f (2)(β)
+
+s.t.
+
+(14),
+
+(15).
+
+(21)
+
+Problem 2 is also a non-convex optimization problem. It
+differentiates from Problem 1, as Σ(1)
+β have different
+forms. Besides, the objective function of Problem 2 shares
+the same form as the objective function of the MLE problem
+for activity detection of N P devices under flat Rayleigh
+
+α and Σ(2)
+
+fading in [5] except that the dimensions of S ∈ CL×N P ,
+B ∈ CN P×N P , G ∈ CN P×N P , and hm ∈ CN P . However,
+
+unlike Problem 1 and the ML estimation problem in [5],
+Problem 2 has extra coupling constraints in (14). To address
+the issue caused by the coupling constraints in (14), we apply
+the penalty method [10] to obtain a stationary point of an
+equivalent problem of Problem 2 in Section IV-B. Later in
+Section V, we shall see that the device activity detection
+method based on the penalty method has a higher accuracy
+and a higher computational complexity than the method based
+on relaxation. After solving Problem 2 for β, we can construct
+a device activities of the N actual devices α according to (16)
+
+f (2)
+b,i (d) , log(1 + dgiSH
+
+:,iΣ−1
+
+β S:,i) −
+
+dgiSH
+
+:,iΣ−1
+1 + dgiSH
+
+Ai , −
+
+Ci , g2
+
+2ρg2
+i
+
+P 2 (cid:16)SH
+i (cid:16)SH
+
+:,iΣ−1
+
+Di , giSH
+
+:,iΣ−1
+
+:,iΣ−1
+
+β S:,i(cid:17)2
+
++
+
+β S:,i(cid:17)2
+β S:,i − giSH
+
+2ρgi
+
+ρg2
+i
+
+, Bi ,
+
+P (cid:18)1 −
+
+P (cid:18)1 −
+PXp=1
+β bΣRΣ−1
+
+β S:,i +
+
+2
+P
+
+:,iΣ−1
+
++
+
+ρd
+
+2
+P
+
+β S:,i
+
+β S:,i
+
+:,iΣ−1
+
+P (cid:18)1 −
+β bΣRΣ−1
+d
+P −
+P ⌉−1)P +p(cid:19)(cid:16)SH
+PXp=1
+β(⌈ i
+P ⌉−1)P +p(cid:19)SH
+β S:,i −
+β(⌈ i
+P(cid:18)1 −
+P ⌉−1)P +p(cid:19)
+PXp=1
+β(⌈ i
+
+:,iΣ−1
+
+2ρ
+P 2
+
+2
+P
+
+ρ
+
+2
+P
+
+P ⌉−1)P +p(cid:19)
+PXp=1
+β(⌈ i
+β S:,i(cid:17)2
+
+4ρgi
+P 2
+
+−
+
+:,iΣ−1
+
+:,iΣ−1
+SH
+
+β S:,i
+
+(23)
+
+B. Solution
+
+Algorithm 2 Coordinate Descent Algorithm for Problem 3
+
+We disregard the coupling constraints in (14) and add to the
+objective function of Problem 2 a penalty for violating them.
+Then, we can convert Problem 2 to the following problem.
+
+Problem 3 (Penalty Problem of Problem 2):
+
+min
+
+b
+s.t.
+
+f (2)(β) , f (2)(β) + ρη(β),
+
+(15),
+
+where ρ > 0 is the penalty parameter, and
+
+Pp∈P
+
+β(n−1)P +p
+
+P
+
+(cid:18)1 −
+
+β(n−1)P +p
+
+P
+
+(cid:19) (22)
+
+Pp∈P
+
+η(β) , Xn∈N
+
+is the penalty function.
+
+If ρ is sufficiently large, an optimal solution of Problem 3
+is also optimal for Problem 2 (as f (2)(β) is bounded from
+above) [10]. Now, we adopt the coordinate descent method to
+obtain a stationary point of Problem 3 instead of Problem 2.
+Specifically, given β obtained in the previous step, the coor-
+dinate descent optimization with respect to βi is equivalent to
+the optimization of the increment d in βi:
+
+min
+
+d∈[−βi,1−βi]
+
+f (2)(β + dei).
+
+(23)
+
+We shall see that it is more challenging to solve the coordinate
+optimization in (24) than to solve the MLE problem for flat
+Rayleigh fading in [5]. Similarly, we define two important
+functions before solving the problem (23), i.e., f (2)
+β,i (d) in (23),
+as shown at the top of this page, and
+
+g(2)
+β,i(d) , Aid3 + Bid2 + Cid + Di,
+
+(24)
+where Ai, Bi, Ci, Di are given at the top of this page. Note
+β,i(d) is the numerator of the derivative of f (2)
+that g(2)
+β,i (d)
+(which is a fraction). By taking the derivative of f (2)
+β,i (d),
+simplifying it based on activity detection, and setting the
+simplified derivative of f (2)
+β,i (d) to zero, we derive the optimal
+solution of the problem in (23), which is expressed in terms
+of f (2)
+
+β,i (d) and g(2)
+Theorem 2 (Optimal Solution of Coordinate Descent Op-
+timizations in (23)): Given β, the optimal solution of the
+problem in (23) is given by:
+
+β,i(d).
+
+min
+
+d(2)∗i = arg
+, {d ∈ [−βi, 1 − βi] : g(2)
+
+d∈D(2)
+
+i ∪{−βi,1−βi}
+
+β,i(d) = 0}.
+
+f (2)
+β,i (d),
+
+(25)
+
+where D(2)
+
+i
+
+Input: empirical covariance matrix bΣR.
+
+β = 1
+
+σ2 IL, β = 0.
+
+Output: β.
+1: Initialize Σ−1
+2: repeat
+3: for i ∈ I do
+6= 0
+
+Calculate d(2)∗i
+If d(2)∗i
+
+4:
+
+5:
+
+according to (25).
+
+6:
+
+7:
+
+Update βi = βi + d(2)∗i
+Update Σ−1
+β −
+
+β = Σ−1
+
+.
+d
+1+d(2)∗
+
+(2)∗
+i
+
+i
+
+giΣ−1
+
+β S:,iSH
+:,iΣ−1
+giSH
+
+:,iΣ−1
+β
+β S:,i
+
+.
+
+end
+
+8:
+9: end for
+10: until β satisfies some stopping criterion.
+
+Σ−1
+β −
+f (2)(β) + f (2)
+
+Proof (Sketch): By (18), (20), and (Σβ+dgiS:,iSH
+
+i,:)−1 =
+[5], we show f (2)(β + dei) =
+
+dgiΣ−1
+1+dgiSH
+
+β S:,iSH
+i,:Σ−1
+
+i,:Σ−1
+β
+β S:,i
+
+β,i (d). Thus, the problem in (23) is equivalent to
+f (2)
+β,i (d). Next, following the derivation of
+
+min
+
+d∈D(2)
+
+i ∪{−βi,1−βi}
+
+(22) in [5], we show (cid:16)f (2)
+
+β,i (d)(cid:17)′
+
+the optimal solution of
+
+=
+
+min
+
+(25). Therefore, we complete the proof.
+
+d∈D(2)
+
+i ∪{−βi,1−βi}
+
+gβ,i(d)
+β S:,i)2 . Thus,
+i,:Σ−1
+(1+dgiSH
+f (2)
+β,i (d) is given by
+
+As g(2)
+
+β,i(d) is a polynomial with degree 3, D(2)
+
+can be
+obtained in closed-form with computational complexity O(P ).
+The details of the coordinate descent algorithm are sum-
+marized in Algorithm 2. If each coordinate optimization in
+(23) has a unique optimal solution, Algorithm 2 converges to
+a stationary point of Problem 3 as the number of iteration
+goes to infinity [10, Proposition 2.7.1]. The computational
+
+i
+
+complexities of Step 4, Step 6, and Step 7 are O(L2), O(1),
+and O(L2), respectively. Thus, the computational complexity
+of each iteration of Algorithm 2 is O(cid:0)N P L2(cid:1).
+
+V. NUMERICAL RESULTS
+
+In this section, we evaluate the performance of the proposed
+MLE-based device activity detection methods given by Algo-
+rithm 1 and Algorithm 2, referred to as Prop.-MLE-Alg. 1 and
+
+e
+
+t
+
+a
+r
+ 
+r
+o
+r
+r
+
+E
+
+0.07
+
+0.06
+
+0.05
+
+0.04
+
+0.03
+
+0.02
+
+0.01
+
+0
+
+1
+
+BL-AMP
+BL-GL
+BL-MLE
+Prop.-MLE-Alg. 2
+Prop.-MLE-Alg. 1
+
+0.005
+
+0
+
+4
+
+2
+
+3
+
+4
+
+5
+
+0.07
+
+0.06
+
+0.05
+
+0.04
+
+0.03
+
+0.02
+
+0.01
+
+e
+
+t
+
+a
+r
+ 
+r
+o
+r
+r
+
+E
+
+0
+54
+
+BL-AMP
+BL-GL
+BL-MLE
+Prop.-MLE-Alg. 2
+Prop.-MLE-Alg. 1
+
+60
+
+66
+
+72
+
+78
+
+1.3
+
+1.15
+
+1
+
+o
+
+i
+t
+
+a
+r
+ 
+
+e
+m
+
+i
+t
+ 
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+u
+p
+m
+o
+C
+
+0.85
+
+8
+
+10
+
+12
+
+14
+
+16
+
+2
+
+1.8
+
+1.6
+
+1.4
+
+1.2
+
+1
+
+o
+
+i
+t
+
+a
+r
+ 
+
+e
+m
+
+i
+t
+ 
+
+n
+o
+
+i
+t
+
+a
+
+t
+
+u
+p
+m
+o
+C
+
+0.8
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+(a) Number of channel taps P .
+
+(b) Pilot length L.
+
+(a) Length of channel taps P at
+L = 64 and M = 128.
+
+(b) Length of channel taps P at
+L = 32 and M = 256.
+
+Fig. 1: Error rate versus number of channel taps P and pilot length
+L.
+
+Fig. 2: Computation time ratio versus number of channel taps P .
+
+Prop.-MLE-Alg. 2, respectively. We consider three baseline
+schemes, namely, BL-MLE, BL-GL, and BL-AMP, which are
+obtained by applying the existing MLE [6], GROUP LASSO
+[4], and AMP [2], proposed for flat Rayleigh fading, to detect
+the activities of the N P virtual devices, β, without considering
+the constraints in (14), and then setting the activities of the
+
+P
+p∈P
+
+β(n−1)P +p
+
+P
+
+, n ∈
+N actual devices, α, according to αn =
+N . The thresholds for the MLE-based schemes and BL-
+GL are numerically optimized. The threshold for BL-AMP
+is chosen as in [2]. We generate pilots according to i.i.d.
+CN (0, IL) and normalize their norms to √L [5], [6]. In the
+simulation, we independently generate 1000 realizations for
+αn ∼ B(1000, 0.07), n ∈ N , hn,m,p ∼ CN (0, 1), n ∈ N ,
+m ∈ M, p ∈ P, and Gaussian pilots in each realization
+and evaluate the average error rate over all 1000 realizations.
+Unless otherwise stated, we choose N = 1000, L = 72,
+M = 128, P = 4, gn = 1, n ∈ N , and σ2 = 0.1.
+Fig. 1(a) and Fig. 1(b) plot the error rate versus the number
+of channel taps P and the pilot length L, respectively. From
+the two figures, we can make the following observations. The
+MLE-based schemes significantly outperform the compressed
+sensing-based schemes, BL-AMP and BL-GL. Note that at
+small L, BL-AMP does not work properly, yielding a poor
+error rate. The two proposed MLE-based schemes outperform
+BL-MLE, as they rigorously tackle the MLE problems. Prop.-
+MLE-Alg. 1 for solving Problem 1 with size N achieves a
+smaller error rate than Prop.-MLE-Alg. 2 for solving Problem 3
+with size N P , as a problem with a smaller size can be more
+effectively solved. Besides, the error rates of most schemes
+increase with P and decrease with L. The slight increase of the
+error rate of Prop.-MLE-Alg. 1 with P when P ≥ 3 is mainly
+due to the numerical error for determining D(1)
+n , n ∈ N . The
+increase of the error rates of the other schemes with P derives
+from the increase in the number of virtual devices.
+
+Fig. 2(a) and Fig. 2(b) plot the ratio between the compu-
+tation time of Prop.-MLE-Alg. 1 and the computation time of
+Prop.-MLE-Alg. 2 versus the number of channel taps P at
+different pilot lengths. Prop.-MLE-Alg. 1 has shorter compu-
+tation time than Prop.-MLE-Alg. 2 at small P , as the overall
+n , n ∈ N analytically
+is short at small P . Prop.-MLE-Alg. 1 has larger computation
+time than Prop.-MLE-Alg. 2 at large P , as the overall compu-
+
+computation time for determining D(1)
+
+tation time for determining D(2)
+
+, i ∈ I analytically is shorter
+at large P . When L is large, Prop.-MLE-Alg. 1 outperforms
+Prop.-MLE-Alg. 2 at most practical values of P .
+
+i
+
+VI. CONCLUSION
+
+In this paper, we first presented an OFDM-based massive
+grant-free access scheme for a wideband system. Then, we
+proposed two MLE-based device activity detection methods
+for frequency-selective Rayleigh fading using statistical esti-
+mation and optimization techniques. The two proposed meth-
+ods have different preferable system parameters and include
+the existing MLE-based method for flat Rayleigh fading as
+a special case. Conventional channel estimation methods can
+be directly applied for channel estimation of detected active
+devices under frequency selective Rayleigh fading, based on
+a received pilot signal model derived in this paper.
+
+REFERENCES
+
+[1] L. Liu, E. G. Larsson, W. Yu, P. Popovski, C. Stefanovic, and E. de Car-
+valho, "Sparse Signal Processing for Grant-Free Massive Connectivity:
+A Future Paradigm for Random Access Protocols in the Internet of
+Things," IEEE Signal Process. Mag., vol. 35, no. 5, pp. 88 -- 99, Sept.
+2018.
+
+[2] L. Liu and W. Yu, "Massive Connectivity With Massive MIMO-Part I:
+Device Activity Detection and Channel Estimation," IEEE Trans. Signal
+Process., vol. 66, no. 11, pp. 2933 -- 2946, Jun. 2018.
+
+[3] K. S. Z. Qin and D. Goldfarb, "Efficient block-coordinate descent
+algorithms for the group lasso," Math. Program. Comput., vol. 5, no. 2,
+pp. 340 -- 354, Jun. 2013.
+
+[4] Y. Cui, S. Li, and W. Zhang, "Jointly Sparse Signal Recovery and
+Support Recovery via Deep Learning With Applications in MIMO-
+Based Grant-Free Random Access," IEEE J. Sel. Areas Commun.,
+vol. 39, no. 3, pp. 788 -- 803, Mar. 2021.
+
+[5] A. Fengler, S. Haghighatshoar, P. Jung, and G. Caire, "Non-Bayesian
+Activity Detection, Large-Scale Fading Coefficient Estimation, and
+Unsourced Random Access With a Massive MIMO Receiver," IEEE
+Trans. Inf. Theory, vol. 67, no. 5, pp. 2925 -- 2951, May 2021.
+
+[6] Z. Chen, F. Sohrabi, Y. Liu, and W. Yu, "Covariance based joint activity
+and data detection for massive random access with massive MIMO," in
+Proc. IEEE ICC, May 2019, pp. 1 -- 6.
+
+[7] D. Jiang and Y. Cui, "ML and MAP Device Activity Detections for
+Grant-Free Massive Access in Multi-Cell Networks," be submitted to
+IEEE TWC, 2021.
+
+[8] J. Choi, "On Simultaneous Multipacket Channel Estimation and Recep-
+tion in Random Access for MTC Under Frequency-Selective Fading,"
+IEEE Trans. Commun., vol. 66, no. 11, pp. 5360 -- 5369, Jul. 2018.
+[9] W. Press, W. H, S. Teukolsky, W. Vetterling, S. A,
+
+and
+B. Flannery, Numerical Recipes 3rd Edition: The Art of Scientific
+Computing. Cambridge University Press, 2007. [Online]. Available:
+https://books.google.com/books?id=1aAOdzK3FegC
+
+[10] D. Bertsekas, Nonlinear Programming. Athena Scientific, 1999.
+
+

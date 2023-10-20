@@ -1,0 +1,63 @@
+<mxfile host="Electron" modified="2023-10-13T03:39:47.646Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.2 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="VDenlxjGs3UHFko79ZmP" version="22.0.2" type="device">
+  <diagram name="Page-1" id="Cz3zIoEwWE2y3l_aTSBD">
+    <mxGraphModel dx="481" dy="296" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-29" value="&lt;br&gt;&lt;br&gt;my program&amp;nbsp; &amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="180" y="130" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-21" value="&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;ror database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="290" y="270" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="jNLECjLRlb5xd-tqD8MC-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="160" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-1" value="whole paper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="90" y="140" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-2" value="ror id" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="410" y="280" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="jNLECjLRlb5xd-tqD8MC-25" target="jNLECjLRlb5xd-tqD8MC-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-3" value="possible strings" style="shape=dataStorage;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="300" y="140" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="jNLECjLRlb5xd-tqD8MC-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="160" as="sourcePoint" />
+            <mxPoint x="200" y="160.02857142857135" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="jNLECjLRlb5xd-tqD8MC-22" target="jNLECjLRlb5xd-tqD8MC-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-22" value="ror ralated strings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="300" y="285" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="jNLECjLRlb5xd-tqD8MC-3" target="jNLECjLRlb5xd-tqD8MC-25">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="200" as="sourcePoint" />
+            <mxPoint x="330" y="285" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-25" value="compare" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="210" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-27" value="extract" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="145" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-32" value="How to compare the similarity of two strings?&lt;br&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Levenshtein_distance&quot;&gt;Levenshtein distance - Wikipedia&lt;/a&gt;&lt;br&gt;&lt;a href=&quot;https://maxbachmann.github.io/Levenshtein/&quot;&gt;Levenshtein 0.23.0 documentation&amp;nbsp;&lt;/a&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="410" width="350" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="jNLECjLRlb5xd-tqD8MC-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.436;entryY=0.004;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="jNLECjLRlb5xd-tqD8MC-25" target="jNLECjLRlb5xd-tqD8MC-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

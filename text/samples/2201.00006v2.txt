@@ -1,0 +1,1361 @@
+AttentionLight: Rethinking queue length and attention mechanism for traffic
+
+signal control
+
+Liang Zhang1, Qiang Wu2, Jianming Deng1*
+
+2 Institute of Fundamental and Frontier Sciences, University of Electronic Science and Technology of China, Chengdu
+
+1 College of Ecology, Lanzhou University, Lanzhou 730000, China
+
+611731, China
+
+2
+2
+0
+2
+
+ 
+r
+p
+A
+6
+
+ 
+
+ 
+ 
+]
+
+G
+L
+.
+s
+c
+[
+ 
+ 
+
+2
+v
+6
+0
+0
+0
+0
+
+.
+
+1
+0
+2
+2
+:
+v
+i
+X
+r
+a
+
+Abstract
+
+Using Reinforcement learning (RL) techniques for traffic sig-
+nal control (TSC) is becoming increasingly popular. How-
+ever, most RL-based TSC methods concentrate on the RL
+model structure and easily ignore the traffic state representa-
+tion (vehicle number, queue length, waiting time, delay, etc.).
+Moreover, some RL methods heavily depend on expert design
+for traffic signal phase competition. In this paper, we rethink
+vehicles' queue length and attention mechanism for TSC: (1)
+redesign the queue length (QL) as traffic state representa-
+tion and propose a TSC method called Max-QueueLength
+(M-QL) based on our QL state; (2) develop a general RL-
+based TSC paradigm called QL-XLight with QL as state and
+reward, and generate RL-based methods by our QL-XLight
+directly based on existing traditional and latest RL models;
+(3) propose a novel RL-based model AttentionLight base on
+QL-XLight that uses a self-attention mechanism to capture
+the phase correlation, does not require human knowledge
+on traffic signal phases' competition. Through comprehen-
+sive experiments on multiple real-world datasets, we demon-
+strate that:(1) our M-QL method outperforms the latest RL-
+based methods; (2) AttentionLight achieves a new state-of-
+the-art (SOTA); (3) the state representation is essential for
+TSC methods. Our code is released on Github1.
+Keywords: traffic signal control, reinforcement learning, ef-
+fective state, attention mechanism
+
+1
+
+Introduction
+
+With population growth and economy, vehicles are increas-
+ing rapidly, and traffic congestion has become an urgent
+problem. It is well known that traffic congestion causes fuel
+waste, environmental pollution, economic losses, and waste
+of time. Improving transportation efficiency and mitigating
+traffic congestion is urgent. Because intersections are one
+of the most common forms of bottlenecks in urban areas,
+traffic signal control is critical for effective traffic manage-
+ment. In many modern cities, FixedTime [9], SCOOT [7],
+and SCATS [13] are the most common traffic signal con-
+trol(TSC) systems, which rely on manually traffic signal
+plans. FixedTime uses a fixed traffic signal plan with fixed
+cycle length and singal phase split. SCOOT and SCATS dy-
+namically select the traffic signal plan according to the traffic
+corresponding author. Email:
+
+*Jianming Deng is
+
+the
+
+dengjm@lzu.edu.cn
+
+1https:github.com/LiangZhang1996/QL XLight
+
+volume detected by loop sensors. These methods' special-
+ized traffic signal plans are not suitable for dynamic traffic
+and various intersections.
+
+Reinforcement learning (RL) [18] is a branch of machine
+learning concerned with how intelligent agents ought to take
+actions in an environment in order to maximize the notion
+of cumulative reward. RL has attracted increasing attention
+for TSC, and researchers have started using RL to solve
+TSC problems [20, 27, 33, 19, 16, 25, 26, 1]. RL models
+can directly learn from the environment through trial-and-
+reward without requiring strict assumptions like traditional
+TSC methods. In addition, RL models powered by deep
+neural networks [15] can learn to handle complex and dy-
+namic environments. RL-based TSC methods [25, 1, 26] be-
+come a promising solution for adapting the dynamic traffic.
+PressLight [25] can realize large-scale traffic signal control.
+Furthermore, MPLight [1] and CoLight [26] have demon-
+strated their capacity to deal with TSC at large-scale.
+
+The model framework, state representation, and incen-
+tive design can all influence performance in RL-based ap-
+proaches. FRAP [32] develops a particular network that con-
+structs phase features and models phase competition corre-
+lations to get the score of each phase. This novel network of
+FRAP yields excellent performance for TSC. CoLight [26]
+uses graph attention network [24] to realize intersection co-
+operation, and achieves state-of-the-art performance after
+getting more state representation. LIT [33] leverages the net-
+work from IntelliLight [27] and uses a simple state scheme
+and reward to outperform IntelliLight vastly. PressLight [25]
+also uses the network from IntelliLight and further optimizes
+the state and reward, outperforming LIT considerably. MP-
+Light [1] improves the state representation from PressLight
+and adopts a more efficient framework FRAP [32], signifi-
+cantly improves PressLight.
+
+In Atari games, the state representation usually uses im-
+ages (or information array) given by the game environ-
+ments, which does not require manual design. The state
+representations of RL-based TSC are varied compared to
+RL approaches in Atari games [14]. Specifically, in TSC
+field, state representation mainly varies in: number of vehi-
+cles [27, 33, 30, 25, 32, 30, 26, 29], vehicle image [20, 27],
+traffic movement pressure [1], queue length [16, 27], aver-
+age velocity [16], current phase [27, 33, 30, 25, 32, 30, 26,
+29], and next phase [27, 29]; reward representation mainly
+
+varies in: queue length [32, 25, 26, 29], pressure[1, 25], to-
+tal wait time [27, 16, 20, 29], and delay [27, 20, 29]. Some
+methods like LIT [33] and PressLight [25] use a simple state
+and reward, perform better than IntelliLight [27], even in the
+same network model. Although traffic state representation
+plays an essential role in RL models, most researches focus
+on developing new network structures to improve TSC per-
+formance. Only a few research have delved into why some
+methods gain excellent performance with specific state and
+reward design mechanisms. As a result, the state design for
+TSC should be given additional consideration.
+
+Latest works like MPLight [1] and MetaLight [30] both
+use FRAP as base model. However, FRAP requires the phase
+correlation that should be manually designed, such as com-
+peting, partial competing, and no competing in an ordinary
+4-way and 8-phase (Figure 1) intersection [32]. The correla-
+tion of 8 and 4 phases can be easily acquired by analyzing
+the phase and traffic movements. However, building the cor-
+relation of each phase with more complicated phases or in-
+tersections (such as a 5-way intersection) can be extremely
+difficult and time-consuming. To solve this problem, we de-
+velop a new network called AttentionLight that use self-
+attention [23] to learn phase correlation.
+
+In summary, the main challenges for TSC are as follows:
+• Various traffic state representations are employed, and it
+is unknown which state representations are most effec-
+tive.
+
+• Building each phase's correlation with more complicated
+phases or intersections is difficult without expert experi-
+ence..
+To address these challenges, the main contributions of this
+
+article are as follows:
+1. Redesign queue length as an effective state representa-
+
+tion for TSC.
+
+2. Propose an optimization based TSC method, namely
+
+Max-QueueLength (M-QL);
+
+3. Develop an RL-based TSC template: QL-XLight with
+queue length as the state and reward, and generate two
+RL-based methods: QL-DQN and QL-GAT;
+
+4. Develop a novel RL model AttentionLight that uses self-
+attention to learn the phase correlation, does not require
+human knowledge of phase relationships.
+The remainder of this paper is organized as follows: Sec-
+tion 2 introduces the related works, including typical tradi-
+tional and RL-based approaches for TSC; Section 3 depicts
+the related definitions of TSC; Section 4 redesigns queue
+length as effective state representation, proposes M-QL, QL-
+XLight, and AttentionLight; Section 5 conducts experiments
+and demonstrates the results. Section 6 summarizes this pa-
+per and discusses future work.
+
+2 Related work
+2.1 Traditional methods for TSC
+Traditional TSC methods can be divided into four main cat-
+egories: fixed-time control [9], actuated control [4, 2], adap-
+tive control [7, 13], and optimization-based control [22, 11,
+17].
+
+Fixed-time control [9] usually consists of a pre-timed
+cycle length, fixed cycle-based phase sequence, and phase
+split. While calculating the cycle length and phase split, the
+traffic flow is assumed to be uniform during a specific pe-
+riod. Actuated control [2] decides whether to keep or change
+the current phase based on the pre-defined rules and real-
+time traffic data. An example rule can be: set the green sig-
+nal for that phase if the number of approaching vehicles is
+larger than a threshold. Adaptive control [7, 13] decides a
+set of traffic plans and chooses one that is optimal for the
+current traffic situation based on traffic volume data from
+loop sensors. Each traffic signal plan includes cycle length,
+phase split, and offsets. This method(such as SCOOT [7]
+and SCATS [13]) is wildly deployed in modern cities. All
+the abovementioned methods rely on human-designed traf-
+fic signal plans or rules.
+
+Optimization-based control [22, 11, 17] formulates traffic
+signal control as an optimization problem under a certain
+traffic flow model and decides the traffic signal according
+to the observed traffic data. Maxpressure [22] is a typical
+optimization-based control, and this model usually requires
+the turn ratio.
+2.2 RL based methods for TSC
+RL-based methods [15] are a promising solution for TSC.
+They can learn their policy directly from the environments
+through trial-and-reward, and deep neural networks (DNN)
+enable them to adapt to various traffic conditions. In the be-
+ginning, RL-based methods use complex state and reward.
+For instance, IntelliLight [27] employs six state representa-
+tions (including queue length, number of vehicles, current
+phase, next phase, vehicle image, and updated waiting time)
+as well as six rewards (including queue length, delay, sum
+of updated waiting time, light change indicator, number of
+passed vehicles, and total travel time). CDRL [20] utilizes
+a simpler state representation (current phase and image-like
+representation), but remian sophisticated reward (including
+delay, penalties for teleports, emergency stops, light change
+indicator, and vehicles waiting time).
+
+Now, most RL methods apply both relatively simple state
+and reward design. LIT [33] uses the current phase and the
+number of vehicles as the state, queue length as the re-
+ward, significantly outperforms IntelliLight with the same
+network. PressLight [25] uses the current phase, the num-
+ber of vehicles on incoming lanes, and the number of ve-
+hicles on outgoing lanes as the state, pressure as the re-
+ward, gets better performance than LIT. MPLight [1] further
+simplifies the state from PressLight into the current phase,
+and traffic movement pressure gets better performance than
+PressLight [25]. Both PressLight and MPLight have state
+representations that can help them optimize their reward
+functions.
+
+We introduce new network structures in RL techniques
+for TSC. With the number of vehicles and current phase as
+the state and queue length as the reward, FRAP [32] builds
+a novel network to construct phase features and phase com-
+petition relation.
+
+The essential designs of FRAP are phase feature construc-
+tion and phase competition that allows invariance to sym-
+
+metrical cases such as flipping and rotation in traffic flow.
+However, the phase competition relation should be manually
+designed. GCN [16] adopts graph convolution networks [8],
+with queue length and average velocity as state, total wait
+time as the reward. CoLight [26] introduces graph attention
+network [24] to realize intersection cooperation, with the
+number of vehicles and current phase as state, queue length
+as the reward. HiLight [29] introduces the idea of hierar-
+chical RL [10], with the current phase, next phase and the
+number of vehicles as state, queue length, delay, and wait-
+ing time as the reward. DemoLight [28] integrates imitation
+learning [5]. MetaLight [30] incorporates meta-learning [3],
+with number of vehicles and current phase as state, queue
+length as reward. In general, most studies attempt to develop
+a complex network structure for TSC, while little pays atten-
+tion to traffic state representation design.
+
+However, the state design for TSC has not been studied
+in depth. LIT [33] finds that: as a reward representation, the
+queue length is better than delay; as a state representation,
+the number of vehicles is better than waiting time and traffic
+image. PressLight [25] finds pressure is better than queue
+length as a reward representation. MPLight [1] introduces
+pressure into state design and finds the improvement in the
+model. However, neither systematically explains why some
+states and rewards are better. The state representation for
+TSC requires further discussion.
+
+3 Preliminary
+
+In this section, we summarize the related definitions for TSC
+methods.
+
+Figure 1: The illustration of an intersection. In case (a),
+phase #2 is activated.
+
+Definition 1 (Traffic network). The traffic network is de-
+scribed as a directed graph in which each node represents
+an intersection, and each edge represents a road. One road
+consists of several lanes with vehicles running on it. As an
+intersection, an incoming lane is for entering vehicles, and
+an outgoing lane is for exiting vehicles. We denote the set of
+incoming lanes and outgoing lanes of intersection i as Lin
+and Lout
+i
+respectively. The lanes are denoted with l, m, k.
+As is shown in Figure 1 (a), there are one intersection, four
+incoming roads, and twelve incoming lanes.
+
+i
+
+Definition 2 (Traffic movement). A traffic movement is
+defined as the traffic traveling across an intersection towards
+a certain direction, i.e., left turn, go straight, and right turn.
+According to the traffic rules in some countries , vehicles
+that turn right can pass regardless of the signal but must yield
+at red lights. As shown in Figure 1 (b), there are twelve traf-
+fic movements.
+Definition 3(Signal phase). Each signal phase is a set of
+permitted traffic movements, denoted by d, and Di denotes
+the set of all the phases at intersection i. As shown in Fig-
+ure 1, twelve traffic movements can be organized into four
+phases (c) or eight phases (d), and phase #C is activated in
+(a).
+
+Definition 4 (Phase queue length). The queue length of
+each phase is the sum queue length of the incoming lanes of
+the phase, denoted by
+
+q(d) =
+
+q(l), l ∈ d
+
+(1)
+
+(cid:88)
+
+(cid:88)
+
+in which q(l) is the queue length of lane l.
+
+Definition 5 (Intersection queue length). The queue
+length of each intersection is defined as the total queue
+length of the incoming lanes of the intersection, denoted by
+
+Qi =
+
+q(l), l ∈ Lin
+
+i
+
+(2)
+
+in which q(l) represents the queue length of lane l.
+
+Definition 6 (Phase duration). The minimum duration for
+each phase is denoted by tduration. It can also represent the
+minimal action interval of RL-based models.
+
+Problem (Multi-intersection traffic signal control). Each
+intersection is controlled by one RL agent. Every tduration,
+agent i views the environment as its observation ot
+i and takes
+i to control the signal of intersection i. The goal
+the action at
+of the agent i is to take an optimal action at
+i (i.e. which phase
+to set) to maximize its cumulative reward r.
+
+Table 1: Summary of notation.
+
+i
+
+i
+
+Notation Meaning
+Lin
+Lout
+l, m, k
+q(l)
+d
+Di
+
+set of incoming lanes of intersection i
+set of outgoing lanes of intersection i
+lanes
+queue length of lane l
+signal phase which is a set of traffic movements
+set of all phases at intersection i
+
+tduration minimal phase duration or said action interval
+
+4 Method
+
+In this section, we first propose a queue length based TSC
+method Max-QueueLegth(M-QL) based on the property of
+queue length. Next, we develop an RL-based TSC template:
+QL-XLight with queue length both as the state and reward.
+Finally, we design a novel RL model call AttentionLight
+which uses self-attention to model the phase correlation.
+
+Figure 2: With number of vehicles as the state representation, case (a) and case (b) have the same state but different optimal
+policies.
+
+4.1 Queue length based methods for TSC
+Queue length as the state and reward The queuing ve-
+hicles play an essential role in the traffic condition represen-
+tation. For TSC, each vehicle in the traffic network has two
+states: moving and queuing. Queuing vehicles can directly
+result in congestion compared to running vehicles. Almost
+all the queuing vehicles stop near the intersection and re-
+quire a green signal. In the traffic network, the phase sig-
+nal can only directly change the state of the queuing vehi-
+cles. If one phase is activated, the queue length of that phase
+changes to zero, while the queue length of other phases in-
+creases gradually, depending on the arrival from upstream.
+There is a deterministic change when each phase is acti-
+vated, and queue length is considered effective. Any subse-
+quent changes, such as the number of vehicles, vehicle posi-
+tion, and vehicle speed, are full of uncertainty.
+
+The RL agents learn from the environment through trial-
+and-reward and learn the state-action value through explo-
+ration. The learning effect is highly influenced by the feed-
+back of actions. Suppose the state representation does not
+include critical contents of traffic movement. In such cases,
+agents may be confused about the state and can't learn an
+appropriate policy. For example, as shown in Figure 2, the
+state is same if use number of vehicles, but in case (a), phase
+#D should be activated, while in case (c), phase #C should
+be activated. There are different optimal policies under the
+same state representation, which could makes the RL agents
+confused. Moreover, the state space of queue length is larger
+than number of vehicles as Figure 2 shown. Thus, queue
+length is considered as an effective state representation.
+
+In addition, with queue length as the reward, queue length
+
+as the state can support the optimization of the reward.
+Therefore, we choose to use queue length as a traffic state
+representation and reward.
+
+Algorithm 1: M-QL Control
+Parameter: Current phase time t, minimum phase duration
+tduration
+1: for (time step) do
+2:
+3:
+4:
+5:
+6:
+end if
+7:
+8: end for
+
+For each intersection, get q(d) by equation (1);
+Activate the phase according to equation (3);
+t = 0
+
+t = t + 1;
+if t = tduration then
+
+Max-QueueLength control
+Inspired by MaxPressure
+(MP) [22] and the property of queue length, we propose an
+optimization based TSC method called Max-QueueLength
+(M-QL). Like MP, M-QL control greedily selects the phase
+that with the maximum queue length. At intersection i, the
+queue length of each phase is calculated (by equation (1)),
+then M-QL activates the phase with maximum queue length
+every tduration, denoted by
+
+d = argmax (q(d))d ∈ Di)
+
+(3)
+The M-QL method is formally summarized in Algorithm 1.
+4.2 QL-XLight
+We develop an RL-based TSC method template with queue
+length as the traffic state and reward, QL-XLight. Queue
+
+Parameter Sharing Parameters of the network are shared
+among all the agents. It is essential to improve model perfor-
+mance [1]. Besides, the replay memory is also shared so that
+all the intersections can benefit from the experiences of oth-
+ers. Note that the GAT-based model does not need parameter
+sharing because all the agents cooperate to get the Q-values.
+All the RL baseline models are also trained under parame-
+ter sharing for fair model comparison. In addition, double
+DQN [21] and ApeX-DQN framework [6] are also used by
+all the RL-based models.
+
+4.3 Self-attention based phase correlation for
+
+TSC
+
+Considering the disadvantages of FRAP [32] that requires
+human designed phase correlation, we design an RL model
+called AttentionLight, which uses self-attention to model
+phase correlation for TSC.
+
+idea of AttentionLight
+
+is using self-
+attention [23] to learn the phase correlation and predict the
+Q-value of each phase through phase feature constructed
+by self-attention. Finally, the Q-value of each phase fully
+considers the correlation with others.
+
+The
+
+core
+
+As shown in Figure 3, we divide the prediction of Q-
+values (i.e., score of each phase) into three stages: construct
+phase features, learn phase correlation with multi-head self-
+attention, and predict Q-values.
+
+length as the state can support the optimization of reward. In
+addition, queue length can more precisely describe the traf-
+fic situations than number of vehicles. Based on QL-XLight,
+DQN [15], and GAT(graph attention network) [24] are in-
+troduced as the based model, and we get QL-DQN, and QL-
+GAT. The QL-XLight template is formally summarized in
+Algorithm ??.
+
+Algorithm 2: QL-XLight
+Parameter: Current phase time t, minimum action duration
+tduration
+1: for (time step) do
+2:
+3:
+4:
+5:
+6:
+end if
+7:
+8: end for
+
+Input: Get st for each intersection;
+Output: Set the phase by X RL model;
+t = 0;
+
+t = t + 1;
+if t = tduration then
+
+DQN agent The following base models are introduced to
+get QL-DQN and QL-GAT:
+• DQN based model. A simple DQN [15] with only two
+fully connected layers is adopted. The neural network
+structure is straightforward and basic. We refer to the
+simple DQN based approach as QL-DQN.
+
+• GAT based model. A GAT [24] is adopted as one of the
+base models, which can realize intersection cooperation
+like CoLight [26]. We refer to the GAT based approach
+as QL-GAT.
+For QL-XLight, the state, action, and reward are described
+
+as follows:
+• State. The current phase and queue length of the incom-
+ing lanes of each intersection are used as the state repre-
+sentation (agent observations). The state at time tis de-
+noted as st.
+
+• Action. At time t, each agent chooses a phase d accord-
+ing to the state, and the traffic signal will be changed to
+d.
+
+• Reward. Negative intersection queue length is used as
+the reward. The reward for the agent that is controlling
+intersection i is denoted by
+
+ri = −(cid:88)
+
+q(l), l ∈ Lin
+
+i
+
+(4)
+
+in which q(l) is the queue length at lane l. By maximizing
+the reward, the agent is trying to maximize the through-
+put in the system.
+
+Deep Q-learning The DQN agents are updated by the
+Bellman Equation:
+
+Q(st, at) = R(st, at) + γmaxQ(st+1, at+1)
+
+(5)
+
+in which st and st+1 are the state, at and at+1 are the action.
+
+Figure 3: Network design of AttentionLight.
+
+Construct phase features The input of AttentionLight
+consists of signal phase representation (shape of (batch, 8))
+and traffic state feature (i.e. queue length, shape of
+(batch, 12)). AttentionLight embeds the inputs and com-
+bines them into phase features according to the phase in-
+formation(Figure 1).
+• Input embedding. The progress of input embedding is
+similar to FRAP [32], and each feature is converted into
+a higher dimension. Then the features that belong to the
+same lane are combined through concatenation. Finally,
+we get the feature representation of each incoming lane.
+• Phase features construction. Each phase feature is con-
+structed through feature fusion of corresponding lane
+features (refer to Definition 3). In addition, the feature
+fusion progress can be: direct addition or weighted addi-
+tion which can be learned by the network.
+
+Finally, we get
+the feature representation of each
+phase(shape of (batch, 4, dims) for 4-phase, shape of
+(batch, 8, dims) for 8-phase).
+Self-attention based phase correlation In this stage, our
+model takes the phase feature as input and uses self-attention
+to learn the phase correlation. As shown in Figure 3, the
+multi-head self-attention [23] is applied to the phase fea-
+ture. The correlation of each phase is learned through self-
+attention, and a new phase feature is constructed considering
+the correlation of each phase.
+Predict Q-values
+In this stage, our model takes the cor-
+related phase feature (shape of (batch, 4, dim) for 4-phase,
+shape of (batch, 8, dim) for 8-phase) as input to get the Q-
+value of each phase. For each phase, the correlated features
+are embedded to into one value which is exactly the Q-value
+of this phase. Parameters are shared for each phase to get
+the Q-values. In summary, three fully connected layers (get
+shape of (batch, n, 1), n is 4 for 4-phase, 8 for 8-phase ) and
+one reshape layer (reshape into (batch, n)) are connected to
+get the Q-values.
+4.4 Discussion
+Comparison of M-QL and MP MP control selects the
+phase with maximum pressure, which is the difference of
+queue length between upstream and downstream, indicat-
+ing the balance of the queue length. Considering the con-
+trol logic, M-QL and MP are highly similar, greedily choos-
+ing phases. For the case of single intersection control, MP
+and M-QL are the same. There are no queuing vehicles on
+the outgoing lanes of the single intersection because it is as-
+sumed that the outgoing is infinite. Therefore, the calculated
+pressure is exactly the queue length.
+
+MP considers the neighbor influence, stabilizes the queue
+length, and maximizes the throughput by selecting the phase
+with maximum pressure. The core idea of MP is that en-
+sure the vehicles can't be stopped by the queuing vehicles of
+the upstream. Therefore, if a phase has a large pressure, the
+queue length can only be larger. The MP method is effective
+when the traffic road length is small because the adjacency
+intersection vehicles can quickly influence the current inter-
+section.
+
+However, when the length of road is long, the impact can
+be several tduration away, and the pressure is not effective.
+For example, set tduration = 15s and vehicles' maximum
+velocity is 10m/s; if the road is 100m, then it takes 10s
+to the neighbor, and the neighbor condition influences the
+policy; if the road is 300m, then it takes at least 30s to the
+neighbor, and the policy can't be influenced by the neighbor
+condition.
+
+In summary, M-QL would do better if the traffic roads is
+longer, and MP would do better if the traffic roads is shorter.
+This assumption will be proved by experiments later.
+Queue length as the state We are not the first to intro-
+duce queue length into both state and reward, but we are the
+first to propose queue length as an effective state represen-
+tation. IntelliLight [27] uses complex state representations
+apart from queue length. GCN [16] uses queue length and
+average velocity as state, total wait time as a reward. Tan et
+al. [19] use queue length as state, queue length and num-
+ber of running vehicles as a reward. Although these studies
+have used queue length as state representation, they do not
+emphasize queue length property.
+
+The results of FRAP[32] and CoLight[26] demonstrate
+the poor performance of IntelliLight and GCN. In addition,
+the reward in [19] indicates the smaller queue length and
+running number, the better results, which is unreasonable
+because for the number of running vehicles, the larger, the
+better. Therefore, the reward is also essential for RL-based
+TSC, and only queue length is more reliable than that used
+in IntelliLight, GCN, and [19].
+AttentionLight and FRAP Compared to FRAP, Atten-
+tionLight does not require human knowledge on the phase
+competing relationships. The competing relationship for
+phase is complex, such as competing, partial competing,
+and no competing in an ordinary 4-way and 8-phase (Fig-
+ure 1) intersection. The competing relationships of the 8
+phases can be easily acquired through analysis of the phase
+and traffic movements. However, with a more complex in-
+tersection (such as a 5-way intersection) or more complex
+phases, building the competing relationship of each phase
+could be truly difficult and take many efforts. Therefore,
+considering the model deployment in the real world, Atten-
+tionLight is better than FRAP. Our AttentionLight just learns
+the phase correlation through a neural network, fully reduc-
+ing the complexity of phase relation design in the real world.
+
+5 Experiment
+
+5.1 Setting
+We conduct comprehensive experiments on an open-source
+simulator called CityFlow2 [31], which supports large-scale
+traffic signal control and has a faster speed than SUMO [12].
+The simulator provides the environment observations to the
+agents and receives the actions from the agents. In the exper-
+iments, each green signal is followed by three-second yellow
+time and two-second all red time to prepare the signal phase
+transition.
+
+2https://cityflow-project.github.io
+
+Figure 4: Travel pattern of traffic flow datasets, denoted as vehicle enter number at each period (100 secends).
+
+5.2 Datasets
+We use seven real-world datasets3 in the experiment, three
+from JiNan, two from HangZhou, and two from New York.
+These datasets have been wildly used by various methods
+such as MPLight [1], CoLight [26], and HiLight [29].
+
+Each traffic dataset consists of two parts: (1) traffic net-
+work dataset; (2) traffic flow dataset. The traffic network
+dataset describes the traffic network, including lanes, roads,
+intersections, and signal phases. The traffic flow dataset
+contains vehicles travel information, which is described as
+(t, u), where t is the time that each vehicle starts entering
+the traffic network and u is the pre-planned route from its
+original location to destination.
+• Jinan dataset: The road network has 12 intersections
+(3×4). Each intersection is four-way, with two 400-meter
+road segments (East-West) and two 800-meter road seg-
+ments (South-North). There are three traffic flow datasets
+under this traffic network dataset.
+
+• Hangzhou dataset. The road network has 16 intersec-
+tions (4 × 4). Each intersection is four-way, with two
+800-meter road segments (East-West) and two 600-meter
+road segments (South-North). There are two traffic flow
+datasets under this traffic network dataset.
+• New York dataset: The road network has 192 (28×7) in-
+tersections. Each intersection is four-way, with four 300-
+meter (two East-West and two South-North) road seg-
+ments. There are two traffic flow datasets under this traf-
+fic network dataset.
+
+As shown in Figure 4, these seven traffic flow datasets are
+not only different from arrival rate, but also different from
+travel pattern. It supports the validity of our experiments.
+
+5.3 Evaluation metric
+Based on existing studies in traffic signal control [1, 26, 29],
+we choose average travel time as the evaluation metric,
+which is the most used metric to evaluate control perfor-
+mance in the TSC. The travel time of each vehicle is the
+time speed between entering and leaving the traffic network.
+We use the average travel time of all the vehicles to evaluate
+the model performance.
+
+3https://traffic-signal-control.github.io
+
+5.4 Compared methods
+We compare our methods with the following baseline meth-
+ods, including traditional and RL methods. For a fair com-
+parison, the phase number is set as four, and the action inter-
+val (phase duration) is set as 15 seconds. All the RL methods
+are learned with the same hyper-parameters, such as opti-
+mizer, learning rate, batch size, sample size, memory size,
+epochs number, discount factor γ, and so on.
+
+Each episode is a 60-minute simulation, and we adopt one
+result as the average of the last ten episodes of testing. Each
+reported result is the average of three independent experi-
+ments.
+
+Traditional Methods:
+• FixedTime [9]: the FixedTime control uses fixed cycle
+length with pre-defined phase split among all the phases.
+• MP [22]: the MP (max-pressure) control selects the
+
+phase with maximum pressure.
+RL Methods:
+• FRAP [32]: uses a modified network structure to capture
+phase competition relation between signal phases. FRAP
+is trained with parameter sharing like MPLight [1] for a
+fair comparison.
+
+• MPLight [1]: a FRAP [32] based decentralized model,
+incorporates pressure in the state and reward design and
+has shown superior performance in city-level TSC. It is a
+state-of-the-art RL-based TSC method.
+
+• CoLight [26]: another state-of-the-art method uses a
+graph attention network [24] to realize intersection co-
+operation and has shown superior performance in large-
+scale TSC.
+
+Our Proposed Methods:
+• M-QL: the M-QL (Max-QueueLength) control selects
+
+the phase with maximum queue length.
+
+• QL-DQN: adopts a two-layer network as the base model,
+uses queue length and current phase as state, intersection
+queue length as a reward.
+
+• QL-GAT: a GAT based model that uses queue length and
+current phase as state, intersection queue length as a re-
+ward.
+
+• AttentionLight: our proposed model that uses queue
+length and current phase as state, intersection queue
+length as a reward.
+
+Table 2: Overall performance. For average travel time, the smaller the better.
+
+Method
+FixedTime
+MP
+FRAP
+MPLight
+CoLight
+M-QL
+QL-DQN
+QL-GAT
+AttentionLight
+
+1
+
+428.11
+273.96
+296.46
+297.46
+272.06
+268.21
+260.74
+254.94
+254.26
+
+JiNan
+
+2
+
+368.77
+245.38
+266.93
+270.05
+252.44
+238.91
+245.32
+239.05
+238.55
+
+3
+
+383.01
+245.81
+269.64
+276.15
+249.56
+237.80
+239.33
+236.25
+236.26
+
+HangZhou
+2
+1
+
+New York
+
+2
+
+1
+
+495.57
+288.54
+309.60
+314.60
+297.02
+283.12
+284.74
+282.17
+282.79
+
+406.65
+348.98
+356.47
+357.61
+347.27
+324.38
+333.44
+322.75
+314.10
+
+1507.12
+1179.55
+1192.23
+1321.40
+1065.64
+1197.59
+1145.70
+978.39
+1013.78
+
+1733.30
+1536.17
+1470.51
+1642.05
+1367.54
+1551.46
+1489.88
+1257.94
+1401.32
+
+Figure 5: Overall performance comparison, the smaller the better.
+
+5.5 Overall Performance
+Table 2 reports the performance of all the methods under Ji-
+Nan, HangZhou, and New York real-world datasets on aver-
+age travel time. Figure 5 gives a more intuitive performance
+comparison of models (except FixedTime).
+
+Traditional transportation methods are still powerful. Our
+proposed M-QL consistently outperforms all other previous
+methods under JiNan and HangZhou datasets. Traditional
+method MP [22] also outperforms FRAP [32], MPLight [1],
+and CoLight [26] under JiNan and HangZhou datasets. Un-
+der New York dataset, MP and M-QL outperforms MPLight.
+We have supposed that: M-QL would do better if the traf-
+fic roads is longer, and MP would do better if the traffic
+roads is shorter. The roads of JiNan and HangZhou network
+are longer than New York's, and they can be classed into
+two types. M-QL consistently outperforms MP among Ji-
+Nan and HangZhou datasets, and MP consistently outper-
+forms M-QL among New York's datsset.
+
+Our proposed QL-DQN,QL-GAT and AttentionLight
+outperform all other previous methods over JiNna and
+HangZhou datasets, while QL-GAT outperforms all other
+previous methods over all the datasets. AttentionLight also
+consistently outperforms MPLight and FRAP among all the
+datasets. With the same framework and different state and
+reward compared to CoLight, the improvement of QL-GAT
+is significant, proving the importance of state representation
+for RL-based TSC.
+
+Our proposed AttentionLight and QL-GAT achieve new
+state-of-the-art among traditional and RL-based TSC meth-
+ods. In addition, QL-XLight only uses queue length infor-
+mation of a particular intersection, which has the advantage
+
+of deployment than CoLight, MPLight, and FRAP.
+
+The importance of Parameter sharing is re-emphasized for
+RL-based models. MPLight [1] demonstrates better perfor-
+mance than FRAP and addresses the importance of parame-
+ter sharing. However, when FRAP is trained with parameter
+sharing same as MPLight, it has slightly better performance
+than MPLight.
+
+5.6 State representation is also essential
+Both the neural network structure and the state represen-
+tation play an important role in performance improvement.
+However, most studies pay attention to network design. We
+will demonstrate that state representation is also essential.
+
+QL-DQN uses a simple neural network structure, but
+effective state representation. FRAP and CoLight use ad-
+vanced neural network structures, but the state representa-
+tion is not effective. In addition, FRAP, CoLight, and QL-
+DQN use the same reward. Comparing the performance of
+QL-DQN with FRAP and CoLight, QL-DQN is consistently
+better over JiNan and HangZhou datasets.
+
+Therefore, we can conclude that state representation is
+also essential as a neural network structure for TSC. State
+representation should be paid more attention in TSC.
+
+5.7 Comparison of AttentionLight and FRAP
+With the same state and reward, we conduct experiments on
+JiNan and HangZhou real-world datasets to compare the the
+network of our proposed AttentionLight and FRAP [32]. We
+choose two-phase settings: 4-phase and 8-phase. And the
+phase duration is set as 15 seconds. The state representation
+is set as current phase and queue length, and reward is set
+
+Figure 6: The transfer performance comparison, the smaller the better. They use the same color-bar.
+
+• AttentionLight-NV. AttentionLight as the base model,
+current phase and number of vehicles (NV) as the state,
+queue length as the reward
+
+• FRAP. FRAP as the base model, current phase and num-
+
+ber of vehicles as the state, queue length as the reward
+Same to the training process of baseline models, each
+transfer result reports the average of three independent ex-
+periments, and each experiment shows the average result of
+the final 10 episodes. Experiments are conducted under Ji-
+Nan and HangZhou real-world datasets. The transferability
+of each model that trained on dataset i and transferred on
+dataset j is calculated as follows:
+
+Ej
+
+i =
+
+tj
+transf er
+ti
+train
+
+− 1
+
+(6)
+
+in which ti
+time) on dataset i, tj
+dataset j.
+
+train represents the training result (average travel
+transf er represents the transfer result on
+
+As Figure 6 shows,
+
+the transferability of Attention-
+Light significantly batter
+than AttentionLight-NV and
+FRAP, demonstrates that the state representation signifi-
+cantly influence model generalization. The transferability of
+AttentionLight-NV and FRAP are similar and have no sig-
+nificant difference.
+5.9 Performance under different phase duration
+Experiments are also conducted under different phase du-
+rations for further model comparison. Figure 8 reports the
+model performance under different phase durations. QL-
+DQN, QL-GAT, and AttentionLight consistently perform
+better than CoLight and MPLight over JiNan and HangZhou
+datasets. M-QL performs better than MPLight and CoL-
+ight in most cases, except at JiNan1 and JiNan3 when
+tduration = 10s. M-QL also performs better than QL-DQN
+in most cases. The performance of MQ addresses that the
+traditional transportation method is still powerful and essen-
+tial.
+5.10 Performance under different rewards
+PressLight [25] and MPLight [1] have demonstrated that RL
+approaches perform better under pressure than queue length.
+
+Figure 7: Performance comparison of AttentionLight and
+QL-FRAP under different phase settings.
+
+as queue length. We refer to FRAP based methods as QL-
+FRAP. AttentionLight and QL-FRAP use the same hyper-
+parameters for a fair comparison.
+
+Figure 7 demonstrates the model performance of Atten-
+tionLight and QL-FRAP. Results demonstrate that there is
+no significant difference in performance between Attention-
+Light and QL-FRAP among all the datasets. In addition, At-
+tentionLight and QL-FRAP performs better under 8-phase
+than 4-phase among all the datasets.
+
+In summary, with the same performance but a more rea-
+sonable framework than FRAP, AttentionLight is a better
+choice.
+
+5.8 Model generalization
+Model generalization is a very important property of RL
+models. An ideal RL model should be resilient to differ-
+ent traffic conditions after training in one traffic situation.
+Under the same network structure, the state representation
+also influence the model generalization. As a state represen-
+tation, how number of vehicles and queue length influence
+the model generalization is tested.
+
+We test the model generalization of three models:
+• AttentionLight. AttentionLight as the base model, cur-
+rent phase and queue length as the state, queue length as
+the reward.
+
+timization based TSC method: Max-QueueLength(M-QL)
+and an RL template: QL-XLight. In addition, we propose
+a novel RL model AttentionLight that uses self-attention to
+learn the phase correlation without requiring human knowl-
+edge of phase relationships like FRAP. Our proposed meth-
+ods have demonstrated superior performance than the pre-
+vious state-of-the-art method, and QL-GAT and Attention-
+Light achieves state-of-the-art performance. The importance
+of traditional methods is also addressed by M-QL. The com-
+parison of QL-DQN with FRAP and CoLight demonstrates
+that state representation is as essential as a neural network
+structure. In a word, we should pay more attention to the
+state design apart from the neural network design.
+
+However, only queue length as the state representation is
+not enough for the complex traffic conditions, and more in-
+formation about the traffic conditions should be added to
+the state representation. In future research, we will try to
+add more information about the traffic conditions to the RL
+agent observations. In addition, a more complex reward and
+novel network structure are also taken into consideration to
+improve the performance of TSC.
+
+7 Acknowledgments
+
+References
+
+[1] Chen, C.; Wei, H.; Xu, N.; Zheng, G.; Yang, M.;
+Xiong, Y.; Xu, K.; and Li, Z. 2020. Toward a thousand
+lights: Decentralized deep reinforcement learning for
+large-scale traffic signal control. In Proceedings of the
+AAAI Conference on Artificial Intelligence, volume 34,
+3414 -- 3421.
+
+[2] Cools, S.-B.; Gershenson, C.; and D'Hooghe, B. 2013.
+Self-organizing traffic lights: A realistic simulation. In
+Advances in applied self-organizing systems, 45 -- 55.
+Springer.
+
+[3] Finn, C.; Abbeel, P.; and Levine, S. 2017. Model-
+agnostic meta-learning for fast adaptation of deep net-
+works. In International conference on machine learn-
+ing, 1126 -- 1135. PMLR.
+
+[4] Gershenson, C. 2004. Self-organizing traffic lights.
+
+arXiv preprint nlin/0411066.
+
+[5] Ho, J.; and Ermon, S. 2016. Generative adversarial im-
+itation learning. Advances in neural information pro-
+cessing systems, 29.
+
+[6] Horgan, D.; Quan, J.; Budden, D.; Barth-Maron, G.;
+Hessel, M.; Van Hasselt, H.; and Silver, D. 2018. Dis-
+tributed prioritized experience replay. arXiv preprint
+arXiv:1803.00933.
+
+[7] Hunt, P.; Robertson, D.; Bretherton, R.; and Royle,
+M. C. 1982. The SCOOT on-line traffic signal op-
+timisation technique. Traffic Engineering & Control,
+23(4).
+
+[8] Kipf, T. N.; and Welling, M. 2016. Semi-supervised
+classification with graph convolutional networks.
+arXiv preprint arXiv:1609.02907.
+
+[9] Koonce, P.; and Rodegerdts, L. 2008. Traffic signal
+timing manual. Technical report, United States. Fed-
+eral Highway Administration.
+
+Figure 8: Model performance under different phase duration.
+
+Figure 9: Model performance under different rewards w.r.t
+average travel time, the smaller the better.
+
+We will re-test the impact of reward settings with queue
+length as the state representation. The AttentionLight and
+GAT are used as the base model; experiments are conducted
+under the following configurations:
+• Config1: queue length and current phase are used as the
+state, intersection queue length as the reward. This is ex-
+actly QL-XLight.
+
+• Config2: queue length and current phase are used as the
+
+state, intersection pressure as the reward.
+Experiments are conducted over all the datasets, and Fig-
+ure 9 reports the model performance with a different reward.
+QL-SAP performs better under queue length than pressure.
+The performance difference is not significant. QL-GAT has
+significantly better performance under queue length than
+pressure. The GAT based model has poor performance under
+pressure, maybe the property of GAT that already considers
+the neighbor influence and optimizes the global queue length
+in the network.
+
+Considering the calculation of state and reward,the queue
+length is easier to get because pressure requires complex
+calculation and neighbor information. Queue length can di-
+rectly get from the traffic environment. In summary, using
+the queue length as state and reward is a better choice than
+pressure.
+
+6 Conclusion
+
+In this paper, we propose an effective state representation as
+queue length. Based on queue length, we developed an op-
+
+[24] Velickovi´c, P.; Cucurull, G.; Casanova, A.; Romero,
+A.; Lio, P.; and Bengio, Y. 2017. Graph attention net-
+works. arXiv preprint arXiv:1710.10903.
+
+[25] Wei, H.; Chen, C.; Zheng, G.; Wu, K.; Gayah, V.; Xu,
+K.; and Li, Z. 2019. Presslight: Learning max pres-
+sure control to coordinate traffic signals in arterial net-
+work. In Proceedings of the 25th ACM SIGKDD Inter-
+national Conference on Knowledge Discovery & Data
+Mining, 1290 -- 1298.
+
+[26] Wei, H.; Xu, N.; Zhang, H.; Zheng, G.; Zang, X.; Chen,
+C.; Zhang, W.; Zhu, Y.; Xu, K.; and Li, Z. 2019. Co-
+light: Learning network-level cooperation for traffic
+In Proceedings of the 28th ACM In-
+signal control.
+ternational Conference on Information and Knowledge
+Management, 1913 -- 1922.
+
+[27] Wei, H.; Zheng, G.; Yao, H.; and Li, Z. 2018.
+
+In-
+tellilight: A reinforcement learning approach for intel-
+ligent traffic light control. In Proceedings of the 24th
+ACM SIGKDD International Conference on Knowl-
+edge Discovery & Data Mining, 2496 -- 2505.
+
+[28] Xiong, Y.; Zheng, G.; Xu, K.; and Li, Z. 2019. Learn-
+ing traffic signal control from demonstrations. In Pro-
+ceedings of the 28th ACM International Conference on
+Information and Knowledge Management, 2289 -- 2292.
+[29] Xu, B.; Wang, Y.; Wang, Z.; Jia, H.; and Lu, Z. 2021.
+Hierarchically and Cooperatively Learning Traffic Sig-
+nal Control. In Proceedings of the AAAI Conference on
+Artificial Intelligence, volume 35, 669 -- 677.
+
+[30] Zang, X.; Yao, H.; Zheng, G.; Xu, N.; Xu, K.; and Li,
+Z. 2020. Metalight: Value-based meta-reinforcement
+learning for traffic signal control. In Proceedings of the
+AAAI Conference on Artificial Intelligence, volume 34,
+1153 -- 1160.
+
+[31] Zhang, H.; Feng, S.; Liu, C.; Ding, Y.; Zhu, Y.; Zhou,
+Z.; Zhang, W.; Yu, Y.; Jin, H.; and Li, Z. 2019.
+Cityflow: A multi-agent reinforcement learning envi-
+In The
+ronment for large scale city traffic scenario.
+World Wide Web Conference, 3620 -- 3624.
+
+[32] Zheng, G.; Xiong, Y.; Zang, X.; Feng, J.; Wei, H.;
+Zhang, H.; Li, Y.; Xu, K.; and Li, Z. 2019. Learning
+In Pro-
+phase competition for traffic signal control.
+ceedings of the 28th ACM International Conference on
+Information and Knowledge Management, 1963 -- 1972.
+[33] Zheng, G.; Zang, X.; Xu, N.; Wei, H.; Yu, Z.; Gayah,
+V.; Xu, K.; and Li, Z. 2019. Diagnosing reinforce-
+ment learning for traffic signal control. arXiv preprint
+arXiv:1905.04716.
+
+[10] Kulkarni, T. D.; Narasimhan, K.; Saeedi, A.; and
+Tenenbaum, J. 2016. Hierarchical deep reinforcement
+learning: Integrating temporal abstraction and intrinsic
+motivation. Advances in neural information processing
+systems, 29.
+
+[11] Le, T.; Kov´acs, P.; Walton, N.; Vu, H. L.; Andrew,
+L. L.; and Hoogendoorn, S. S. 2015. Decentralized
+signal control for urban road networks. Transportation
+Research Part C: Emerging Technologies, 58: 431 -- 
+450.
+
+[12] Lopez, P. A.; Behrisch, M.; Bieker-Walz, L.; Erdmann,
+J.; Flotterod, Y.-P.; Hilbrich, R.; Lucken, L.; Rummel,
+J.; Wagner, P.; and Wiessner, E. 2018. Microscopic
+In 2018 21st Interna-
+traffic simulation using sumo.
+tional Conference on Intelligent Transportation Sys-
+tems (ITSC), 2575 -- 2582. IEEE.
+
+[13] Lowrie, P. 1992. SCATS: A traffic responsive method
+of controlling urban traffic control. Roads and Traffic
+Authority.
+
+[14] Mnih, V.; Kavukcuoglu, K.; Silver, D.; Graves, A.;
+Antonoglou, I.; Wierstra, D.; and Riedmiller, M. 2013.
+Playing atari with deep reinforcement learning. arXiv
+preprint arXiv:1312.5602.
+
+[15] Mnih, V.; Kavukcuoglu, K.; Silver, D.; Rusu, A. A.;
+Veness, J.; Bellemare, M. G.; Graves, A.; Ried-
+miller, M.; Fidjeland, A. K.; Ostrovski, G.; et al.
+2015. Human-level control through deep reinforce-
+ment learning. nature, 518(7540): 529 -- 533.
+
+[16] Nishi, T.; Otaki, K.; Hayakawa, K.; and Yoshimura,
+T. 2018. Traffic signal control based on reinforce-
+ment learning with graph convolutional neural nets.
+In 2018 21st International conference on intelligent
+transportation systems (ITSC), 877 -- 883. IEEE.
+
+[17] Sun, X.; and Yin, Y. 2018. A simulation study on max
+pressure control of signalized intersections. Trans-
+portation research record, 2672(18): 117 -- 127.
+
+[18] Sutton, R. S.; and Barto, A. G. 2018. Reinforcement
+
+learning: An introduction. MIT press.
+
+[19] Tan, T.; Bao, F.; Deng, Y.; Jin, A.; Dai, Q.; and Wang,
+J. 2019. Cooperative deep reinforcement learning for
+IEEE transac-
+large-scale traffic grid signal control.
+tions on cybernetics, 50(6): 2687 -- 2700.
+
+[20] Van der Pol, E.; and Oliehoek, F. A. 2016. Coordi-
+nated deep reinforcement learners for traffic light con-
+trol. Proceedings of Learning, Inference and Control
+of Multi-Agent Systems (at NIPS 2016).
+
+[21] Van Hasselt, H.; Guez, A.; and Silver, D. 2016. Deep
+reinforcement learning with double q-learning. In Pro-
+ceedings of the AAAI conference on artificial intelli-
+gence, volume 30.
+
+[22] Varaiya, P. 2013. Max pressure control of a network of
+signalized intersections. Transportation Research Part
+C: Emerging Technologies, 36: 177 -- 195.
+
+[23] Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.;
+Jones, L.; Gomez, A. N.; Kaiser, Ł.; and Polosukhin,
+I. 2017. Attention is all you need. Advances in neural
+information processing systems, 30.
+
+

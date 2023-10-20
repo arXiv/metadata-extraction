@@ -1,0 +1,2759 @@
+
+Robust reliability-based topology optimization
+
+under random-field material model
+
+Trung Pham∗
+
+Department of Aerospace Engineering
+
+University of Michigan
+
+Ann Arbor, Michigan 48109, USA
+
+Email: trungp@umich.edu
+
+School of Mechanical, Industrial & Manufacturing Engineering
+
+Christopher Hoyle
+
+Oregon State University
+
+Corvallis, Oregon 97331 -- 6001, USA
+Email: chris.hoyle@oregonstate.edu
+
+This paper proposes an algorithm to find robust reliability-
+based topology optimized designs under a random-field ma-
+terial model. The initial design domain is made of linear
+elastic material whose property, i.e., Young's modulus, is
+modeled by a random field. To facilitate computation, the
+Karhunen− -- Lo`eve expansion discretizes the modeling ran-
+dom field into a small number of random variables. Robust-
+ness is achieved by optimizing a weighted sum of mean and
+standard deviation of a quantity of interest, while reliability
+is employed through a probabilistic constraint. The Smolyak-
+type sparse grid and the stochastic response surface method
+are applied to reduce computational cost. Furthermore, an
+efficient inverse-reliability algorithm is utilized to decouple
+the double-loop structure of reliability analysis. The pro-
+posed algorithm is tested on two common benchmark prob-
+lems in literature. Finally, Monte Carlo simulation is used to
+validate the claimed robustness and reliability of optimized
+designs.
+
+1
+
+Introduction
+A mechanical structure is characterized by its boundary
+and loading conditions, its material properties, and its topol-
+ogy. Finding an appropriate topology is often a major task
+in structural design, which has fueled the rise of topology
+optimization (TO) in the last two decades. Without consid-
+ering a designer's experience, TO is a mathematical tool to
+identify the optimal size, shape, and connectivity of a de-
+sign [1], resulting in improved performance while using the
+least amount of material. However, research in TO often
+only concerns with deterministic inputs, while uncertainty
+is inherent in nature, which manifests itself in the stochastic-
+ity of random parameters of engineered systems. The anal-
+
+∗Address all correspondence related to this paper to this author.
+
+ysis and design of engineered systems are affected heavily
+by uncertainty; for example, modern design codes, such as
+ACI 318 [2] and AISC 360 [3], have comprehensive recom-
+mendations of safety factors for loading, material property,
+construction conditions, etc., which obviously are intended
+to take into account uncertainty. Among different sources
+of uncertainty, material property is intrinsically random in
+space, which has been modeled by random field in the de-
+sign of composite structures [4, 5, 6]. Such a modeling tech-
+nique has been especially popular in the vast literature of the
+Stochastic Finite Element Method [7, 8, 9], which certainly
+proves its validity and the need to be considered in TO. So
+far, uncertainty in TO has been treated separately by robust
+optimization or reliability-based optimization, while both ro-
+bustness and reliability are desired properties of design under
+uncertainty. Therefore, this paper presents an algorithm to
+find robust reliability-based topology optimized design un-
+der a random-field material model.
+
+There are a number of steps in our proposed algo-
+rithm, which are addressed in depth in the subsequent
+sections. Here we provide a brief overview of them.
+First, from a known covariance function, the modeling ran-
+dom field is estimated by a random polynomial using the
+Karhunen− -- Lo`eve expansion. To make the design robust,
+a weighted sum of mean and standard deviation of a quantity
+of interest, which are computed by a Smolyak-type sparse
+grid, is considered as the objective function. Reliability of
+the design is reflected in the probabilistic constraint, which
+is handled by the Sequential Optimization and Reliability
+Assessment (SORA) method [10]−a single-loop inverse-
+reliability algorithm−coupled with the performance measure
+approach [11] to reduce the computational cost of reliability
+analysis. The stochastic response surface method approxi-
+mates the random output, which is required to solve the in-
+
+1
+
+Copyright © by ASME
+
+verse reliability analysis problem.
+
+The layout of this paper is as follows. Section 2 is
+a literature review of uncertainty propagation, robust and
+reliability-based optimization, and reliability analysis, with
+focus on TO under uncertainty. Section 3 derives the math-
+ematical formulation of the deterministic TO problem and
+the robust reliability-based topology optimization (RRBTO)
+problem. This section also exposes the details of our pro-
+posed solution for the RRBTO problem. Two numerical ex-
+amples show how our proposed algorithm works, and are
+verified by Monte Carlo simulation in section 4 followed by
+discussions of the results. Finally, the paper is summarized
+with major findings, and then suggests future work.
+
+2 Background
+
+The earliest idea of topology optimization (TO) can be
+traced back to Michell's paper [12] in 1904. Since then TO
+has been mature enough to have its own treatise [1]. As a
+mathematical optimization problem, TO requires specifica-
+tion of objective function(s) and constraint(s), which do not
+involve any probabilistic quantities when using deterministic
+inputs. Thus, changes are needed to deal with uncertainty
+in the forms of robust optimization (RO) and reliability-
+based optimization (RBO). A number of papers, which are
+reviewed below, have tried to integrate uncertainty into a TO
+problem using RO and RBO separately.
+
+RO primarily aims to minimize the variability of an
+output of interest [13], due to uncertainty, around its mean
+value. Therefore, this goal can be formulated by minimizing
+a weighted sum of mean and standard deviation of the output
+of interest. This approach was chosen in several papers cov-
+ering various sources of uncertainty and solution methods:
+spatial variation of manufacturing error with Monte Carlo
+simulations [14]; random-field truss material with a multi-
+objective approach [15]; random loading field and random
+material field with the level set method [16]; material and
+geometric uncertainties with stochastic collocation methods
+and perturbation techniques [17, 18]; misplacement of ma-
+terial and imperfect geometry [19, 20]; Young's modulus of
+truss members with a perturbation method [21]; random-field
+material properties with a polynomial chaos expansion [22];
+geometric and material property uncertainties with a stochas-
+tic perturbation method for frame structures [23]; material
+uncertainty with known second-order statistics [24]; random
+spatial distribution of Young's modulus and loading uncer-
+tainty in a stress-based problem [25,26]; and random loading
+field with stochastic collocation methods [27]. The robust
+topology optimization (RTO) problem is solved by a unified
+framework based on polynomial chaos expansion in [28],
+while [29] tackled the problem exploiting the linear elas-
+ticity of structure. The seemingly arbitrary factors in the
+weighted sum are often cited as one major weakness of this
+RO methodology [30, 15]; however, they are well-defined in
+decision-based design reflecting risk-taking attitude of de-
+signers [31, 32, 33].
+Instead of modifying the objective function, RBO makes
+some of the constraints probabilistic−probability of failure
+
+event is used in place of the event itself. This change requires
+specialized methods to handle, because the probabilistic con-
+straints are expressed by multiple integrals of the joint prob-
+ability density function (PDF) of random variables, both of
+which are either practically impossible to obtain or very dif-
+ficult to evaluate [34]. Many methods have been devised to
+overcome such difficulties, which were surveyed thoroughly
+in [35]. Within the scope of this paper, we only briefly review
+the first-order reliability methods (FORM), the second-order
+reliability methods (SORM), and the Sequential Optimiza-
+tion and Reliability Assessment (SORA) method. FORM
+appeared early [36] together with the concept of reliability
+index [37] to solve RBO problems. SORM [38] followed
+to improve accuracy of the FORM in case of highly nonlin-
+ear limit state functions and/or slow decay of the joint PDF.
+The main idea of FORM and SORM is to approximate the
+limit state functions using first-order and second-order Tay-
+lor series, respectively, at appropriate values (i.e., means) of
+random variables. This results in a double-loop optimiza-
+tion problem to find the most probable point (MPP). In the
+context of reliability-based topology optimization (RBTO),
+directly solving the double-loop optimization problem has
+been shown in [39] for MEMS mechanisms with stochastic
+loading, boundary conditions as well as material properties;
+in [40] for shape uncertainty; in [41] for geometric imperfec-
+tions; in [42] for frame structures using system reliability un-
+der random-variable inputs; in [43] for electromagnetic sys-
+tems; in [44] for geometrically nonlinear structures; in [45]
+for local failure constraints; and in [46] for continuum struc-
+tures subject to local stress constraints. In [47], FORM was
+replaced by a mean-value, second-order saddlepoint approx-
+imation method, which was asserted to be more accurate.
+The double-loop approach is prohibitively expensive and
+lacks robustness when a large number of random variables
+presents [48]. For this reason, single-loop approaches have
+been developed, in which, i.e., the Karush−Kuhn−Tucker
+(KKT) optimality conditions are utilized to avoid the inner
+loop. Both [49] and [50] used variants of the single-loop
+method in [51] for component and system reliability-based
+TO. In [52], it is somewhat unique when the authors used
+their own single-loop method [53]. Kogiso et al. [54] applied
+the single-loop-single-vector method [55] for frame struc-
+tures under random-variable loads and nonstructural mass.
+Another way to bypass the double-loop problem is the de-
+coupling approaches [35], in which reliability analysis re-
+sults are used to facilitate the optimization loops. Among
+them, the SORA method is known for its simple implemen-
+tation compared to the above single-loop methods, and its ef-
+ficiency with FORM [10,56]. This method was employed for
+RBTO under random-variable inputs in [57] and [58]. Meta
+modeling or surrogate modeling used together with simula-
+tion techniques to solve RBO problems has received consid-
+erable attention [59], but still remained relatively unexplored
+in TO literature.
+In [60], reliability was assessed using a
+probabilistic neural network classifier for truss structures un-
+der random Young's modulus.
+
+Both robustness and reliability are desired properties of
+design under uncertainty; however, to the best of our knowl-
+
+2
+
+Copyright © by ASME
+
+edge, this paper is the first one considering both criteria in
+TO. Therefore, a literature review of robust reliability-based
+optimization (RRBO) has to be drawn from other fields. The
+RRBO problem was investigated in [61] using an inverse re-
+liability strategy; in [62] using a performance moment inte-
+gration method to estimate the product quality loss; in [63]
+using a preference aggregation method to produce a single-
+objective RBO problem; and in [64] under epistemic un-
+certainty. Both [65] and [66] used a genetic algorithm to
+solve the problem. The dimension reduction method and its
+derivatives were introduced in [67, 68, 69] as an alternative
+approach to the RRBO problem.
+
+With respect to RBTO, the approaches in [57], [30],
+and [70] are closest to ours. Still, random-field modeling was
+not used for material property in [57] and [70]. Furthermore,
+several concerns can be identified from [70]. One of the most
+important stages in their method is the approximation of both
+failure probability and its sensitivity, which were calculated
+by Monte Carlo sampling. Direct Monte Carlo sampling is
+well-known to have variability [71], meaning two indepen-
+dent runs are very likely to get different values of failure
+probability and its sensitivity which would obviously affect
+the optimization results. Another concern is that the value
+of the parameter ε needed to replace the Heaviside func-
+tion with a smooth approximation [72] and was chosen by a
+"recommendation" backed by observation only. In [30], the
+modeling random field was assumed with a known marginal
+distribution, and in order to apply a perturbation technique,
+random variability of Young's modulus had to be small. Both
+of these assumptions clearly restrict the general applicability
+of their method. Lastly, robustness against uncertainty was
+not studied in the three papers. As described in the following
+sections, our proposed method considers random field un-
+certainty with the Karhunen− -- Lo`eve (KL) expansion used
+to reduce the dimension of the random field. The KL ex-
+pansion covers a large class of random field without any re-
+strictions on random variability. In this way, we are able to
+use the FORM-based inverse reliability method within the
+SORA framework coupled with the stochastic response sur-
+face method to avoid the aforementioned weaknesses of di-
+rect Monte Carlo sampling.
+
+A standard notation is adopted throughout
+
+3 Topology Optimization under Uncertainty
+3.1 Deterministic Topology Optimization
+this
+paper−bold upper and lower case letters denote matrices
+and vectors, respectively. The below formulation shows a
+density-based deterministic topology optimization (DTO):
+
+min
+ρρρ
+
+C(ρρρ) = uT Ku
+
+subject to K(ρρρ)u(ρρρ) = f,
+
+= γ,
+
+V (ρρρ)
+V0
+0 < ρmin ≤ ρρρ ≤ 1,
+
+(1)
+
+where ρρρ is the vector of design variables of the TO prob-
+lem, which also are the deterministic finite-element densi-
+ties; V (ρρρ) and V0 are the total and the initial volume of the
+finite-element mesh, respectively; γ is the predetermined vol-
+ume fraction; K(ρρρ), u(ρρρ), and f are the stiffness matrix, the
+displacement vector, and the external load vector, respec-
+tively; and C(ρρρ) is the structural compliance.
+In the opti-
+mization problem (1), there are three constraints: the first ex-
+presses the equilibrium of the structure; the second requires
+the optimized design to have a prescribed volume; and the
+third is a component-wise inequality, in which each density
+(design variable) must be between 1 and a lower limit (i.e.,
+ρmin = 0.001).
+
+i , where p is the penalization factor and E0
+i
+
+To ensure manufacturability, the optimized design must
+have a well-defined boundary, which is not guaranteed if
+solving (1) directly because there is nothing to prevent
+intermediate values of densities from dominating the de-
+sign. Hence, the Solid Isotropic Material with Penalization
+(SIMP) method [1] is used to make intermediate densities
+unfavorable compared to ρmin or 1. According to SIMP,
+each finite element has a Young's modulus Ei specified by
+Ei = ρp
+is the
+initial value of the Young's modulus corresponding to unit
+density. The interpretation and possible values of p were
+elaborated in [73]. Any established gradient-based algo-
+rithms can solve the problem (1) after it is converted into
+a nonlinear optimization problem using the SIMP method.
+This paper follows common practice in the literature, select-
+ing the Method of Moving Asymptotes (MMA) [74, 75] as
+the optimizer of the DTO problem. The MMA has proved its
+reliability and competitive performance in various settings
+of TO. However, SIMP alone is plagued with checkerboard-
+ing, mesh dependence, and local minima [76]. Many mesh-
+independent filtering methods [77] have been designed to
+preclude checkerboarding and mesh dependence, while lo-
+cal minima remain an open question. This paper uses the
+density filtering [78, 79] as implemented in [80]. The next
+sections describe how uncertainty shapes our problem for-
+mulation and the solution algorithm.
+
+i E0
+
+3.2 Robust Reliability-based Topology Optimization
+3.2.1 Problem Formulation
+
+Considering input uncertainty modeled by a random
+field y(ω,x), a robust reliability-based topology optimization
+(RRBTO) problem is formulated as follows:
+
+κ1µ [C(ρρρ,y)] + κ2σ [C(ρρρ,y)]
+
+min
+ρρρ
+s.t. K(ρρρ,y)u(ρρρ,y) = f,
+
+= γ,
+
+V (ρρρ)
+V0
+Pi [gi(ρρρ,y) < 0] ≤ P0
+0 < ρmin ≤ ρρρ ≤ 1,
+
+i , i = 1,2 . . . ,m,
+
+(2)
+
+where x ∈ D ⊂ Rd is coordinates of a point
+in a d-
+dimensional physical domain D; ω ∈ Ω is an element of the
+
+3
+
+Copyright © by ASME
+
+sample space Ω; µ [C(ρρρ,y)] and σ [C(ρρρ,y)] are the mean and
+standard deviation of the compliance C(ρρρ,y), respectively;
+κ1 and κ2 are the real non-negative weighting factors. The
+limit state function gi(ρρρ,y) is defined so that gi(ρρρ,y) < 0
+means failure of the design, and Pi[gi(ρρρ,y) < 0] shows the
+probability of the ith failure event. The target probability P0
+i
+is the upper bound of the failure probability Pi and often de-
+i = Φ(−βi), where βi is the reliability index and
+fined as P0
+Φ(·) is the standard normal cumulative distribution function.
+In this paper the random field y(ω,x) is taken to be the mate-
+rial Young's modulus, which must be physically meaningful
+(i.e., taking only positive values) and is modeled as in [17]:
+
+E(x) = F−1 ◦ Φ [y(ω,x)] ,
+
+(3)
+
+where Φ[·] is the standard normal cumulative distribution
+function (CDF), and F−1 is the inverse of a prescribed CDF.
+The uniform distribution is chosen for the two numerical ex-
+amples resulting in
+
+E(x) = a + (b− a)Φ [y(ω,x)] ,
+
+(4)
+
+where a and b are the two bounds of the distribution. The
+log-normal and the beta distribution are also capable of mod-
+eling non-negative, bounded physical quantities, which can
+supersede the uniform distribution in (3) with minimal effort.
+A number of challenges need to be cleared before we
+are able to solve (2). The modeling random field, which tries
+to capture spatial variability of material property, needs to
+be cast into an explicit, computable form because a defined
+value of material property is required to perform finite el-
+ement analysis. The Karhunen− -- Lo`eve (KL) expansion in
+Section 3.2.3 is able to turn a random field into a series of
+random variables. The mean and standard deviation of the
+compliance, and the probabilistic constraints are often very
+hard or expensive to evaluate because of complex geome-
+try of their domains. A Smolyak-type sparse grid in Sec-
+tion 3.2.2 is an efficient method to calculate the mean and
+standard deviation, while Inverse Reliability Analysis (IRA)
+and SORA in Section 3.2.4, coupled with the Stochastic Re-
+sponse Surface Method (SRSM) in Section 3.2.5, handle the
+probabilistic constraints effectively by avoiding the demand-
+ing double-loop problem. Combining the above methods, a
+detailed description of our proposed algorithm is laid out in
+Section 3.2.6.
+
+3.2.2 Smolyak-type Sparse Grid
+
+In practice, it is very difficult or even impossible to
+calculate the mean and standard deviation of the compli-
+ance in (2) analytically through multidimensional integrals.
+Such difficulties have motivated the development of various
+numerical methods such as simulation-based methods (i.e.,
+Monte Carlo (MC), important sampling, adaptive sampling,
+etc.), and the stochastic collocation methods (SCM) [81].
+Simulation-based methods are usually more straightforward
+to implement and embarrassingly parallel, and their cost does
+
+not depend on the number of dimensions; however, even
+with better sampling techniques, they still require a lot more
+sampling points than the SCM. Depending on the smooth-
+ness of the target function, the convergence rate of the SCM
+can be orders of magnitude faster than MC-based methods
+[82, 83]. The SCM approximates the quantity of interest by
+a weighted sum, whose weighing factors and terms are com-
+puted at specific collocation points. Locating such points is
+one of the central topics in SCM. The popular approach is
+to pick a known one-dimensional quadrature rule and then
+build up the multidimensional grid from the one-dimension
+rule.
+Interested readers can find in [84] a list of popular
+quadrature rules. The Gauss-Hermite quadrature, which is
+particularly suitable for approximating the mean of a normal
+distribution, is selected in this paper. The multidimensional
+grid can be constructed using a tensor product; nevertheless,
+due to the well-known curse of dimensionality, the cost of
+SCM on a full tensor-product grid is still excessively high
+for a large number of dimensions. The Smolyak-type sparse
+grid (SSG), which may be traced back to the Smolyak algo-
+rithm [85], can significantly reduce the cost by using only a
+subset of the full tensor grid. In [86] numerical experiments
+with random input, whose dimension was up to 50, showed
+that the SCM on sparse grids was more efficient than MC.
+
+For the sake of completeness the SSG is reviewed here.
+The construction presented below follows [87]. Consider a
+d-dimensional function f (x), the difference ∆(1)
+f is defined
+l
+as
+
+(cid:16)
+
+(cid:17)
+
+l − Q(1)
+Q(1)
+l−1
+
+f ,
+
+(5)
+
+∆(1)
+l
+
+f =
+
+where
+
+(cid:17)
+
+(cid:16)
+
+x(i)
+l
+
+f
+
+w(i)
+l
+
+,
+
+(6)
+
+n(1)
+l∑
+
+f =
+
+i=1
+f = 0,
+
+Q(1)
+l
+
+Q(1)
+0
+
+(cid:16)
+
+and n(1)
+is the number of nodes for the l-level quadrature
+l
+formula. The collocation points x(i)
+and the corresponding
+l
+weights w(i)
+l are calculated using the Gauss-Hermite quadra-
+ture rule, which is a natural choice for the class of integrals
+involving an exponential function over an infinite interval
+such as mean and standard deviation [88]. The sparse in-
+tegration formula at level l is expressed as
+
+Q(d)
+l
+
+f = ∑
+
+(cid:96)≤l+d−1
+
+∆(1)
+l1
+
+⊗ ∆(1)
+l2
+
+⊗···⊗ ∆(1)
+ld
+
+f ,
+
+(7)
+
+where (cid:96) = l1 + l2 + . . . + ld. The mean and standard devia-
+tion of f (x) can be approximated using (7).
+
+3.2.3 Karhunen− -- Lo`eve Expansion
+
+In a physical system, the quantity of interest can be mea-
+sured at spatial points over the system domain. If a random
+
+4
+
+Copyright © by ASME
+
+(cid:17)
+
+field is considered an appropriate model for such a quan-
+tity, it is then required to construct the random field from
+measurements. Several methods, including the Expansion
+Optimal Linear Estimator [89] and polynomial chaos expan-
+sion [82, 8], have been adopted. Compared to others, the
+Karhunen− -- Lo`eve (KL) expansion [90] is "the most effi-
+cient in terms of the number of random variables required
+for a given accuracy" [7]. The KL expansion of a random
+field y(ω,x) is given as
+
+(cid:112)λiξi(ω)ei(x)
+
+(8)
+
+y(ω,x) = E[x] +
+
+∞
+∑
+
+i=1
+
+where E[x] is the mean of the random field. The orthogo-
+nal eigenfunctions ei(x) and the corresponding eigenvalues
+λi are solutions of the following eigenvalue problem:
+
+K(x1,x2)ei(x)dx = λiei(x) x,x1,x2 ∈ D
+
+(9)
+
+(cid:90)
+
+D
+
+where K(x1,x2) is the covariance function of the random
+field
+
+K(x1,x2) = E [y(x1)y(x2)]
+
+x1,x2 ∈ D
+
+(10)
+
+The random variables ξi(ω) are uncorrelated and satisfy:
+
+E[ξi] = 0,E[ξiξ j] = δi j,
+
+ξi(ω) =
+
+1√
+λi
+
+(cid:90)
+
+D
+
+(y(ω,x)− E[x])ei(x)dx,
+
+(11)
+
+where δi j is the Kronecker delta. The infinite series in (8) has
+to be truncated to use in practice. Because the influence of
+higher order terms decays rapidly, satisfactory precision can
+be achieved using only the first few terms of the expansion.
+The KL expansion requires the solution of the eigen-
+value problem (9), which is pretty straightforward in the case
+of a random process (1-dimensional random field) [91]. For
+the purpose of demonstration and without loss of generality,
+this paper in Section 4 assumes the separability of the covari-
+ance function of a 2-dimensional random field:
+
+K(s,t) = exp
+
+(cid:18)−s1 −t1
+(cid:18)
+−s1 −t1
+
+l1
+
+(cid:19)
+(cid:18)
+l2
+−s2 −t2
+
+× −s2 −t2
+(cid:19)
+
+exp
+
+l2
+
+= exp
+l1
+s,t ∈ D ⊂ R2,
+
+3.2.4
+
+Inverse Reliability Analysis and SORA
+
+The probabilistic constraints formulated as in (2) are
+called the reliability index approach (RIA); however, as [11]
+reported, the performance measure approach (PMA) pro-
+vides better numerical stability and higher rate of conver-
+gence. Using the PMA, (2) is transformed as follows:
+
+κ1µ [C(ρρρ,y)] + κ2σ [C(ρρρ,y)]
+
+min
+ρρρ
+s.t. K(ρρρ,y)u(ρρρ,y) = f,
+
+= γ,
+
+V (ρρρ)
+V0
+gi(ρρρ,y) ≥ 0, i = 1,2 . . . ,m,
+0 < ρmin ≤ ρρρ ≤ 1.
+
+(13)
+
+The most notable change is that the probabilistic constraints
+are replaced by inequalities of the limit state functions. Solv-
+ing the new problem requires a truncated KL expansion
+y(ω,x) ≈ y(ξξξ(ω),x), FORM, and inverse reliability analysis
+(IRA). In order to apply FORM, the random vector ΞΞΞ = {ξi}
+is first transformed into a vector of standard normal random
+variables ΨΨΨ = {ψi} using the Rosenblatt or the Nataf trans-
+formation ΨΨΨ = T (ΞΞΞ) or ΞΞΞ = T−1(ΨΨΨ). Then, the most prob-
+able point (MPP) ξξξ∗
+i in transformed
+space is obtained by solving the following IRA problem:
+
+i in physical space or ψψψ∗
+
+min
+ψψψ
+s.t.
+
+gi(ψψψ)
+(cid:107) ψψψ (cid:107)= βi,
+
+(14)
+
+where gi(ψψψ) is the ith limit state function in transformed
+space.
+In this paper, the Matlab CODES toolbox [93] is
+chosen to solve (14). Furthermore, the SORA framework
+is adopted to decouple the double-loop structure of (13).
+In SORA, instead of nesting the optimization problem (14)
+within (13), it serializes (13) into a chain of loops of DTO
+and IRA (Fig. 1). Each kth loop starts with DTO followed by
+IRA:
+
+(cid:104)
+
+(cid:105)
+
+(cid:104)
+
+(cid:105)
+
+min
+ρρρk
+
+κ1µ
+
+C(ρρρk,y)
+
++ κ2σ
+
+C(ρρρk,y)
+
+(cid:19)
+
+,
+
+(12)
+
+s.t. K(ρρρk,y)u(ρρρk,y) = f,
+
+V (ρρρk)
+
+= γ,
+
+(cid:16)
+V0
+ρρρk,y(ξξξ∗(k−1)
+
+,x)
+gi
+0 < ρmin ≤ ρρρk ≤ 1.
+
+i
+
+(cid:17) ≥ 0, i = 1,2 . . . ,m,
+
+(15)
+
+where l1 and l2 are the correlation lengths in the two coordi-
+nate directions. The separability of the covariance function
+leads to separable eigenvalues and eigenfunctions, which are
+the product of their univariate counterparts [92].
+
+i
+
+where ξξξ∗(k−1)
+denotes the MPP in physical space of ith limit
+state function in the (k− 1)th loop. Solving (15) gives ρρρ∗(k),
+which is substituted into (14) to find the next MPP ξξξ∗(k)
+in
+
+i
+
+5
+
+Copyright © by ASME
+
+the form of ψψψ∗(k)
+
+i
+
+:
+
+min
+ψψψ
+s.t.
+
+gi(ρρρ∗(k),ψψψ)
+(cid:107) ψψψ (cid:107)= βi.
+
+(16)
+
+3.2.5 Stochastic Response Surface Method
+
+As uncertainty is propagated from random input to out-
+put through complex computations such as finite element
+analysis, it is almost unlikely to derive the output directly
+as an explicit expression of input. However, such an expres-
+sion is needed to run the gradient-based algorithm in IRA.
+The SRSM deals with this difficulty by approximating the
+output by a polynomial chaos expansion [82]. The below
+formulations follows [95]. The multidimensional Hermite
+polynomials of degree p are used in the SRSM and defined
+as:
+
+Hp(αi1,αi2, . . . ,αip)
+= (−1)pe 1
+
+2 αααT ααα
+
+∂p
+
+∂αi1,∂αi2, . . . ,∂αip
+
+e− 1
+
+2 αααT ααα
+
+(17)
+
+where ααα = {αik}p
+variables. The output of interest z is estimated as follows:
+
+k=1 is a vector of standard normal random
+
+z = a0 +
+
++
+
+n
+
+∑
+i1=1
+∑
+i1=1
+
+n
+
+ai1H1(αi1) +
+i1∑
+
+i2∑
+
+i2=1
+
+i3=1
+
+n
+
+∑
+i1=1
+
+i1∑
+
+i2=1
+
+ai1i2H2(αi1,αi2)
+
+(18)
+
+ai1i2i3H3(αi1,αi2,αi3) + . . .
+
+where n is the number of standard normal random vari-
+ables used in the expansion, and a0,ai1,ai1i2,ai1i2i3, . . . are
+unknown coefficients. If n = 2 and p = 3, then the expan-
+sion (18) will become:
+
+z(αi1,αi2) = a0 + a1αi1 + a2αi2 + a3(α2
+
++ a5αi1αi2 + a6(α3
++ a8(αi1α2
+
+i2 − αi1 ) + a9(α2
+
+i1 − 1) + a4(α2
+i1 − 3αi1 ) + a7(α3
+i1αi2 − αi2)
+
+i2 − 1)
+i2 − 3αi2)
+
+= a0 +
+
+akhik
+
+9
+
+∑
+
+k=1
+
+(19)
+where 1,hi1,hi2 , . . . ,hi9 are Hermite polynomials. The ten
+unknown coefficients a0,a1, . . . ,a9 are found by solving a
+system of linear equations using at least ten different realiza-
+tions of (αi1,αi2). Such realizations can be chosen at colloca-
+tion points according to the SSG in Section 3.2.2, or a much
+simpler heuristic rule in [96], which is selected in this paper.
+For the approximation in (19) the rule generates 17 colloca-
+tion points to form a stochastic response surface, which was
+very close to the target output [95].
+
+3.2.6 Solution Algorithm
+
+The optimization algorithm (Fig. 1) to solve the RRBTO
+
+problem (2) is expounded below:
+1. Initialize the problem: size of the finite element mesh;
+initial values of design variables, SIMP and optimization
+parameters; KL expansion of random field; collocation
+points and weights for the SSG, and the SRSM; etc.
+
+6
+
+Copyright © by ASME
+
+Fig. 1. SORA-based RRBTO flowchart [57].
+
+The SORA framework coupled with the PMA can save
+computational cost significantly by reducing the number of
+reliability analyses performed to reach convergence of both
+DTO and IRA. However, as a heuristic method, the optimiza-
+tion solution ρρρ∗ acquired by SORA may not be the one found
+in the double-loop problem, which is corrected in each loop
+by shifting the random design variables using information
+from the previous loop [94]. Such modification is not neces-
+sary in this paper because there are only deterministic design
+variables (only the material property is random).
+
+StartInitialization:- Initial values- KL expansion- Collocation and sample pointsFinite Element AnalysisSensitivity and filteringUpdate densitiesConvergeNoSIMPDTOFinite Element AnalysisConstruct limit state functionFind MPPConvergeInverse Reliability AnalysisSRSMYesNoEndYesUpdate Young's modulus using MPPCalculate robust objective and its derivarives using the SCM2. Until convergence do:
+
+examples. The RRBTO problem now becomes:
+
+• Solve Kiui = fi
+
+and compute
+
+∂Ci(ρρρ)
+
+∂ρρρ
+
+for
+
+i =
+
+1,2, . . . ,n(d)
+
+.
+
+• Calculate mean, variance and their derivatives:
+
+l
+
+E [C] =
+
+σ2 [C] =
+
+∂E [C]
+∂ρρρ =
+
+∂σ2 [C]
+
+∂ρρρ =
+
+n(d)
+l∑
+i=1
+n(d)
+l∑
+i=1
+n(d)
+l∑
+i=1
+n(d)
+l∑
+
+i=1
+
+wiCi,
+
+wiC2
+
+i − E2 [C] ,
+
+wi
+
+∂Ci(ρρρ)
+∂ρρρ ,
+
+2Ci(ρρρ)wi
+
+∂Ci(ρρρ)
+
+∂ρρρ
+
+− 2E [C]
+
+∂E [C]
+∂ρρρ .
+
+(20)
+
+• Compute derivative of the robust objective:
+
+κ1
+
+∂E [C]
+∂ρρρ + κ2
+
+2(cid:112)σ2[C]
+
+1
+
+∂σ2 [C]
+∂ρρρ .
+
+(21)
+
+i
+
+• Deterministic topology optimization (DTO): the most
+probable point (MPP) ξξξ∗(k−1)
+found in the previous loop
+(or some initial values for the first loop) is used in place
+of random parameters ξξξ(ω), making (15) a regular TO
+problem. The SIMP and the MMA method are em-
+ployed to solve it.
+• Inverse reliability analysis (IRA): the optimum values
+of design variables from the DTO step and the colloca-
+tion points given in Section 3.2.5 are used to construct
+stochastic response surfaces, which in turn are utilized
+in (16) to find the next MPP. Based on convergence con-
+ditions, the algorithm may stop, or a new loop is re-
+quested with updated Young's modulus using the new
+MPP.
+
+4 Results
+
+In this section our proposed algorithm is run on two
+common benchmark problems (the cantilever and the L-
+shaped beam) with three target reliability levels, six weight-
+ing factors, and one parameter tuple of the uniform distribu-
+tion in (4). The correctness and accuracy of our algorithm
+is then verified on the optimization results by Monte Carlo
+simulations. All quantities given below are dimensionless
+for simplicity.
+
+To ensure the generality of our approach, we intention-
+ally do not specify the limit state functions gi(ρρρ,y) in the
+previous sections, which is essential for the two numerical
+
+κ1µ [C(ρρρ,y)] + κ2σ [C(ρρρ,y)]
+
+min
+ρρρ
+s.t. K(ρρρ,y)u(ρρρ,y) = f,
+
+= γ,
+
+V (ρρρ)
+V0
+P [u(ρρρ,y)− u0 < 0] ≤ P0,
+0 < ρmin ≤ ρρρ ≤ 1,
+
+(22)
+
+where u(ρρρ,y) and u0 are the actual displacement and the
+minimum allowable displacement at a selected point, respec-
+tively. The above formulation is inspired by design of com-
+pliant mechanisms [97], in which both flexibility and stiff-
+ness are required. Flexibility allows the mechanisms to reach
+designed deformation, implied by the limit state function
+g(ρρρ,y) = u(ρρρ,y) − u0, while maximizing stiffness, or min-
+imizing compliance, helps them withstand loads. Further-
+more, the weighting factors κ1 and κ2 need substantial at-
+tention. Our preliminary numerical results showed that the
+mean and standard deviation of the compliance are differ-
+ent by about two orders of magnitude, which may have crit-
+ical impact on the solution. This was examined carefully
+in [98] and normalization transforming them into the same
+scale has been recommended. κ1 and κ2 are identified ac-
+cording to [21]:
+
+κ1 =
+
+ε
+µ∗ ,κ2 =
+
+1− ε
+σ∗ ,
+
+(23)
+
+where ε ∈ [0,1], µ∗ is the mean of the compliance when
+(ε,1 − ε) = (0,1), and σ∗ is the standard deviation of the
+compliance when (ε,1−ε) = (1,0). µ∗ and σ∗ have to be cal-
+culated on the same set of input parameters except ε, under
+which they are the maximum values of the mean and stan-
+σ
+σ∗ ≤ 1
+dard deviation of the compliance resulting in 0 <
+in (22).
+
+µ
+µ∗ ,
+
+Coding the algorithm demands concrete values of ev-
+ery parameter, many of which are shared between the two
+examples. The finite element mesh in both examples is as-
+sembled from square, linear, plane stress elements, whose
+side length and thickness are unit dimension. Those ele-
+ments are made of an isotropic, linear elastic material with
+Poisson's ratio ν = 0.3. The material Young's modulus
+is assumed to be a centered, mean-square Gaussian ran-
+dom field with known covariance function as in (12), ex-
+panded into a series of independent, standard normal ran-
+dom variables [99]. The correlation lengths are chosen as
+l1 = l2 = 0.6, and only the first two eigenvalues and eigen-
+functions are picked for the truncated KL expansion. A wide
+range of optimization algorithms for reliability analysis is
+available in the CODES toolbox [93], including the Hybrid
+Mean Value method selected for the examples due to its ef-
+ficiency [100]. Other parameters of the optimization prob-
+lem (22) are the target reliability levels β = {1.0,2.0,3.0},
+
+7
+
+Copyright © by ASME
+
+weighting factors ε = {1,0.9,0.8,0.5,0.2,0}, and the ma-
+terial property limits (a,b) = (1,1.5). Due to iterative na-
+ture of MMA and SORA, several convergence criteria are
+enforced. The MMA optimizer stops when the maximum
+difference of design variables of two consecutive iterations
+max ≤ 0.001), or the
+is smaller than a prescribed value (dMMA
+number of iterations is more than nMMA = 200. The sim-
+ilar conditions are applied in the SORA loops, but for the
+max ≤ 0.001) and a different maximum allowable
+MPPs (dMPP
+number of iterations (nSORA = 20). The level of sparse grid
+approximation is 4 using Gauss-Hermite quadrature as the
+base one-dimensional rule.
+In SIMP, the minimum length
+scale rmin = 1.5 and penalization factor p = 3 are used. Each
+example is then validated by 50000 Monte Carlo simulations
+(MCS), which compute failure probabilities of the limit state
+function, and the mean and standard deviation of the compli-
+ance. The examples are implemented in Matlab using Latin
+hypercube sampling for MCS with seed 0. Those probabil-
+ities are compared with values calculated from the three re-
+liability levels, while statistical moments of the compliance
+prove robustness of the optimization results against uncer-
+tainty.
+
+4.1 The Cantilever Beam
+
+Fig. 2. The cantilever beam
+
+Fig. 2 displays the cantilever beam, a two-dimensional
+domain used in this example. The beam is fixed on its left
+side, meshed into 60 × 20 elements, and subject to two unit
+vertical loads, which are placed on its bottom edge at equal
+distances (points A and B). The optimization problem is set
+up as in (22), in which the minimum allowable displacement
+at the load application point B is given as u0 = 220. Then our
+proposed algorithm is tested on the example with different
+values of target reliability, material parameters and weight-
+ing factors. The 18 optimized designs are presented in Tables
+1 and 2. The MCS and SRSM utilize those designs to calcu-
+late the mean and standard deviation of vertical displacement
+of point B (µB and σB in Table 3), as well as the probabili-
+ties of failure event Pf = P [g(ρρρ,y) < 0] to show the reliabil-
+ity levels achieved by the designs. Moreover, the mean and
+standard deviation of the compliance are also obtained from
+the MCS (µ[C] and σ[C] in Table 3) to examine how they
+vary with respect to the weighting factors ε. All of theses
+values are gathered in Table 3, whose second column shows
+
+expected failure probabilities Pf = Φ(−β). Some conclu-
+sions from this example results can be found in Section 5.
+
+4.2 The L-shaped Beam
+
+Fig. 3. The L-shaped beam
+
+The second numerical example to illustrate our proposed
+algorithm is the L-shaped beam as shown in Fig. 3. The
+beam is fixed on its topmost edge and subject to two unit
+vertical loads on its bottom edge−one at the right endpoint
+B and the other at point A located one quarter of the bot-
+tom edge length from point B. As in the previous example,
+the weighted sum of the two statistical moments of the com-
+pliance is minimized, while a probabilistic constraint is im-
+posed on the vertical displacement of one load application
+point (point B in Fig. 3) to design for flexibility. The mini-
+mum allowable vertical displacement of point B is chosen as
+u0 = 130. The design domain is discretized using a 60× 60
+mesh of finite elements, and then one quarter of the mesh is
+removed to make the domain L-shaped by forcing the ele-
+ment densities in this region to be 0.001 before proceeding
+to the next operation. The larger mesh used in this exam-
+ples results in much longer running time based on our ex-
+periments on the same computer. The results also exhibit the
+same trends as in the previous example. Therefore, instead of
+running the complete set of 18 combinations, only 12 cases,
+which are the combinations of β = {1,3}, six weighting fac-
+tors, and (a,b) = (1,1.5), are considered. Table 6 shows the
+probabilities of displacement constraint violation Pf at point
+B, the statistical moments of that point's vertical displace-
+ment (µB and σB) calculated from both the MCS and SRSM,
+and the mean and standard deviation of the compliance (µ[C]
+and σ[C]). The L-shaped optimized designs are analyzed for
+insights in the next section.
+
+5 Discussions
+
+In this section we closely scrutinize the two numerical
+
+examples for comparison, verification, and insights.
+
+Visual inspection and analysis of topology optimized de-
+signs (i.e., identifying and comparing their differences) is
+
+8
+
+Copyright © by ASME
+
+/ ABAB/ ABABs
+t
+l
+
+u
+s
+e
+r
+
+O
+T
+B
+R
+R
+
+:
+
+m
+a
+e
+b
+r
+e
+v
+e
+
+l
+i
+t
+
+n
+a
+c
+e
+h
+T
+
+.
+
+l
+
+1
+e
+b
+a
+T
+
+)
+2
+.
+0
+,
+8
+.
+0
+(
+
+)
+1
+.
+0
+,
+9
+.
+0
+(
+
+)
+0
+,
+1
+(
+
+)
+ε
+−
+1
+,
+ε
+(
+
+s
+t
+l
+
+u
+s
+e
+r
+
+O
+T
+B
+R
+R
+
+:
+
+m
+a
+e
+b
+r
+e
+v
+e
+
+l
+i
+t
+
+n
+a
+c
+e
+h
+T
+
+.
+
+l
+
+2
+e
+b
+a
+T
+
+)
+1
+,
+0
+(
+
+)
+8
+.
+0
+,
+2
+.
+0
+(
+
+)
+5
+.
+0
+,
+5
+.
+0
+(
+
+)
+ε
+−
+1
+,
+ε
+(
+
+1
+=
+β
+
+2
+=
+β
+
+3
+=
+β
+
+1
+=
+β
+
+2
+=
+β
+
+3
+=
+β
+
+9
+
+Copyright © by ASME
+
+Table 3. The cantilever beam: Numerical results
+
+MCS
+
+SRSM
+
+β Expected Pf
+
+(ε,1− ε)
+
+µ[C]
+
+σ[C]
+
+µB
+
+σB
+
+Pf
+
+µB
+
+σB
+
+(1,0)
+
+162.9505
+
+0.9263
+
+-220.6120
+
+0.6071
+
+0.15674
+
+-220.6120
+
+0.6071
+
+(0.9,0.1)
+
+162.9992
+
+0.9188
+
+-220.6070
+
+0.6017
+
+0.15642
+
+-220.6070
+
+0.6017
+
+1
+
+0.15865
+
+(0.8,0.2)
+
+163.2204
+
+0.8953
+
+-220.5980
+
+0.5853
+
+0.15326
+
+-220.5980
+
+0.5853
+
+(0.5,0.5)
+
+166.5160
+
+0.9032
+
+-225.0110
+
+0.5906
+
+0.00000
+
+-225.0110
+
+0.5906
+
+(0.2,0.8)
+
+177.7632
+
+0.8588
+
+-240.6990
+
+0.5572
+
+0.00000
+
+-240.6990
+
+0.5572
+
+(0,1)
+
+(1,0)
+
+206.2317
+
+0.8559
+
+-278.9100
+
+0.5527
+
+0.00000
+
+-278.9100
+
+0.5527
+
+163.4230
+
+0.9150
+
+-221.1960
+
+0.5995
+
+0.02252
+
+-221.1960
+
+0.5995
+
+(0.9,0.1)
+
+163.6040
+
+0.9106
+
+-221.1880
+
+0.5961
+
+0.02250
+
+-221.1880
+
+0.5961
+
+2
+
+0.02275
+
+(0.8,0.2)
+
+163.7847
+
+0.9118
+
+-221.1890
+
+0.5967
+
+0.02266
+
+-221.1890
+
+0.5967
+
+(0.5,0.5)
+
+164.7008
+
+0.8953
+
+-222.9560
+
+0.5866
+
+0.00000
+
+-222.9560
+
+0.5866
+
+(0.2,0.8)
+
+178.0176
+
+0.8586
+
+-241.0670
+
+0.5570
+
+0.00000
+
+-241.0670
+
+0.5570
+
+(0,1)
+
+(1,0)
+
+206.2320
+
+0.8559
+
+-278.9110
+
+0.5527
+
+0.00000
+
+-278.9110
+
+0.5527
+
+163.7490
+
+0.9094
+
+-221.7690
+
+0.5962
+
+0.001340
+
+-221.7690
+
+0.5962
+
+(0.9,0.1)
+
+164.0019
+
+0.9078
+
+-221.7630
+
+0.5944
+
+0.001340
+
+-221.7630
+
+0.5944
+
+3
+
+0.001349
+
+(0.8,0.2)
+
+164.0458
+
+0.9015
+
+-221.7520
+
+0.5907
+
+0.001320
+
+-221.7520
+
+0.5907
+
+(0.5,0.5)
+
+165.0556
+
+0.8938
+
+-223.2560
+
+0.5855
+
+0.000000
+
+-223.2560
+
+0.5855
+
+(0.2,0.8)
+
+177.8977
+
+0.8585
+
+-240.8960
+
+0.5570
+
+0.000000
+
+-240.8960
+
+0.5570
+
+(0,1)
+
+206.2320
+
+0.8559
+
+-278.9110
+
+0.5527
+
+0.000000
+
+-278.9110
+
+0.5527
+
+largely an untouched topic in TO research, which, in our
+opinion, is curious because topology is all about geometry
+and "appearance" of structures. Without such tools, the best
+effort is to compare those results qualitatively. To make their
+differences more pronounced, readers may render them into
+short animations, which would reveal much more than hu-
+man eyes can perceive using only static images. There would
+be subtle material re-distributions (i.e., among results under
+the same tuple (ε,1−ε)), as well as thickening or thinning of
+certain features, which could be almost undetectable by com-
+paring static images. The removal or addition of features is
+easier to spot among results. The most distinct results corre-
+spond to ε = 1 and ε = 0, which is understandable because
+they are the extreme cases. The results between them are sort
+of transitions from one bounding value to the other.
+
+A number of trends can be observed from both the opti-
+
+mized designs and their corresponding numerical results:
+
+1. The MCS-based Pf is always smaller than the expected
+Pf , which confirms that the designs have achieved the
+desired reliability level.
+
+2. Decreasing ε, or increasing the weight on standard de-
+viation in the robust objective, makes the MCS-based
+Pf smaller until reaching 0. We hypothesize that there
+are two classes of solutions depending on the weight:
+one on the constraint boundary and the other inside the
+feasible region of the optimization problem. In the first
+class, the MCS-based Pf
+is close to the expected Pf :
+decreasing rate of the MCS-based Pf is very slow for
+certain range of ε (i.e., ε = {1,0.9,0.8} in Table 3, and
+ε = {1,0.9} in Table 6).
+In the second class, the so-
+
+10
+
+Copyright © by ASME
+
+(ε,1− ε)
+
+(1,0)
+
+(0.9,0.1)
+
+(0.8,0.2)
+
+Table 4. The L-shaped beam: RRBTO results
+
+β = 1
+
+β = 3
+
+(ε,1− ε)
+
+(0.5,0.5)
+
+(0.2,0.8)
+
+(0,1)
+
+Table 5. The L-shaped beam: RRBTO results
+
+β = 1
+
+β = 3
+
+11
+
+Copyright © by ASME
+
+Table 6. The L-shaped beam: Numerical results
+
+β Expected Pf
+
+(ε,1− ε)
+
+µ[C]
+
+σ[C]
+
+µB
+
+MCS
+
+σB
+
+SRSM
+
+Pf
+
+µB
+
+σB
+
+1
+
+0.15865
+
+3
+
+0.001349
+
+(1,0)
+
+96.4893
+
+0.5352
+
+-130.3580
+
+0.3577
+
+0.15808
+
+-130.3580
+
+0.3577
+
+(0.9,0.1)
+
+96.3536
+
+0.5321
+
+-130.3560
+
+0.3553
+
+0.15790
+
+-130.3560
+
+0.3553
+
+(0.8,0.2)
+
+96.8678
+
+0.5241
+
+-131.0290
+
+0.3498
+
+0.00144
+
+-131.0290
+
+0.3498
+
+(0.5,0.5)
+
+99.5821
+
+0.5045
+
+-135.7740
+
+0.3396
+
+0.00000
+
+-135.7740
+
+0.3396
+
+(0.2,0.8)
+
+108.7352
+
+0.4917
+
+-149.3090
+
+0.3332
+
+0.00000
+
+-149.3090
+
+0.3332
+
+(0,1)
+
+(1,0)
+
+133.3052
+
+0.4762
+
+-183.8160
+
+0.3238
+
+0.00000
+
+-183.8160
+
+0.3238
+
+96.8866
+
+0.5300
+
+-131.0510
+
+0.3544
+
+0.00130
+
+-131.0510
+
+0.3544
+
+(0.9,0.1)
+
+96.7519
+
+0.5298
+
+-131.0510
+
+0.3545
+
+0.00126
+
+-131.0510
+
+0.3545
+
+(0.8,0.2)
+
+96.8852
+
+0.5240
+
+-131.0560
+
+0.3497
+
+0.00106
+
+-131.0560
+
+0.3497
+
+(0.5,0.5)
+
+99.6087
+
+0.5049
+
+-135.9450
+
+0.3399
+
+0.00000
+
+-135.9450
+
+0.3399
+
+(0.2,0.8)
+
+108.7883
+
+0.4916
+
+-149.3880
+
+0.3331
+
+0.00000
+
+-149.3880
+
+0.3331
+
+(0,1)
+
+133.9731
+
+0.4755
+
+-184.5450
+
+0.3229
+
+0.00000
+
+-184.5450
+
+0.3229
+
+lutions are away from the constraint boundary but still
+inside the feasible region: the decreasing rate acceler-
+ates and the MCS-based Pf eventually becomes 0 (i.e.,
+ε ≥ 0.5 in Table 3, and ε ≥ 0.8 in Table 6).
+
+3. From our understanding of robust optimization, increas-
+ing the weight on standard deviation in a minimization
+problem will decrease its value and have the opposite ef-
+fect on the mean, which is actually the case as observed
+in Tables 3 and 6. However, there are a couple of out-
+liers to this trend (i.e., (ε,β) = (0.8,2) in Table 3, and
+ε = 0.9 in Table 6). An explanation can be made by in-
+vestigating where the solution converges in the design
+space. When the solutions are away from the constraint
+boundary, the robust objective is more dominant in the
+solution: a marked increase and decrease of the mean
+and standard deviation, respectively, is observed. In so-
+lutions at the constraint limit, the robust objective has
+less in the solution.
+This trend explains the decreasing tendency of the MCS-
+based Pf . Increasing the weight on standard deviation
+leads to decreased influence of the mean compliance,
+whose major proportion is contributed by the displace-
+ment of point B (Fig. 2 and 3) which is constrained prob-
+abilistically in (22) to be larger than the minimum al-
+lowable value u0. This results in increasing the mean of
+point B displacement, whose changing rate is slow for
+solutions close to constraint boundary and much more
+
+rapid in the remaining cases (i.e., the sixth column of
+Tables 3 and 6). The bigger the displacement of point B
+becomes, the smaller the MCS-based Pf is.
+It is ob-
+vious that under a specific set of inputs (i.e., loading
+and boundary conditions, material property) mechani-
+cal capabilities of a structure (i.e., stress, strain, dis-
+placement), even if heavily optimized, are always finite.
+Thus, the MCS-based Pf approaches 0 when the dis-
+placement of point B continues to increase.
+
+4. The Smolyak-type sparse grid and the SRSM are both
+very good methods for their respective approximating
+targets. As shown in Tables 3 and 6, approximately
+six significant digits are required to see the differences
+between the MCS-based and the SRSM results. The
+cumulative distribution functions of point B displace-
+ment from the two methods are also almost identi-
+cal, so they are not included in the paper. This also
+makes us confident in choosing only two terms in the
+KL expansion−adding more terms would only increase
+computational cost without clear benefits. The same ob-
+servation is applied to the Smolyak-type sparse grid and
+MCS-based results of the mean and standard deviation
+of the compliance. Because of such agreement, we de-
+cide to use only one level of the sparse grid. Multiple
+levels were tested in [17, 27].
+
+12
+
+Copyright © by ASME
+
+6 Conclusions
+
+In this paper, we have presented an efficient robust
+reliability-based design approach for topology optimized de-
+signs, considering random field uncertainty in material prop-
+erty. Our approach avoids a double-loop approach to reliabil-
+ity evaluation, and utilizes a number of techniques to reduce
+computational cost without sacrificing solution accuracy.
+The two case studies have demonstrated the methodology,
+and have shown the impact of using the robust reliability-
+based design approach. As shown in the case studies, the
+topology can converge to a (local) solution where either the
+reliability-based constraint or the robust objective has more
+influence upon the resulting topology. This difference in
+converged solution is determined by the relative weight of
+the mean versus the variance in the robust objective. This
+finding is significant to designers because it shows that us-
+ing either exclusively a robust design approach or reliability-
+based design approach will not identify the optimal topology
+considering material property uncertainty. Only the robust
+reliability-based design approach is capable of identifying
+the optimal topology considering the influence of material
+property uncertainty in both the objective and the constraint.
+Explicitly considering material property uncertainty will
+be significant in design for additive manufacturing, where
+the additive process can lead to significant material property
+uncertainty due to temperature gradients or other sources of
+variation.
+In terms of future work, the following are rec-
+ommended. Further case studies should be considered to
+better understand the interplay between the reliability con-
+straint and the robust objective. Different objectives and con-
+straints can be considered as well. Considering topology op-
+timization as a tool for design for additive manufacturing,
+another significant characteristic of the material property is
+non-linearity. Polymeric materials used in additive manu-
+facturing will be better modeled as hyper-elastic or visco-
+elastic, as opposed to linear elastic. Another need is visu-
+alization of the results. As noted in the text, it can be dif-
+ficult to understand the differences in topology based upon
+visual inspection. A more systematic comparison of differ-
+ent converged results will help researchers better understand
+the differences in designs resulting from different problem
+formulations, and will lead to a better understanding of the
+design principles leading to robust, reliable designs.
+
+Acknowledgements
+
+The first author would like to thank the Vietnam Edu-
+cation Foundation (VEF) for their financial support through
+the VEF fellowship, and Prof. Krister Svanberg for his assis-
+tance on the MMA code.
+
+References
+
+[1] Bendsøe, M. P., and Sigmund, O., 2003.
+
+Topol-
+ogy optimization: theory, methods, and applications.
+Springer, Berlin ; New York.
+
+[2] American Concrete Institute. Building Code Require-
+
+ments for Structural Concrete (ACI 318-14).
+
+[3] American Institute of Steel Construction. Specifica-
+tion for Structural Steel Buildings (ANSI/AISC 360-
+16).
+
+[4] Sriramula, S., and Chryssanthopoulos, M. K., 2013.
+"An experimental characterisation of spatial variabil-
+ity in GFRP composite panels". Structural Safety, 42,
+pp. 1 -- 11.
+
+[5] Nader, J. W., Dagher, H. J., Lopez-Anido, R., El Chiti,
+F., Fayad, G. N., and Thomson, L., 2008. "Proba-
+bilistic Finite Element Analysis of Modified ASTM
+D3039 Tension Test for Marine Grade Polymer Ma-
+trix Composites". Journal of Reinforced Plastics and
+Composites, 27(6), pp. 583 -- 597.
+
+[6] Sriramula, S., and Chryssanthopoulos, M. K., 2009.
+"Quantification of uncertainty modelling in stochastic
+analysis of FRP composites". Composites Part A: Ap-
+plied Science and Manufacturing, 40(11), pp. 1673 -- 
+1684.
+
+[7] Sudret, B., and Kiureghian, A. D., 2000. Stochastic
+Finite Element Methods and Reliability: A State-of-
+the-Art Report (Report No. UCB/SEMM-2000/08).
+Department of Civil and Environmental Engineering,
+University of California, Berkeley.
+
+[8] Ghanem, R., and Spanos, P., 2003. Stochastic Finite
+Elements: A Spectral Approach. Civil, Mechanical
+and Other Engineering Series. Dover Publications.
+
+[9] Charmpis, D., Schueller, G., and Pellissetti, M., 2007.
+"The need for linking micromechanics of materials
+with stochastic finite elements: A challenge for ma-
+terials science". Computational Materials Science,
+41(1), pp. 27 -- 37.
+
+[10] Du, X., and Chen, W., 2004. "Sequential Optimiza-
+tion and Reliability Assessment Method for Efficient
+Probabilistic Design". Journal of Mechanical Design,
+126(2), p. 225.
+
+[11] Tu, J., Choi, K. K., and Park, Y. H., 1999.
+
+"A
+New Study on Reliability-Based Design Optimiza-
+tion". Journal of Mechanical Design, 121(4), p. 557.
+[12] Michell, A., 1904. "The limits of economy of ma-
+terial in frame-structures". The London, Edinburgh,
+and Dublin Philosophical Magazine and Journal of
+Science, 8(47), pp. 589 -- 597.
+
+[13] Taguchi, G., 1986. Introduction to quality engineer-
+ing: designing quality into products and processes.
+Distributed by the American Supplier Institute, Inc.,
+Dearborn, MI.
+
+[14] Schevenels, M., Lazarov, B., and Sigmund, O., 2011.
+"Robust topology optimization accounting for spa-
+tially varying manufacturing errors". Computer Meth-
+ods in Applied Mechanics and Engineering, 200(49-
+52), Dec., pp. 3613 -- 3627.
+
+[15] Richardson, J. N., Filomeno Coelho, R., and Adri-
+aenssens, S., 2015. "Robust topology optimization
+of truss structures with random loading and material
+properties: A multiobjective perspective". Computers
+& Structures, 154, July, pp. 41 -- 47.
+
+[16] Chen, S., Chen, W., and Lee, S., 2010. "Level set
+based robust shape and topology optimization under
+
+13
+
+Copyright © by ASME
+
+random field uncertainties". Structural and Multidis-
+ciplinary Optimization, 41(4), Apr., pp. 507 -- 524.
+
+[17] Lazarov, B. S., Schevenels, M., and Sigmund, O.,
+2012. "Topology optimization considering material
+and geometric uncertainties using stochastic colloca-
+tion methods". Structural and Multidisciplinary Opti-
+mization, 46(4), Oct., pp. 597 -- 612.
+
+[18] Lazarov, B. S., Schevenels, M., and Sigmund, O.,
+"Topology optimization with geometric un-
+2012.
+Interna-
+certainties by perturbation techniques".
+tional Journal for Numerical Methods in Engineering,
+90(11), June, pp. 1321 -- 1336.
+
+[19] Jansen, M., Lombaert, G., Diehl, M., Lazarov, B. S.,
+Sigmund, O., and Schevenels, M., 2013.
+"Robust
+topology optimization accounting for misplacement
+of material". Structural and Multidisciplinary Opti-
+mization, 47(3), Mar., pp. 317 -- 333.
+
+[20] Jansen, M., Lombaert, G., and Schevenels, M., 2015.
+"Robust topology optimization of structures with im-
+perfect geometry based on geometric nonlinear anal-
+ysis". Computer Methods in Applied Mechanics and
+Engineering, 285, Mar., pp. 452 -- 467.
+
+[21] Asadpoure, A., Tootkaboni, M., and Guest, J. K.,
+"Robust topology optimization of structures
+2011.
+with uncertainties in stiffness − Application to truss
+89(11-12),
+structures". Computers & Structures,
+June, pp. 1131 -- 1141.
+
+[22] Tootkaboni, M., Asadpoure, A., and Guest, J. K.,
+2012. "Topology optimization of continuum struc-
+tures under uncertainty − A Polynomial Chaos ap-
+proach". Computer Methods in Applied Mechanics
+and Engineering, 201-204, Jan., pp. 263 -- 275.
+
+[23] Changizi, N., and Jalalpour, M., 2017. "Robust topol-
+ogy optimization of frame structures under geometric
+or material properties uncertainties". Structural and
+Multidisciplinary Optimization, 56(4), Oct., pp. 791 -- 
+807.
+
+[24] da Silva, G. A., and Cardoso, E. L., 2016. "Topology
+optimization of continuum structures subjected to un-
+certainties in material properties". International Jour-
+nal for Numerical Methods in Engineering, 106(3),
+Apr., pp. 192 -- 212.
+
+[25] da Silva, G., and Cardoso, E., 2017. "Stress-based
+topology optimization of continuum structures under
+uncertainties". Computer Methods in Applied Me-
+chanics and Engineering, 313, Jan., pp. 647 -- 672.
+
+[26] da Silva, G. A., Beck, A. T., and Cardoso, E. L., 2018.
+"Topology optimization of continuum structures with
+stress constraints and uncertainties in loading". Inter-
+national Journal for Numerical Methods in Engineer-
+ing, 113(1), Jan., pp. 153 -- 178.
+
+[27] Zhao, Q., Chen, X., Ma, Z.-D., and Lin, Y., 2015.
+"Robust Topology Optimization Based on Stochastic
+Collocation Methods under Loading Uncertainties".
+Mathematical Problems in Engineering, 2015, pp. 1 -- 
+14.
+
+[28] Richardson, J., Coelho, R. F., and Adriaenssens, S.,
+"A unified stochastic framework for robust
+
+2016.
+
+topology optimization of continuum and truss-like
+structures". Engineering Optimization, 48(2), Feb.,
+pp. 334 -- 350.
+
+[29] Zhao, J., and Wang, C., 2014. "Robust topology op-
+timization under loading uncertainty based on linear
+elastic theory and orthogonal diagonalization of sym-
+metric matrices". Computer Methods in Applied Me-
+chanics and Engineering, 273, May, pp. 204 -- 218.
+
+[30] Jalalpour, M., and Tootkaboni, M., 2016. "An effi-
+cient approach to reliability-based topology optimiza-
+tion for continua under material uncertainty". Struc-
+tural and Multidisciplinary Optimization, 53(4), Apr.,
+pp. 759 -- 772.
+
+[31] McIntire, M. G., Vasylkivska, V., Hoyle, C., and Gib-
+son, N., 2014.
+"Applying robust design optimiza-
+tion to large systems". In ASME 2014 International
+Design Engineering Technical Conferences and Com-
+puters and Information in Engineering Conference,
+pp. V02BT03A054 -- V02BT03A054.
+
+[32] Lewis, K., Chen, W., and Schmidt, L., 2006. Decision
+Making in Engineering Design. ASME Press, New
+York.
+
+[33] Beck, A. T., Gomes, W. J. S., Lopez, R. H., and
+Miguel, L. F. F., 2015. "A comparison between ro-
+bust and risk-based optimization under uncertainty".
+Structural and Multidisciplinary Optimization, 52(3),
+Sept., pp. 479 -- 492.
+
+[34] Haldar, A., and Mahadevan, S., 2000. Probability,
+reliability, and statistical methods in engineering de-
+sign. John Wiley.
+
+[35] Valdebenito, M. A., and Schueller, G. I., 2010. "A sur-
+vey on approaches for reliability-based optimization".
+Structural and Multidisciplinary Optimization, 42(5),
+Nov., pp. 645 -- 663.
+[36] Cornell, C., 1969.
+
+"A probability-based structural
+
+code". ACI Journal Proceedings, 66(12).
+
+[37] Hasofer, A. M., and Lind, N. C., 1974.
+
+"Exact
+and invariant second moment code format". Journal
+of Engineering Mechanics Division, 100(EM1), 01,
+pp. 111 -- 121.
+
+[38] Fiessler, B., Neumann, H., and Rackwitz, R., 1979.
+"Quadratic limit states in structural reliability". Jour-
+nal of Engineering Mechanics Division, 105(4), 08,
+pp. 661 -- 676.
+
+[39] Maute, K., and Frangopol, D. M., 2003. "Reliability-
+based design of MEMS mechanisms by topology op-
+timization". Computers & Structures, 81(8-11), May,
+pp. 813 -- 824.
+
+[40] Sato, Y., Izui, K., Yamada, T., Nishiwaki, S., Ito, M.,
+and Kogiso, N., 2018. "Reliability-based topology
+optimization under shape uncertainty modeled in Eu-
+lerian description". Structural and Multidisciplinary
+Optimization, Sept.
+
+[41] Kang, Z., and Liu, P., 2018. "Reliability-based topol-
+ogy optimization against geometric imperfections
+with random threshold model". International Journal
+for Numerical Methods in Engineering, 115(1), July,
+pp. 99 -- 116.
+
+14
+
+Copyright © by ASME
+
+[42] Mogami, K., Nishiwaki, S., Izui, K., Yoshimura,
+M., and Kogiso, N., 2006. "Reliability-based struc-
+tural optimization of frame structures for multiple fail-
+ure criteria using topology optimization techniques".
+Structural and Multidisciplinary Optimization, 32(4),
+Oct., pp. 299 -- 311.
+
+[43] Kang, J., Kim, C., and Wang, S., 2004. "Reliability-
+based topology optimization for electromagnetic sys-
+tems". COMPEL - The international journal for com-
+putation and mathematics in electrical and electronic
+engineering, 23(3), Sept., pp. 715 -- 723.
+
+[44] Jung, H.-S., and Cho, S., 2004.
+
+"Reliability-
+based topology optimization of geometrically nonlin-
+ear structures with loading and material uncertain-
+ties". Finite Elements in Analysis and Design, 41(3),
+Dec., pp. 311 -- 331.
+
+[45] Luo, Y., Zhou, M., Wang, M. Y., and Deng, Z., 2014.
+"Reliability based topology optimization for contin-
+uum structures with local failure constraints". Com-
+puters & Structures, 143, Sept., pp. 73 -- 84.
+
+[46] da Silva, G. A., and Beck, A. T., 2018. "Reliability-
+based topology optimization of continuum structures
+subject to local stress constraints". Structural and
+Multidisciplinary Optimization, 57(6), Jun, pp. 2339 -- 
+2355.
+
+[47] Papadimitriou, D. I., and Mourelatos, Z. P., 2018.
+"Reliability-Based Topology Optimization Using
+Mean-Value Second-Order Saddlepoint Approxima-
+tion". Journal of Mechanical Design, 140(3), Jan.,
+p. 031403.
+
+[48] Schueller, G., Pradlwarter, H., and Koutsourelakis, P.,
+2004. "A critical appraisal of reliability estimation
+procedures for high dimensions". Probabilistic En-
+gineering Mechanics, 19(4), Oct., pp. 463 -- 474.
+
+[49] Nguyen, T. H., Song, J., and Paulino, G. H., 2011.
+"Single-loop system reliability-based topology opti-
+mization considering statistical dependence between
+limit-states". Structural and Multidisciplinary Opti-
+mization, 44(5), Nov., pp. 593 -- 611.
+
+[50] Silva, M., Tortorelli, D. A., Norato, J. A., Ha, C.,
+and Bae, H.-R., 2010.
+"Component and system
+reliability-based topology optimization using a single-
+loop method". Structural and Multidisciplinary Opti-
+mization, 41(1), Feb., pp. 87 -- 106.
+
+[51] Liang, J., Mourelatos, Z. P., and Tu, J., 2004. "A
+Single-Loop Method for Reliability-Based Design
+Optimization".
+In Volume 1: 30th Design Automa-
+tion Conference, Vol. 2004, ASME, pp. 419 -- 430.
+
+[52] Kharmanda, G., Olhoff, N., Mohamed, A., and
+Lemaire, M., 2004. "Reliability-based topology op-
+timization". Structural and Multidisciplinary Opti-
+mization, 26(5), Mar., pp. 295 -- 307.
+
+[53] Kharmanda, G., Mohamed, A., and Lemaire, M.,
+2002. "Efficient reliability-based design optimization
+using a hybrid space with application to finite element
+analysis". Structural and Multidisciplinary Optimiza-
+tion, 24(3), Sept., pp. 233 -- 245.
+
+[54] Kogiso, N., Hirano, Y., Nishiwaki, S., Izui, K.,
+
+Yoshimura, M., and Min, S., 2010. "Reliability-Based
+Topology Optimization of Frame Structures for Multi-
+ple Criteria Using SLSV Method". Journal of Compu-
+tational Science and Technology, 4(3), pp. 172 -- 184.
+[55] Chen, X., Hasselman, T., Neill, D., Chen, X., Hassel-
+man, T., and Neill, D., 1997. "Reliability based struc-
+tural design optimization for practical applications".
+In 38th Structures, Structural Dynamics, and Materi-
+als Conference, American Institute of Aeronautics and
+Astronautics.
+
+[56] Lopez, R. H., and Beck, A. T., 2012. "Reliability-
+based design optimization strategies based on FORM:
+a review". Journal of the Brazilian Society of Mechan-
+ical Sciences and Engineering, 34(4), Dec., pp. 506 -- 
+514.
+
+[57] Zhao, Q., Chen, X., Ma, Z.-D., and Lin, Y.,
+2015. "Reliability-Based Topology Optimization Us-
+ing Stochastic Response Surface Method with Sparse
+Grid Design". Mathematical Problems in Engineer-
+ing, 2015, pp. 1 -- 13.
+
+[58] Zhao, Q., Chen, X., Ma, Z., and Lin, Y., 2016.
+"A Comparison of Deterministic, Reliability-Based
+Topology Optimization under Uncertainties". Acta
+Mechanica Solida Sinica, 29(1), Feb., pp. 31 -- 45.
+
+[59] Wang, G. G., and Shan, S., 2007. "Review of Meta-
+modeling Techniques in Support of Engineering De-
+sign Optimization". Journal of Mechanical Design,
+129(4), p. 370.
+
+[60] Patel, J., and Choi, S.-K., 2012. "Classification ap-
+proach for reliability-based topology optimization us-
+Structural and
+ing probabilistic neural networks".
+Multidisciplinary Optimization, 45(4), Apr., pp. 529 -- 
+543.
+
+[61] Du, X., Sudjianto, A., and Chen, W., 2004. "An In-
+tegrated Framework for Optimization Under Uncer-
+tainty Using Inverse Reliability Strategy". Journal of
+Mechanical Design, 126(4), p. 562.
+
+[62] Youn, B. D., Choi, K. K., and Yi, K., 2005. "Perfor-
+mance Moment Integration (PMI) Method for Quality
+Assessment in Reliability-Based Robust Design Opti-
+mization". Mechanics Based Design of Structures and
+Machines, 33(2), Apr., pp. 185 -- 213.
+
+[63] Mourelatos, Z. P., and Liang, J., 2006. "A Method-
+ology for Trading-Off Performance and Robustness
+Under Uncertainty". Journal of Mechanical Design,
+128(4), p. 856.
+
+[64] Tang, Y., Chen, J., and Wei, J., 2012. "A Sequential
+Algorithm for Reliability-Based Robust Design Opti-
+mization Under Epistemic Uncertainty". Journal of
+Mechanical Design, 134(1), p. 014502.
+
+[65] Forouzandeh Shahraki, A., and Noorossana, R., 2014.
+"Reliability-based robust design optimization: A gen-
+eral methodology using genetic algorithm". Comput-
+ers & Industrial Engineering, 74, Aug., pp. 199 -- 207.
+[66] Rathod, V., Yadav, O. P., Rathore, A., and Jain,
+R., 2013.
+"Optimizing reliability-based robust de-
+sign model using multi-objective genetic algorithm".
+Computers & Industrial Engineering, 66(2), Oct.,
+
+15
+
+Copyright © by ASME
+
+pp. 301 -- 310.
+
+[67] Lee, I., Choi, K., Du, L., and Gorsich, D., 2008.
+"Dimension reduction method for reliability-based ro-
+bust design optimization". Computers & Structures,
+86(13-14), July, pp. 1550 -- 1562.
+
+[68] Youn, B. D., Xi, Z., Wells, L. J., and Lamb,
+D. A., 2006. "Stochastic Response Surface Using the
+Enhanced Dimension-Reduction (eDR) Method for
+Reliability-Based Robust Design Optimization". In III
+European Conference on Computational Mechanics,
+C. A. Motasoares, J. A. C. Martins, H. C. Rodrigues,
+J. A. C. Ambr´osio, C. A. B. Pina, C. M. Motasoares,
+E. B. R. Pereira, and J. Folgado, eds. Springer Nether-
+lands, Dordrecht, pp. 388 -- 388.
+
+[69] Youn, B. D., and Xi, Z., 2009. "Reliability-based ro-
+bust design optimization using the eigenvector dimen-
+sion reduction (EDR) method". Structural and Multi-
+disciplinary Optimization, 37(5), Feb., pp. 475 -- 492.
+[70] Keshavarzzadeh, V., Fernandez, F., and Tortorelli,
+D. A., 2017. "Topology optimization under uncer-
+tainty via non-intrusive polynomial chaos expansion".
+Computer Methods in Applied Mechanics and Engi-
+neering, 318, May, pp. 120 -- 147.
+
+[71] Taflanidis, A. A., and Beck, J. L., 2008. "An effi-
+cient framework for optimal robust stochastic system
+design using stochastic simulation". Computer Meth-
+ods in Applied Mechanics and Engineering, 198(1),
+Nov., pp. 88 -- 101.
+
+[72] Keshavarzzadeh, V., Meidani, H., and Tortorelli,
+D. A., 2016.
+"Gradient based design optimization
+under uncertainty via stochastic expansion methods".
+Computer Methods in Applied Mechanics and Engi-
+neering, 306, July, pp. 47 -- 76.
+
+[73] Bendsøe, M. P., and Sigmund, O., 1999.
+
+"Mate-
+rial interpolation schemes in topology optimization".
+Archive of Applied Mechanics (Ingenieur Archiv),
+69(9-10), Nov., pp. 635 -- 654.
+
+[74] Svanberg, K., 1987. "The method of moving asymp-
+totes -- a new method for structural optimization". In-
+ternational Journal for Numerical Methods in Engi-
+neering, 24(2), Feb., pp. 359 -- 373.
+
+[75] Svanberg, K., 2002. "A Class of Globally Convergent
+Optimization Methods Based on Conservative Convex
+Separable Approximations". SIAM Journal on Opti-
+mization, 12(2), Jan., pp. 555 -- 573.
+
+[76] Sigmund, O., and Petersson, J., 1998.
+
+"Numer-
+ical instabilities in topology optimization: A sur-
+vey on procedures dealing with checkerboards, mesh-
+dependencies and local minima". Structural Opti-
+mization, 16(1), Aug., pp. 68 -- 75.
+
+[77] Sigmund, O., 2007. "Morphology-based black and
+white filters for topology optimization". Structural
+and Multidisciplinary Optimization, 33(4-5), Feb.,
+pp. 401 -- 424.
+
+[78] Bruns, T. E., and Tortorelli, D. A., 2001.
+
+"Topol-
+ogy optimization of non-linear elastic structures and
+compliant mechanisms". Computer Methods in Ap-
+plied Mechanics and Engineering, 190(26-27), Mar.,
+
+pp. 3443 -- 3459.
+
+[79] Bourdin, B., 2001. "Filters in topology optimization".
+International Journal for Numerical Methods in En-
+gineering, 50(9), Mar., pp. 2143 -- 2158.
+
+[80] Andreassen, E., Clausen, A., Schevenels, M.,
+Lazarov, B. S., and Sigmund, O., 2011. "Efficient
+topology optimization in MATLAB using 88 lines of
+code". Structural and Multidisciplinary Optimization,
+43(1), Jan., pp. 1 -- 16.
+
+[81] Lee, S. H., and Chen, W., 2009.
+
+"A comparative
+study of uncertainty propagation methods for black-
+box-type problems". Structural and Multidisciplinary
+Optimization, 37(3), Jan., pp. 239 -- 253.
+
+[82] Xiu, D., 2010. Numerical Methods for Stochastic
+Computations: A Spectral Method Approach. Prince-
+ton University Press.
+
+[83] Xiong, F., Greene, S., Chen, W., Xiong, Y., and Yang,
+S., 2010. "A new sparse grid based method for uncer-
+tainty propagation". Structural and Multidisciplinary
+Optimization, 41(3), Apr., pp. 335 -- 349.
+
+[84] Gerstner, T., and Griebel, M., 1998. "Numerical in-
+tegration using sparse grids". Numerical Algorithms,
+18, Jan., pp. 209 -- 232.
+
+[85] Smolyak, S. A., 1963. "Quadrature and interpolation
+formulas for tensor products of certain classes of func-
+tions". Dokl. Akad. Nauk SSSR, 148(5), pp. 1042 -- 
+1045.
+
+[86] Xiu, D., and Hesthaven, J. S., 2005. "High-Order Col-
+location Methods for Differential Equations with Ran-
+dom Inputs". SIAM Journal on Scientific Computing,
+27(3), Jan., pp. 1118 -- 1139.
+
+[87] Maitre, O., and Knio, O., 2010. Spectral Methods
+for Uncertainty Quantification: With Applications to
+Computational Fluid Dynamics. Scientific Computa-
+tion. Springer Netherlands.
+
+[88] Davis, P., and Rabinowitz, P., 2007. Methods of Nu-
+merical Integration. Dover Books on Mathematics Se-
+ries. Dover Publications.
+
+[89] Li, C., and Der Kiureghian, A., 1993. "Optimal Dis-
+cretization of Random Fields". Journal of Engineer-
+ing Mechanics, 119(6), June, pp. 1136 -- 1154.
+
+[90] Lo`eve, M., 2017. Probability Theory: Third Edition.
+
+Dover Books on Mathematics. Dover Publications.
+
+[91] Ray, S. S., and Sahu, P. K., 2013. "Numerical Meth-
+ods for Solving Fredholm Integral Equations of Sec-
+ond Kind". Abstract and Applied Analysis, 2013,
+pp. 1 -- 17.
+[92] Wang, L., 2008. "Karhunen− -- Lo`eve Expansions and
+their Applications". PhD thesis, London School of
+Economics and Political Science.
+
+[93] Missoum, S., Lacaze, S., Boroson, E., and Jiang, P.,
+2015. CODES Toolbox. Computational Optimal De-
+sign of Engineering Systems Laboratory. University
+of Arizona.
+
+[94] Yin, X., and Chen, W., 2006.
+
+"Enhanced sequen-
+tial optimization and reliability assessment method for
+probabilistic optimization with varying design vari-
+ance". Structure and Infrastructure Engineering, 2(3-
+
+16
+
+Copyright © by ASME
+
+4), Sept., pp. 261 -- 275.
+
+[95] Huang, S., and Kou, X., 2007. "An extended stochas-
+tic response surface method for random field prob-
+lems". Acta Mechanica Sinica, 23(4), Aug., pp. 445 -- 
+450.
+
+[96] Isukapalli, S., Balakrishnan, S., and Georgopoulos, P.,
+2004. "Computationally efficient uncertainty propa-
+gation and reduction using the stochastic response sur-
+face method". IEEE, pp. 2237 -- 2243 Vol.2.
+
+[97] Frecker, M. I., Ananthasuresh, G. K., Nishiwaki,
+S., Kikuchi, N., and Kota, S., 1997.
+"Topologi-
+cal Synthesis of Compliant Mechanisms Using Multi-
+Criteria Optimization". Journal of Mechanical De-
+sign, 119(2), p. 238.
+
+[98] Marler, R. T., and Arora, J. S., 2010. "The weighted
+sum method for multi-objective optimization: new in-
+sights". Structural and Multidisciplinary Optimiza-
+tion, 41(6), June, pp. 853 -- 862.
+
+[99] Alexanderian, A., 2015.
+
+A brief note on the
+
+Karhunen-Lo`eve expansion.
+
+[100] Youn, B. D., Choi, K. K., and Park, Y. H., 2003.
+"Hybrid Analysis Method for Reliability-Based De-
+sign Optimization". Journal of Mechanical Design,
+125(2), p. 221.
+
+17
+
+Copyright © by ASME
+
+

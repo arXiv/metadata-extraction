@@ -1,0 +1,963 @@
+
+TRANSLOG: A Unified Transformer-based Framework for
+
+Log Anomaly Detection
+
+Hongcheng Guo1∗ , Xingyu Lin4(cid:63) , Jian Yang1 , Yi Zhuang2 , Jiaqi Bai1 , Bo Zhang3 , Tieqiao
+
+Zheng3 , Zhoujun Li1†
+
+1State Key Lab of Software Development Environment, Beihang University
+2Bio-robot and human-computer interaction laboratory, Waseda University
+
+3Cloudwise Research 4University of Southern California
+
+{hongchengguo, jiaya, jiaqi, lizj}@buaa.edu.cn, linxingy@usc.edu,
+
+syouyi2020@asagi.waseda.jp {steven.zheng,bowen.zhang}@cloudwise.com
+
+Abstract
+
+Log anomaly detection is a key component
+in
+the field of artificial intelligence for IT operations
+(AIOps). Considering log data of variant domains,
+retraining the whole network for unknown domains
+is inefficient in real industrial scenarios especially
+for low-resource domains. However, previous deep
+models merely focused on extracting the semantics
+of log sequence in the same domain, leading to poor
+generalization on multi-domain logs. Therefore,
+we propose a unified Transformer-based frame-
+work for Log anomaly detection (TRANSLOG),
+which is comprised of the pretraining and adapter-
+based tuning stage. Our model is first pretrained
+on the source domain to obtain shared semantic
+knowledge of log data. Then, we transfer the pre-
+trained model to the target domain via the adapter-
+based tuning. The proposed method is evaluated on
+three public datasets including one source domain
+and two target domains. The experimental results
+demonstrate that our simple yet efficient approach,
+with fewer trainable parameters and lower training
+costs in target domain, achieves the state-of-the-art
+performance on three benchmarks1.
+
+1 Introduction
+With the rapid development of large-scale IT systems, nu-
+merous companies have an increasing demand for high-
+quality cloud services. Anomaly detection [Grubbs, 1969;
+Niu et al., 2011; Breier and Branisov´a, 2015] is a critical sub-
+stage to monitoring data especially for logs, which describe
+detailed system events at runtime and the intention of users
+of the the large-scale services [Zhang et al., 2015]. The field
+of artificial intelligence for IT operations (AIOps) [Dang et
+al., 2019] intends to empower IT operations by integrating
+advanced deep learning algorithms to meet these challenges,
+which ensures the stability of company data and maintain
+high efficiency simultaneously.
+
+∗Equal contribution.
+†Corresponding author.
+1We will release the pretrained model and code.
+
+Figure 1: The same anomaly from multiple domains. The top part
+denotes the "Unusual End of Program" anomaly from three domains
+including BGL, Thunderbird, and Red Storm while the bottom part
+is the "Program Not Running" from four domains including BGL,
+Thunderbird, Spirit, and Liberty..
+
+Large-scale services are usually implemented by hundreds
+of developers, it is error-prone to detect anomalous logs from
+a local perspective. In this case, some automatic detection
+methods based on machine learning are proposed [Xu et al.,
+2010]. Due to the development of IT services, the volume
+of log data has grown to the point where traditional ap-
+proaches are infeasible. Therefore, research has turned to
+deep learning methods [Zhang et al., 2016; Du et al., 2017;
+Zhang et al., 2019; Meng et al., 2019]. As log messages are
+half-structured and have its own semantics, which is simi-
+lar to natural language corpus, language models like LSTM,
+Transformer are leveraged to obtain semantics in logs. Re-
+cently proposed methods even adopt fashion per-trained mod-
+els like BERT [Devlin et al., 2018], GPT2 [Radford et al.,
+2018] for better embedding representation.
+
+We observe that logs from different sources actually have
+the same anomalous categories. Despite being different in
+morphology and syntax, logs of multiple domains are se-
+mantically similar. For example, in Figure1, three sources
+(BGL, Thunderbird, Red storm) all have the anomaly called
+unusual end of program, thus we naturally think if the model
+
+BGL:data storage interruptrts: kernel terminatedfor reason 1004rts: bad message header: [...]Thunderbird: kernel: mptscsih: ioc0: attempting task abort! (sc=00000101bddee480)Red Storm: DMT 310 Command Aborted: SCSI cmd:2A LUN 2 DMT 310 T:299 a: [...]Unusual End of ProgramBGL: rts panic! -stopping executionThunderbird: pbs mom: Bad file descriptor (9) in tm request, job [job] not runningSpirit: kernel: GM: LANaiis not running. Allowing port=0 open for debuggingLiberty: kernel: GM: LANaiis not running. Allowing port=0 open for debuggingProgram Not Runningcan identify the same anomalies in all domains with shared
+semantic knowledge. However, existing approaches mostly
+focus on single domain, when new components from a dif-
+ferent/similar domain are introduced to the system, they lack
+the ability to accommodate such unseen log messages. In ad-
+dition, detecting anomalies in a large service system requires
+copies of the models, which is costly. It's necessary to find
+a transfer method that performs well on logs from different
+domains, but without training an entire new model for every
+new domain.
+
+In this paper, we address these problems via a two-stage
+solution called Translog. Translog is capable of preserving
+the shared semantic knowledge between different domains.
+More specifically, we first create a neural network model
+based on the self-attention mechanism, which is pretrained
+on the source domain to obtain common semantics of log se-
+quences. Second, Translog utilizes a flexible plugin-in com-
+ponent called adapter to transfer knowledge from source do-
+main to target domain.
+
+Generally, the main contributions of this work are listed
+as follows: (i) We propose Translog, an end-to-end frame-
+work using Transformer encoder architecture to automati-
+cally detect log anomalies. (ii) With only a few additional
+trainable parameters on target domain, Translog allows a high
+degree of parameter-sharing while reducing time and calcu-
+lation consumption. (iii) Our Translog performs well under
+different amounts of training data, especially when the train-
+ing data is low-resource. (iv) The proposed approach is eval-
+uated against three public datasets: HDFS, BGL and Thun-
+derbird. Translog reaches state-of-the-art performance on all
+these three datasets.
+
+2 Background
+Log Parsing The purpose of log parsing is converting un-
+structured log data into the structured event template by re-
+moving parameters and keeping the keywords. After extract-
+ing all the templates, we match each log message and the
+corresponding template. Next, the log template sequence is
+fed into anomaly detection models. The previous work [He
+et al., 2017] adopts a fixed-depth tree structure to split the
+log data and extracts structured templates. AEL [Jiang et al.,
+2008] clusters log messages by comparing the frequency of
+occurrence between constants and variables. Spell [Du and
+Li, 2016] applies the longest common subsequence algorithm
+to parse logs efficiently. IPLoM [Makanju et al., 2009] uti-
+lizes an iterative partition strategy to divide log messages into
+groups based on message length, token position, and mapping
+relationship.
+Adapter-based Tuning Adapter-based tuning [Houlsby et
+al., 2019; Bapna and Firat, 2019] is proved to be a parameter-
+efficient alternative in many NLP tasks. The structure of
+adapters is light-weight, which is usually inserted between
+transformer layers [Vaswani et al., 2017]. When we tune the
+model on downstream tasks, only the parameter of adapters
+are updated while the weights of the pretrained model are
+frozen.
+though utilizing much less trainable pa-
+rameters compared to full fine-tuning [Devlin et al., 2018;
+Stickland and Murray, 2019] , adapter-based tuning reaches
+
+Thus,
+
+Figure 2: Logs and Templates
+
+comparable performance while permitting a high level of
+parameter-sharing.
+Log Anomaly Detection There are two main methods for
+log anomaly detection, including supervised and unsuper-
+vised methods. Supervised methods are often classification-
+based method [Breier and Branisov´a, 2015; Huang et al.,
+2020]. The earlier work applied the LSTM model to detect
+failures. Furthermore, Neurallog [Le and Zhang, 2021a] uses
+BERT to transform raw log messages directly into semantic
+embeddings, avoiding the loss of important information due
+to log parsing errors. However, obtaining system-specific la-
+belled samples is costly and often impractical. The unsuper-
+vised learning methods [Xu et al., 2010; Zhang et al., 2016;
+Du et al., 2017; Zhang et al., 2019] have been proposed. The
+wide adoption of deep learning methods resulted in various
+new solutions for log-based anomaly detection. DeepLog [Du
+et al., 2017] also use LSTM to forecast the next log event
+and then compare it with the current ground truth to detect
+anomalies. However, the input of the unsupervised method is
+a one-hot log vector representing the index of the log tem-
+plate. Therefore, it cannot cope with newly emerging log
+events.
+
+Furthermore, LogRobust
+
+[Zhang et al., 2019] and
+LogAnomaly [Meng et al., 2019] adopt pre-trained word vec-
+tors to learn the representation of logs, where they train an
+attention-based Bi-LSTM model. CNNLog [Lu et al., 2018]
+takes totally CNN(Convolutional Neural Network) architec-
+ture to learn log event representation. Different from all the
+above methods, we take the pre-trained model [Reimers and
+Gurevych, 2019] for a better log event representation, which
+is the core mind of self-training. And then we use the trans-
+former encoder [Vaswani et al., 2017] to model the semantic
+information between sentences.
+
+3 TRANSLOG
+In this section, we will introduce our semantic log anomaly
+analysis model, named TRANSLOG. The architecture of the
+TRANSLOG is illustrated in Fig.3. To notice that the part
+
+𝐿1:TIMES8 crond(pam_unix)[2915]: session closed for user root𝐿2: TIMESdn228/dn228 crond(pam_unix)[2915]: session opened for user root by (uid=0)𝐿3: TIMES(root) CMD (run-parts /etc/cron.hourly)𝐿4: TIMESsession closed for user root𝐿5: TIMESsession opened for user root by (uid=0)𝐿1:session closed for user <*> 𝐿2:session opened for user <*> by <*>𝐿3:(root) CMD (<*> <*>)𝐿4:session closed for user <*> 𝐿5:session opened for user <*> by <*>Unstructured Logs𝑇1: session closed for user <*> 𝑇2: session opened for user <*> by <*>𝑇3: (root) CMD (<*> <*>)𝐿1𝐿2𝐿3𝐿4𝐿5Log templatesMappingDrain parsingStructured InputsFormattingof the log preprocessing is beyond our scope of the paper.
+We will firstly introduce the design of log anomaly detection,
+later we will describe more details of the model, including
+embedding layer, TRANSLOG encoding layer and classifier
+decoder layer.
+
+3.1 Problem Definition
+Log anomaly detection problem is defined as a dichotomy
+problem. The model is supposed to determine whether the
+input log is abnormal or normal. For the source domain,
+assuming that through preprocessing, we achieve the vector
+representations of Ksrc log sequences, which is denoted as
+}T src
+i = {V src
+Ssrc = {Sk}Ksrc
+t=1 denotes the
+is the length of the i-th log se-
+i-th log sequence, where T src
+quence. For the target domain, Stgt = {stgt
+k }Ktgt
+k=1 denotes the
+t }T tgt
+j = {V tgt
+representations of Ktgt log sequences. Stgt
+t=1
+denotes the i-th log sequence, where T tgt
+is the length of
+the i-th log sequence. Therefore, the training procedure is
+defined as follows. We first pretrain the model on the source-
+domain dataset as below:
+
+k=1 . Then, Ssrc
+
+t
+
+i
+
+i
+
+i
+
+i
+
+fpretrain(yiSsrc
+
+i
+
+; Θ))
+
+(1)
+
+Then, the model is transferred to the target-domain as below:
+
+fadapter(yjSsrc
+
+j
+
+; Θf , θa)
+
+(2)
+where fpretrain represents the pretraining stage while
+fadapter represents the adapter-based tuning stage. Θ is the
+parameter of the model in pretraining stage, Θf is the param-
+eter transferred from the model in pretraining stage, which is
+frozen in adapter-based tuning stage. θa is the parameter of
+the adapter. y is the truth label.
+
+Through Equation 1 and 2, TRANSLOG learns the semantic
+representation of template sequences between domains. We
+believe, this efficient parameter method, can not only transfer
+cross-domain knowledge, but also provide great convenience
+to industrial scenarios to a large extent.
+
+3.2 Backbone Model
+Feature Extractor The feature extractor converts session
+sequences (template sequence) to vectors with the same di-
+mension d. Here we use the pretrained sentence-bert[Reimers
+and Gurevych, 2019] model to get the template sequence rep-
+resentation. Although some recent methods proposed that
+transforming raw log messages into a semantic vector directly
+could prevent the loss of information due to log parsing er-
+rors, embedding every log message is not realistic consider-
+ing the large amount of log data. Studies also show that al-
+most all anomalies could be detected by template sequence,
+even if there are parsing errors. Thus, we only embed all
+existing log templates. Each session has l fixed length, so
+through the layer we can obtain the XRl×d for each session.
+Encoder with Light Adapter As shown in figure 4, we
+use stacked transformer encoder as our backbone model,
+because transformer encoder with self attention mechanism
+overcomes the limitations of RNN-based models and better
+
+captures relation in sequence. Self-attention mechanism is
+formally written as:
+
+QK T(cid:112)d/heads
+
+Attention(Q, K, V ) = sof tmax(
+
+)V
+
+(3)
+
+where heads is the number of the heads, d denotes the di-
+mension of the input, and Q, K, V represent queries, keys,
+and values respectively.
+
+The order of a log sequence conveys information of pro-
+gram execution sequence. Wrong execution order is also con-
+sidered abnormal. Thus, constant positional embedding is
+also used. Component after self attention layer and feedfor-
+ward layer is the adapter. It's a light-weight neural networks
+between the transformer layers. When adapting a pretrained
+language model to a new domain, adapters are inserted and
+during adapter-based tuning, only parameters of the adapters
+are updated on the new domain. More specifically, follow-
+ing [Houlsby et al., 2019], we use down- and up-scale neural
+networks as adapter and it immediately follows self attention
+layer and feedforward layer in the Transformer. Two projec-
+tion layers in adapter first map hidden vector from dimension
+d to dimension m, and then map it back to d. The adapter
+also has a skip-connection internally. By setting m << d,
+we limit the number of parameters added per adapter. For-
+mally, given a hidden vector h ∈ Rd, down-projection matrix
+Wdown ∈ Rm×d and up-projection matrix Wup ∈ Rd×m, the
+output vector h(cid:48) of the adapter is calculated as follow:
+
+h(cid:48) = Wuptanh(Wdownh) + h
+
+(4)
+
+3.3 Pretraining
+Inspired by the BERT model, which could learn general lan-
+guage feature that further be used to improve the performance
+of different downstream tasks, we use stacked transformer en-
+coder to learn the common reason of log anomaly. Since the
+input to these transformer layers is vector representations of
+log templates, what model learns is the commonalities be-
+tween different types of anomalies from semantic level.
+
+More specifically, the objective of this stage is the same as
+anomaly detection, which is a supervised classification task
+without adapters in the model. Then, parameters obtained
+from pretraining are shared to the next stage and frozen dur-
+ing the next stage.
+3.4 Adapter-based Tuning
+When adapting a pretrained model from source domain to
+a target domain, adapter based tuning inserts light weight
+adapters, which are actually neural networks like [Houlsby
+et al., 2019]. Adapters are between the transformer layers
+of the pretrained model, and only parameters of the adapters
+are updated during target domain adaption. Parameters of the
+multi-headed attention and the feedforward layers are frozen.
+Thus, unlike fine-tuning which has to update all the parame-
+ters and introduces a entirely new model for a new domain,
+adapter based tuning provides a plug-in mechanism to reuse
+the old model with only few additional trainable parameters.
+3.5 Training Strategy
+
+Lpretrain = −Ex,y∈Dsrc
+
+[log P (yx; Θ)]
+
+x,y
+
+(5)
+
+Figure 3: Overview of our proposed architecture. All log event sequence is first fed into the pretrained language model to extract the
+representations. The Transformer encoder is first trained on the high-resource source-domain dataset to acquire shared semantic information.
+Then, we initialize the Transformer encoder and only tune the parameters of adapter on the low-resource target-domain dataset to transfer the
+knowledge from source domain to target domain.
+
+TRANSLOG with adapter[Houlsby et al., 2019] achieves al-
+most the same performance as full fine-tuning.
+
+Dataset
+HDFS
+BGL
+Thunderbird
+
+Category
+Distributed
+
+Supercomputer
+Supercomputer
+
+#Messages
+
+#Anomaly
+
+#Templates
+
+11M
+5M
+10M
+
+17K
+
+-
+-
+
+49
+423
+1292
+
+Table 1: A summary of the datasets used in this work. Messages
+are the raw log strings. Samples are log sequences extracted by ID
+or sliding window of size 20. In the following experiment, we con-
+sider BGL and Thunderbird as similar domain since they are both
+supercomputer logs.
+
+Figure 4: The structure of the light adapter, where N is the number
+of transformer layers.
+
+[log P (yx; Θf , θa)]
+
+x,y
+
+Ladapter = −E
+
+x,y∈Dtgt
+
+(6)
+In this work, we calculate two BCE loss functions.
+Lpretrain represents the loss function in the pre-training stage
+while Ladapter is the loss function in the adapter-based tun-
+ing stage. Θ is the parameter of the model in the pretraining
+stage. Θf is the parameter trained in the pretraining stage,
+which is frozen in the adapter-based tuning stage. θa is the
+parameter of the adapter. x and y are the input data and label
+x,y represents the data coming from the source
+respectively, Dsrc
+domain, Dtgt
+x,y represents the data coming from the target do-
+main.
+
+4 Experiments
+In this section, we first experiment with three public datasets
+from loghub[He et al., 2020], namely HDFS[Xu et al., 2010],
+Blue Gene/L and Thunderbird[Oliner and Stearley, 2007],
+which shows that our purposed TRANSLOG model achieves
+the state-of-the-art performance in traditional log anomaly
+detection. Then we find that fine-tuning using transferred
+parameters, model converges much faster than training from
+scratch and is more stable. It confirms the the feasibility of
+transfer learning between different log data sources. Finally,
+we show that using only 3.5% − 5.5% trainable parameters,
+
+Datasets As explained previously, we conduct experiments
+of TRANSLOG on three public datasets. TABLE 1 describe
+the details of each dataset.
+
+HDFS[Xu et al., 2010] dataset was generated and collected
+from Amazon EC2 platform through running Hadoop-based
+map-reduce jobs. It contains messages about blocks which
+assign a unique ID to the raw logs. Thunderbird and BGL
+datasets[Oliner and Stearley, 2007] contain logs collected
+from a two supercomputer system at Sandia National Labs
+(SNL) in Albuquerque. The log contains alert and non-alert
+messages identified by alert category tags. Each log message
+in the datasets was manually labeled as anomalous or not.
+Preprocessing In the experiment, for HDFS, we extract log
+sequences by block IDs, since logs with same block ID are
+correlated. For Thunderbird and BGL, we leverage 10 million
+continuous log messages from Thunderbird, which was also
+used in prior work[Yao et al., 2020][Le and Zhang, 2021b]
+and all BGL logs. BGL and Thunderbird do not have such
+IDs, so we utilize a sliding window(size of 20) without over-
+lap to generate log sequence.
+
+For each dataset, we select first 80%(according to the
+timestamps of logs) of log sequences for training, instead of
+selecting randomly. This design ensures that the testing data
+contains new logs previously unseen in the training phrase,
+as it's a very common problem in log anomaly detection. The
+rest of the dataset is used for testing.
+
+instruction cache parity error corrected<*> double-hummer alignment exceptions<*> double-hummer alignment exceptionsLog Event SequenceSource Domainsession closed for user rootsession opened for user root by (uid=<*>)(root) CMD <*> <*>Class Label (Normal/Abnomal)ClassifierTransformer Encoder with Adapter Log Event Sequence............Target DomainFeature ExtractorTransformer EncoderClassifierClass Label (Normal/Abnomal)Feature ExtractorParameter InitializationPretrained LMPretrainingAdapter-based TuningLayer NormAdapterMulti-headedAttention+FFNAdapter+Layer NormTransformer layer×NDown-projectionUp-projection+AdapterT P
+
+T P
+
+T P +F P ), Recall (
+
+Implementation Details
+In experiment, we try different
+number of transformer encoder layers in {1, 2, 4}. The num-
+ber of attention heads is 8, and the size of the feedforward
+network that takes the output of the multi-head self-attention
+mechanism is 3072. We optimize using Adam whose learning
+rate is scheduled by OneCycleLR, with β1 = 0.9, β2 = 0.99,
+and ε = 10−8. All runs are trained on 4 NVIDIA v100 with
+a batch size of 64. For each dataset, we tune the maximum
+learning of OneCycleLR scheduler in {1e−5, 5e−5, 1e−6}.
+Evaluation In our experiments, we adopt three evaluation
+metrics. They are Precision (
+T P +F N ) and
+F1 score( 2∗P recision∗Recall
+P recision+Recall ). These evaluation metrics can
+reflect the performance of the considered methods from dif-
+ferent aspects. Precision is used to compute the percentages
+of how many reported anomalies are correct. Recall shows
+how many anomalies are detected among the true anomalies
+set. While F1 score is harmonic mean value of Precision and
+Recall.
+Baselines We compare TRANSLOG with the six baseline
+methods including Logistic Regression-based approach(LR),
+Support Vector Machine-based approach(SVM), Deeplog,
+LogAnomaly, LogRobust and Neurallog on the three datasets.
+These methods could be classified as two categories, tradi-
+tional machine learning approaches and neural network ap-
+proaches. Traditional approaches first transform the log se-
+quence into log count vectors, then build unsupervised or su-
+pervised machine learning model to detect anomalies. Neu-
+ral network approaches, instead of utilize log count vector,
+leverages averaged word embeddings or contextual embed-
+dings to represent each log templates in log sequence. Then,
+sequential models like RNN or Bi-LSTM are used to detect
+anomalies.
+
+Dataset
+
+Method
+
+HDFS
+
+BGL
+
+LR
+SVM
+
+DeepLog
+
+LogAnomaly
+LogRobust
+Neurallog
+Translog
+
+LR
+SVM
+
+DeepLog
+
+LogAnomaly
+LogRobust
+NeuralLog
+Translog
+
+LR
+SVM
+
+DeepLog
+
+Thunderbird LogAnomaly
+
+Logrobust
+NeuralLog
+Translog
+
+0.96
+0.96
+0.95
+0.96
+0.98
+0.96
+0.999
+0.78
+0.89
+0.90
+0.97
+0.62
+0.61
+0.96
+0.46
+0.34
+
+-
+
+0.61
+0.61
+0.93
+0.998
+
+Precision Recall
+0.91
+0.97
+0.96
+0.94
+0.99
+
+F1 Score
+
+0.93
+0.97
+0.96
+0.96
+0.98
+0.98
+0.998
+0.78
+0.87
+0.86
+0.96
+0.73
+0.68
+0.97
+0.61
+0.50
+
+-
+
+0.68
+0.68
+0.96
+0.997
+
+1
+
+0.996
+0.79
+0.86
+0.83
+0.94
+0.96
+0.78
+0.98
+0.91
+0.91
+
+-
+
+0.78
+0.78
+1
+
+0.996
+
+Table 2: Experimental results on Thunderbird, BGL and HDFS. The
+best results are highlighted.
+
+Main Results To test the effectiveness of TRANSLOG, we
+compare the proposed algorithm with methods on HDFS,
+Thunderbird and BGL benchmarks. As is shown in TABLE
+
+Method
+
+Fine-tune
+
+Adapter
+
+Layers
+1
+2
+4
+1
+2
+4
+
+Parameters HDFS Thunderbird
+0.997
+0.997
+0.998
+0.990
+0.996
+0.996
+
+7.2M 0.998
+14.3M 0.998
+28.5M 0.997
+0.4M 0.997
+0.6M 0.997
+1M 0.998
+
+Table 3: Transfer result using fine-tuning and adapter based fine-
+tuning. Layers is the number of transformer encoder layers. Param-
+eters is the number of trainable parameters in the model.
+
+2. We get the best recall and F1 score on the BGL dataset.
+LogAnomaly [Meng et al., 2019] achieved the highest pre-
+cision rate, but our proposed Tranlog can still provide very
+competitive results. Our TRANSLOG achieves the best results
+on HDFS benchmark. Through these three public datasets,
+the effectiveness and generalization of our TRANSLOG model
+can be verified. Our proposed Tranlog provides satisfactory
+performance on three commonly used benchmakrs.
+
+5 Analysis
+Effect of Pretrained Log model
+In this work, for the first
+time, we discuss the transferability of different log domains.
+Usually, a large service system has several components, and
+new components also could be added due to system updates.
+Each of them generates logs of their own domain. Thus, it's
+hard for traditional methods to detect anomalies in a com-
+plex software system since they can only handle one data
+source. Detecting anomalies in a large service system us-
+ing such methods requires many different copies of models,
+which is costly. It's necessary to find a transfer method that
+performs well on logs from different components, but without
+training an entire new model for every new component.
+
+To demonstrate the possibility of transferring between dif-
+ferent log domains, in this section, we compare the perfor-
+mance of model trained from scratch, as well as model fine-
+tuned from parameters trained on source domain. We use
+BGL as source domain. HDFS and Thunderbird are consid-
+ered as target domains. In the following analysis, we further
+treat HDFS as a different domain, as it's a distributed system,
+and treat Thunderbird as a similar domain, as it's a supercom-
+puter like BGL.
+
+We compare the two method in terms of their rate of con-
+vergence and final result. Figure 5 plots the loss and F1 score
+curves w.r.t training batches of first epoch. We observe that
+fine-tuning converge faster than training from scratch on both
+HDFS and Thunderbird. It proves that parameters could be
+transferred between domains, even they are from different do-
+main. We also found that fine-tuning is more stable, with a
+smoother curve. These observation is more obvious on Thun-
+derbird, which may because transfer is more effective in sim-
+ilar domain. The final result of these two training methods
+are close, however. This is because TRANSLOG can have a
+good performance even trained from scratch.
+Efficiency of Adapter-based Tuning Although we have
+verified that parameters transfer could accelerate model con-
+verge in a new domain and achieve a better result with the
+
+(a) HDFS
+
+(b) Thunderbird
+
+Figure 5: Loss and F1 score during training w.r.t. the number of batches. Result of fine-tuning are based on 1-layer TRANSLOG trained on
+BGL dataset. Both of training and fine-tuning use the same learning rate.
+
+same number of training samples, fine-tuning a whole model
+for each components is also expensive. Thus, we use a param-
+eter efficient strategy, called adapter[Houlsby et al., 2019],
+to enable a high degree of sharing between them. By using
+adapter, we can get a compact model, which could be used
+to solve many tasks by adding a small number of additional
+parameters. Although work has shown that adapter performs
+well in NLP tasks, whether adapter could also be used in logs
+and learn the semantic information about log anomaly have
+not been studied.
+
+In this section, we further compare transfer performance
+using fine-tuning and adapter-based tuning. All experiments
+in this section are based on model trained on BGL. On each
+dataset, we use batch size 64, and tune the learning in {1e −
+5, 5e − 5, 1e − 6} and find that 5e − 5 is the best for HDFS,
+1e − 5 is the best for Thunderbird. We also try the layers of
+TRANSLOG model in {1, 2, 4}.
+Table 3 summarizes the results. We observe that adapters
+offer competitive model. They only use 3.5% − 5.5% of the
+parameters of the original model to get almost the same per-
+formance as full fine-tuning. We also try a different num-
+ber of transformer encoders and found that increasing it for
+full fine-tuning does not always yield better results. How-
+ever, adapter-tuning is more robust to layers, which also in-
+troduces more parameters. On HDFS datasets, the result of
+adapter-tuning does not decrease with layers increase.
+Example Study Figure 5 shows that fine-tuning yields bet-
+ter results with the same number of training examples, espe-
+cially at the beginning. Previous works also show that adapter
+performs better than fine-tuning in different NLP tasks with
+low-resource setting.[He et al., ]. Thus, we further consider
+tasks with fewer than 50k training examples as low-resource
+tasks, as log data is easy to obtain and be labeled manually
+and experiment with HDFS and Thunderbird in low-resource
+tasks. Figure 6 shows the performance with varying numbers
+of training examples. We observe that with no more than 1M
+
+(a)
+
+(b)
+
+Figure 6: Test performance w.r.t.the number of training examples.
+(a) HDFS. 5k, 10k, 20k, 50k corresponding to the font 1.1%, 2.2%,
+4.3%, 10%training data respectively.
+(b) Thunderbird. 5k, 10k,
+20k, 50k corresponding to font 2.5%, 5.3%, 10.6%, 27.4%training
+data. We sample these randomly, since the anomalies in Thunderbird
+mainly concentrate in the latter part of training data.
+
+parameters, adapter based tuning is comparable to full fune-
+tuning. When the number of training examples increase to
+50k, both methods achieve similar results.
+
+To summarize, adapter tuning is highly parameter-efficient
+and shared parameters contain semantic information that
+helps model to detect anomalies. Training adapters with sizes
+less than 5%, performance decreases nearly 1%.
+
+6 Conclusion
+Logs are one of the most valuable data in the scene of sys-
+tem operation and maintenance. Existing log anomaly de-
+tection methods fail to generalize well on unseen new log
+samples.
+In this paper, we propose TRANSLOG, a unified
+log anomaly detection method that uses a novel pretrained
+model to extract the semantic embedding vector from log
+templates based on attention mechanism. Extensive experi-
+ments strongly demonstrate the performance of TRANSLOG
+outperforms all previous baselines.
+
+References
+[Bapna and Firat, 2019] Ankur Bapna and Orhan Firat. Sim-
+ple, scalable adaptation for neural machine translation. In
+EMNLP 2019, pages 1538 -- 1548, 2019.
+
+[Breier and Branisov´a, 2015] Jakub
+
+Branisov´a.
+data mining techniques.
+Applications. 2015.
+
+Jana
+Anomaly detection from log files using
+In Information Science and
+
+Breier
+
+and
+
+[Dang et al., 2019] Yingnong Dang, Qingwei Lin, and Peng
+Huang. Aiops: real-world challenges and research innova-
+tions. In ICSE 2019, 2019.
+
+[Devlin et al., 2018] Jacob Devlin, Ming-Wei Chang, Ken-
+ton Lee, and Kristina Toutanova. Bert: Pre-training of
+deep bidirectional transformers for language understand-
+ing. NAACL 2019, 2018.
+
+[Du and Li, 2016] Min Du and Feifei Li. Spell: Streaming
+
+parsing of system event logs. In ICDM 2016, 2016.
+
+[Du et al., 2017] Min Du, Feifei Li, Guineng Zheng, and
+Vivek Srikumar. Deeplog: Anomaly detection and diag-
+In CCS
+nosis from system logs through deep learning.
+2017, 2017.
+
+[Grubbs, 1969] Frank E Grubbs. Procedures for detecting
+
+outlying observations in samples. Technometrics, 1969.
+
+[He et al., ] Ruidan He, Linlin Liu, Hai Ye, Qingyu Tan,
+Bosheng Ding, Liying Cheng, Jia-Wei Low, Lidong Bing,
+and Luo Si. On the effectiveness of adapter-based tuning
+for pretrained language model adaptation. In ACL 2021,
+pages 2208 -- 2222.
+
+[He et al., 2017] Pinjia He, Jieming Zhu, Zibin Zheng, and
+Michael R Lyu. Drain: An online log parsing approach
+with fixed depth tree. In ICWS 2017, pages 33 -- 40, 2017.
+[He et al., 2020] Shilin He, Jieming Zhu, Pinjia He, and
+Michael R. Lyu. Loghub: A large collection of sys-
+tem log datasets towards automated log analytics. CoRR,
+abs/2008.06448, 2020.
+
+[Houlsby et al., 2019] Neil Houlsby, Andrei Giurgiu, Stanis-
+law Jastrzebski, Bruna Morrone, Quentin De Laroussilhe,
+Andrea Gesmundo, Mona Attariyan, and Sylvain Gelly.
+In ICML
+Parameter-efficient transfer learning for nlp.
+2019, 2019.
+
+[Huang et al., 2020] Shaohan Huang, Yi Liu, Carol Fung,
+Rong He, Yining Zhao, Hailong Yang, and Zhongzhi
+Luan. Hitanomaly: Hierarchical transformers for anomaly
+detection in system log. TNSM, 17(4):2064 -- 2076, 2020.
+[Jiang et al., 2008] Zhen Ming Jiang, Ahmed E. Hassan, Par-
+minder Flora, and Gilbert Hamann. Abstracting execution
+logs to execution events for enterprise applications (short
+paper). In QSIC 2008, pages 181 -- 186, 2008.
+
+[Le and Zhang, 2021a] Van-Hoang Le and Hongyu Zhang.
+Log-based anomaly detection without log parsing. arXiv
+preprint arXiv:2108.01955, abs/2108.01955, 2021.
+
+[Le and Zhang, 2021b] Van-Hoang Le and Hongyu Zhang.
+Log-based anomaly detection without log parsing. CoRR,
+abs/2108.01955, 2021.
+
+[Lu et al., 2018] Siyang Lu, Xiang Wei, Yandong Li, and
+Liqiang Wang. Detecting anomaly in big data system logs
+using convolutional neural network. In DASC 2018, pages
+151 -- 158, 2018.
+
+[Makanju et al., 2009] Adetokunbo Makanju, A. Nur Zincir-
+Heywood, and Evangelos E. Milios. Clustering event logs
+In KDD 2009, pages 1255 -- 
+using iterative partitioning.
+1264, 2009.
+
+[Meng et al., 2019] Weibin Meng, Ying Liu, Yichen Zhu,
+Shenglin Zhang, Dan Pei, Yuqing Liu, Yihao Chen, Ruizhi
+Zhang, Shimin Tao, Pei Sun, et al. Loganomaly: Unsuper-
+vised detection of sequential and quantitative anomalies in
+unstructured logs. In IJCAI 2019, 2019.
+
+[Niu et al., 2011] Zhixian Niu, Shuping Shi, Jingyu Sun, and
+Xiu He. A survey of outlier detection methodologies and
+their applications. In AICI 2011, pages 380 -- 387, 2011.
+
+[Oliner and Stearley, 2007] Adam J. Oliner and Jon Stearley.
+What supercomputers say: A study of five system logs. In
+DSN 2007, pages 575 -- 584, 2007.
+
+[Radford et al., 2018] Alec Radford, Karthik Narasimhan,
+Improving language
+
+Tim Salimans, and Ilya Sutskever.
+understanding by generative pre-training. 2018.
+
+[Reimers and Gurevych, 2019] Nils Reimers
+
+and Iryna
+Sentence-bert: Sentence embeddings us-
+In EMNLP 2019, pages
+
+Gurevych.
+ing siamese bert-networks.
+3980 -- 3990, 2019.
+
+[Stickland and Murray, 2019] Asa Cooper Stickland and Iain
+Murray. BERT and pals: Projected attention layers for
+efficient adaptation in multi-task learning. In ICML 2019,
+pages 5986 -- 5995, 2019.
+
+[Vaswani et al., 2017] Ashish Vaswani, Noam Shazeer, Niki
+Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
+Lukasz Kaiser, and Illia Polosukhin. Attention is all you
+need. NIPS 2017, 2017.
+
+[Xu et al., 2010] Wei Xu, Ling Huang, Armando Fox, David
+Patterson, and Michael I Jordan. Detecting large-scale sys-
+In ICML 2010,
+tem problems by mining console logs.
+2010.
+
+[Yao et al., 2020] Kundi Yao, Heng Li, Weiyi Shang, and
+Ahmed E. Hassan. A study of the performance of general
+compressors on log files. ESE, 25(5):3043 -- 3085, 2020.
+
+[Zhang et al., 2015] Shenglin Zhang, Ying Liu, Dan Pei,
+Yu Chen, Xianping Qu, Shimin Tao, and Zhi Zang. Rap-
+idand robust impact assessment of software changes in
+large internet-based services. In ENET 2015, 2015.
+
+[Zhang et al., 2016] Ke Zhang, Jianwu Xu, Martin Renqiang
+Min, Guofei Jiang, Konstantinos Pelechrinis, and Hui
+Zhang. Automated it system failure prediction: A deep
+learning approach. In BigData 2016, 2016.
+
+[Zhang et al., 2019] Xu Zhang, Yong Xu, Qingwei Lin,
+Bo Qiao, Hongyu Zhang, Yingnong Dang, Chunyu Xie,
+Xinsheng Yang, Qian Cheng, Ze Li, et al. Robust log-
+In FSE
+based anomaly detection on unstable log data.
+2019, 2019.
+
+

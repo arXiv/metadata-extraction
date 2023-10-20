@@ -1,0 +1,950 @@
+To appear in JHEP
+
+2
+2
+0
+2
+
+ 
+
+n
+u
+J
+ 
+
+8
+1
+
+ 
+ 
+]
+x
+e
+-
+p
+e
+h
+[
+ 
+ 
+
+2
+v
+9
+1
+0
+0
+0
+
+.
+
+1
+0
+2
+2
+:
+v
+i
+X
+r
+a
+
+FACET: A new long-lived particle detector in the
+very forward region of the CMS experiment
+
+S. Cerci,a,1 D. Sunar Cerci,a,1 D. Lazic,b G. Landsberg,c,2 F. Cerutti,d
+M. Sabaté-Gilarte,d M.G. Albrow,e,2 J. Berryhill,e D.R. Green,e J. Hirschauer,e
+S. Kulkarni,f J.E. Brücken,g L. Emediato,h A. Mestvirishvili,h J. Nachtman,h
+Y. Onel,h A. Penzo,h O. Aydilek,i B. Hacisahinoglu,i S. Ozkorucuklu,i,2 H. Sert,i
+C. Simsek,i C. Zorbilmez,i I. Hos,j,1 N. Hadley,k A. Skuja,k M. Du,l R. Fang,l Z. Liu,l
+B. Isildakm,1 and V.Q. Trann,o
+aDepartment of Physics, Adiyaman University, 02040, Adiyaman, Turkey
+bPhysics Department, Boston University, 590 Commonwealth Ave, Boston, MA 02215, U.S.A.
+cDepartment of Physics, Brown University, 182 Hope St, Providence, RI 02912, U.S.A.
+dCERN, 1211 Geneva 23, Switzerland
+eFermi National Accelerator Laboratory, PO Box 500, Batavia, IL 60510, U.S.A.
+f Institute of Physics, NAWI Graz, University of Graz, Universitätsplatz 5, A-8010 Graz, Austria
+gHelsinki Institute of Physics, University of Helsinki, Gustaf Hällströmin katu 2, 00560 Helsinki,
+Finland
+hDepartment of Physics and Astronomy, University of Iowa, 203 Van Allen Hall, Iowa City, IA
+52242, U.S.A.
+iPhysics Department, Istanbul University, Vezneciler Caddesi, 34134, Istanbul, Turkey
+jDepartment of Engineering Sciences, Istanbul University-Cerrahpasa, 34320 Avcilar, Istanbul,
+Turkey
+kDepartment of Physics, University of Maryland, College Park, MD 20742, U.S.A.
+lDepartment of Physics, Nanjing University, Nanjing 210093, China
+mDepartment of Natural and Mathematical Sciences, Ozyegin University, Orman Sk 13, 34794,
+
+Istanbul, Turkey
+nTsung Dao Lee Institute, Shanghai Jiao Tong University, Shanghai 200240, China
+oFaculty of Fundamental Sciences, PHENIKAA University, Yen Nghia, Ha Dong, Hanoi 12116,
+Vietnam
+1Also at the Istanbul University.
+2Corresponding author.
+
+E-mail: Salim.Cerci@cern.ch, Deniz.Sunar.Cerci@cern.ch,
+Dragoslav.Lazic@cern.ch, Greg.Landsberg@cern.ch,
+Francesco.Cerutti@cern.ch, Marta.Sabate.Gilarte@cern.ch,
+albrow@fnal.gov, Jeffrey.Berryhill@cern.ch, dgreen@fnal.gov,
+jhirsch@fnal.gov, suchita.kulkarni@uni-graz.at,
+jens.brucken@helsinki.fi, lregisem@cern.ch,
+Alexi.Mestvirishvili@cern.ch, Jane.Nachtman@cern.ch,
+yasar-onel@uiowa.edu, Aldo.Penzo@cern.ch, Orhan.Aydilek@cern.ch,
+Burak.Hacisahinoglu@cern.ch, Suat.Ozkorucuklu@cern.ch,
+Hale.Sert@cern.ch, Cagdas.Simsek@cern.ch, Caglar.Zorbilmez@cern.ch,
+Ilknur.Hos@cern.ch, hadley@umd.edu, skuja@umd.edu,
+mg1722004@smail.nju.edu.cn, 141150012@smail.nju.edu.cn,
+zuoweiliu@nju.edu.cn, Bora.Isildak@cern.ch, vqtran@sjtu.edu.cn
+
+Abstract: We describe a proposal to add a set of very forward detectors to the CMS
+experiment for the high-luminosity era of the Large Hadron Collider to search for beyond the
+standard model long-lived particles, such as dark photons, heavy neutral leptons, axion-like
+particles, and dark Higgs bosons. The proposed subsystem is called FACET for Forward-
+Aperture CMS ExTension, and will be sensitive to any particles that can penetrate at
+least 50 m of magnetized iron and decay in an 18 m long, 1 m diameter vacuum pipe. The
+decay products will be measured in detectors using identical technology to the planned
+CMS Phase-2 upgrade.
+
+Keywords: Beyond Standard Model, Exotics, Hadron-Hadron Scattering, Dark Matter,
+Particle and Resonance Production
+
+ArXiv ePrint: 2201.00019
+
+Contents
+
+1 Introduction
+
+2 FACET as a New Subsystem of CMS
+
+3 Sensitivity to Long-Lived Particles
+
+3.1 Dark Photons
+3.2 Heavy Neutral Leptons
+3.3 Axion-Like Particles
+3.4 Dark Higgs Bosons
+
+4 Triggers
+
+5 Backgrounds
+
+6 Summary
+
+7 Acknowledgments
+
+1
+
+Introduction
+
+1
+
+3
+
+5
+5
+7
+7
+9
+
+10
+
+11
+
+13
+
+13
+
+The existence of long-lived particles (LLPs), i.e., particles with the proper lifetime cτ in
+a macroscopic range, is predicted in many models of physics beyond the standard model
+(BSM). Generally, LLPs are naturally expected in models with small mass splittings be-
+tween the adjacent states (e.g., in supersymmetric models) or with suppressed couplings
+to standard model (SM) particles. In particular, LLPs are often present in particle dark
+matter (DM) models, where they serve as portals between the DM and SM particles. The
+existence of DM is well established from astronomical observations and cosmology. It is
+generally assumed that DM consists of BSM particles . While searches for such particles in
+the TeV mass range continue at the CERN Large Hadron Collider (LHC), the possibility
+that new particles may be relatively light ((cid:46)50 GeV), and yet have escaped detection so
+far because of very weak coupling to SM particles, is receiving considerable attention, as
+discussed in, e.g., refs. [1 -- 3]. There are many possible so-called portals; these are neutral
+particles that couple weakly to the SM and also to DM particles (but being unstable are
+not themselves DM candidates), such as dark photons [4 -- 6], heavy neutral leptons [7, 8],
+axion-like particles [9 -- 11], and scalars or dark Higgs particles [12, 13].
+
+The proposed new CMS subsystem, FACET (Forward-Aperture CMS ExTension), can
+search for many such LLPs (called here X 0), depending only on their forward production
+cross section, momentum, mass mX 0, and proper lifetime cτ. We will show that FACET
+
+ --  1  -- 
+
+covers a region of parameter space not accessible to other experiments, neither existing nor
+proposed.
+
+In what follows, we will use the CMS detector right-handed coordinate system [14],
+with the origin at the CMS interaction point (IP5), with the z axis pointing in the coun-
+terclockwise proton beam direction, the y axis pointing upward, and the x axis pointing
+toward the center of the LHC ring. The polar angle θ is measured with respect to the z
+axis and the pseudorapidity η is defined as − ln[tan(θ/2)].
+Low-mass particles typically imply production peaking in the forward direction. How-
+ever, even decay products of a 125 GeV Higgs boson (H(125)) can have small enough polar
+angle θ to reach FACET [15]. Small couplings often imply long lifetimes, hence the focus
+on searches for LLPs that can manifest as displaced vertices, e.g., in the large central de-
+tectors at the LHC. Fixed-target experiments, such as NA62 [16, 17] at the CERN SPS,
+have sensitivity for LLPs with mass less than 1 GeV from π0, η, and η(cid:48) meson decays.
+
+Longer lifetimes can be probed in the LHC Run 3 by the FASER experiment [18, 19]
+in the beam direction (θ = 0◦) at a distance z = 480 m from the ATLAS interaction
+point (IP1) and by the SND@LHC [20] experiment located on the opposite side of IP1, as
+well as in a more central region by the MilliQan experiment [21], located near the CMS
+detector and MoEDAL-MALL/MAPP experiment [22, 23] located at the LHCb interaction
+point IP8. There are several proposed high-luminosity LHC (HL-LHC) era experiments
+targeting LLP searches, such as MATHUSLA [24, 25], CODEX-b [26], FASER-2 [27, 28],
+ANUBIS [29], FORMOSA [30]; as well as SHADOWS [31], a beam-dump experiment at the
+CERN SPS. There are also experimental proposals outside CERN, such as SUBMET [32]
+at J-PARC and LUXE [33] at the DESY XFEL facility.
+
+FACET is not proposed to be a new experiment, but a new subsystem of the CMS
+experiment that, while overlapping in the parameter space with other searches, will cover
+an extended and unique region. FACET will be sensitive to particles produced with polar
+angles 1 < θ < 4 mrad (equivalently 7.6 > η > 6.2).
+It is closer to IP5 than FASER
+(FASER-2) is to IP1, with four hundred (four) times the solid angle. Conceptually, the
+FACET detector location is somewhat similar to that of the FASER "near detector" option
+discussed in ref. [18] and later dropped from consideration. FACET differs in many aspects
+from the FASER near detector idea, as it is conceptually designed to cope with large
+backgrounds and radiation exposure at low polar angles with respect to the beamline,
+which rendered the FASER "near detector" not a viable option.
+
+FACET has an 18 m long decay volume from z = 101 to 119 m, followed by an 8 m
+long region instrumented with various particle detectors. FACET covers a range of proper
+lifetimes cτ of ∼0.1 -- 100 m. We note that the Lorentz factor γ is typically high in the
+forward direction. A unique feature among the LHC experiments is that the decay volume
+is at high vacuum (LHC quality, as it is part of the LHC beam pipe), eliminating any
+background from particle interactions inside a ∼14 m3 fiducial region.
+Small couplings also imply the ability of an LLP to penetrate a large amount of ab-
+sorbing material. Between IP5 and the decay volume LLPs have to penetrate 35 -- 50 m
+(200 -- 300 λint) of magnetized iron in the LHC quadrupole magnets Q1 -- Q3 and the new (for
+Run 4) 35 T·m superconducting dipole D1. Since neutrinos are the only SM particles that
+
+ --  2  -- 
+
+can penetrate that much absorber, essentially all the SM backgrounds having direct paths
+from the IP are eliminated. Nevertheless, the detectors are in a region with high radiation
+levels and particle showers from upstream interactions in the beam pipe and surrounding
+material. The design of FACET takes these challenges into account.
+
+2 FACET as a New Subsystem of CMS
+
+A schematic view of the detector is shown in Fig. 1. The project requires that an 18 m long
+section of the LHC beam pipe, between z = 101 and 119 m on one side of the IP5 interaction
+region be replaced with a circular pipe of a 50 cm radius1. This section is downstream of the
+focusing quadrupole magnets and beam separation dipole magnet D1. Additional shielding
+will be placed upstream of the first detector, which is a two-layer counter hodoscope made
+of radiation-hard quartz pads. The hodoscope must have very high efficiency to tag charged
+particles from interactions in the upstream shielding, most of which have large enough polar
+angles to miss the tracker. A preliminary design has about 1500 quartz pads of size 2×2 cm2
+arranged in two overlapping planes to avoid cracks. The occupancy per bunch crossing will
+be (cid:46)10%, with the efficiency for charged particles >99.99%.
+
+Dedicated fluka [34, 35] simulation predicts that with the present design there will be
+∼30 charged particles in the tracker per bunch crossing. These are nearly all background
+tracks, which are detected in the hodoscope or seen to originate from the upstream beam
+pipe and ignored in the subsequent analysis. The fluka simulation also predicts that
+there will be, on average, one neutral hadron (mostly K0 or Λ) decaying inside the decay
+volume. All bunch crossings will be examined for candidate decays inside the vacuum
+volume, giving a sensitivity to an integrated luminosity of ∼3 ab−1 in the high-luminosity
+LHC era. The highly segmented upstream hodoscope, precision tracking, and imaging
+calorimetry will reduce these backgrounds to very low levels, even eliminating them in some
+channels, as discussed below. In addition, we are investigating the possibility to further
+mitigate these backgrounds by installing additional shielding closer to the D1 dipole and
+possibly shortening the vacuum decay volume by 1 -- 2 m to make space for more shielding,
+and possibly a magnetized iron toroid, in front of the hodoscope.
+
+On both ends of the enlarged beam pipe, where it transitions from R = 10.6 to 50 cm
+(front) and from 50 to 12.5 cm (back), are thin (∼2 mm) aluminum convex caps to minimize
+multiple scattering of charged particles. The convex windows also mitigate the impedance
+mismatch. Behind the downstream cap (in air) precision tracking, high-granularity elec-
+tromagnetic and hadron calorimetry, and a toroidal magnet interspersed with tracking
+detectors measure charged-particle tracks and identify and measure the energies of pho-
+tons, electrons, hadrons, and muons. There is no magnetic field between the X 0 decay and
+the precision tracker, making accurate reconstruction of decay vertices simple. A layer of
+fast timing with low-gain avalanche detectors will be included. This high-resolution tim-
+ing, with σt ∼ 30 ps, will provide vertex positioning in 4D (x, y, z, t) and a time-of-flight
+measurement for charged particles. These will be used to reject backgrounds from pairs
+of tracks from independent collisions within the same bunch crossing, which have a time
+
+1A large beam pipe with a similar radius already exists downstream of the ALICE experiment.
+
+ --  3  -- 
+
+Figure 1. Schematic layout of the proposed FACET spectrometer. Side view and top view are
+essentially the same since it is azimuthally symmetric. Upstream (to the left) is the IP5 collision
+region (at z = 0) followed by the machine elements Q1 -- Q3 and D1 comprising 35 -- 50 m of iron
+shielding. The superimposed red dashed line shows schematically an LLP from the IP5 decaying into
+two charged tracks shown in blue. The TAXN copper absorber is conceived to intercept the neutral
+particles produced at the interaction point at the HL-LHC, in order to shield the superconducting
+magnets downstream. Its location limits the extent of FACET in the z direction.
+
+spread of ∼200 ps. While this spread limits our ability to perform the mass measurement
+using time-of-flight plus energy information for the LLP candidates, this information still
+provides an added constraint. For example, a particle with a mass mX = 5 GeV and mo-
+mentum p = 100 GeV has a time-of-flight from the IP5, which is ∼500 ps longer than for
+a particle with β = 1.
+The tracking is followed by electromagnetic and hadron calorimetry, using identical
+technology to the CMS HGCAL (High-Granularity Calorimeter) [36] planned for the for-
+ward direction in the CMS Phase-2 upgrade. Copper or tungsten plates interspersed with
+silicon pads provide imaging in 4D. The high granularity is important to measure indi-
+vidual showers above a threshold energy (e.g., 10 GeV, but tunable) and their directions
+in the presence of many low-energy showers. Behind the calorimeter, an iron toroid with
+magnetic field of B ∼ 1.75 T instrumented with additional silicon tracking measures the
+charge of muons and allows an approximate measurement of the muon momentum and the
+dimuon mass for any muon pairs. Muons are also detected through the active layers of the
+calorimeter.
+
+A dedicated Geant4 [37] model of the FACET detector is being built, which would
+allow us to study the backgrounds in much more detail than in the present initial paper.
+Nevertheless, most of the detector performance characteristics have been already obtained
+using fast parametric simulation. In particular, for LLPs decaying into a pair of charged
+particles, we expect the decay vertex position resolution in the z direction from the tracking
+(5 planes of 100 µm silicon strip sensors with a typical hit position resolution of 30 µm) to be
+∼5 cm, which would allow ensuring the vertex to be located within the decay pipe without
+
+ --  4  -- 
+
+Fe TOROID+ Si layersSi TRACKER+ TIMING18m3m2m2mZ= 119mZ= 127 mR = 10.6cmR = 50 cmThin windowLHC VACUUMDECAY VOLUMEForwardAperture CMS ExTension: FACETSCHEMATIC (provisional dimensions -- Scale 20:1)NEG LINERROUT= 50 cm,  Rin= 18cmZ= 101m0.50.5LLPR = 12.5 cm/HODOSCOPE HODOSCOPE AdditionalShieldingAdditionalShieldingSi TrackingSi TrackingSi TrackingSi Tracking+-SHIELDING TAXNzyOxxCALOR.CALOR.cvcvcvcvcvcvBEAMSThin windowSi TRACKER+ TIMINGSHIELDING TAXNlosing much of its fiducial volume. For photons, the pointing resolution in θ achievable
+with the HGCAL technology is σθ/θ ∼ 2.5% [36], which translates into the decay vertex
+z position resolution of about 15 cm. Moreover, by combining the energy information
+from the calorimeter and pointing information from the tracker, one could achieve a mass
+resolution of ∼5% for LLPs decaying to a pair of hadrons or a pair of electrons. Similar,
+but slightly worse mass resolution (∼8%) can be also achieved for the dimuon decay by
+combining the information from the tracker and the muon toroidal detector. This level of
+performance would provide excellent handles in suppressing various backgrounds, discussed
+in more detail in section 5.
+
+The approximate number of channels in the FACET detector amounts to about 5% of
+that for the CMS Phase-2 upgrade, making the detector relatively inexpensive, as most of it
+could be built using the same modules as will be used for the central CMS detector upgrade,
+thus minimizing the R&D and engineering needs. Based on detailed fluka simulations,
+the radiation dose for the inner parts of the FACET detector is expected to be similar
+to that in the central CMS, so the choice of the CMS radiation-hard technology would
+allow the detector to withstand harsh radiation conditions at the HL-LHC without the
+necessity to replace the detector components, perhaps with the exception of the inner part
+of the forward hodoscope, which is easily accessible and could be replaced. While fluka
+simulations are a standard tool to estimate the radiation doses at the LHC, we also plan
+to measure the radiation background with dedicated sensors near the proposed FACET
+location during the forthcoming LHC Run 3, provided that we obtain the LHC approval
+for these measurements.
+
+3 Sensitivity to Long-Lived Particles
+
+The reach in LLP parameter space has been calculated for dark photons, heavy neutral
+leptons, axion-like particles, and dark Higgs bosons in several benchmark scenarios. Pre-
+dictions are generally model dependent and some also depend on the nature of other BSM
+particles, e.g., a heavy Z(cid:48) boson and its mass. We base these studies on a total integrated
+luminosity of 3 ab−1 of proton-proton collisions at a center-of-mass energy √s = 14 TeV,
+with either 3 or 5 candidate events, assuming no background and that FACET can detect all
+penetrating neutral particle decays to ≥ 2 charged particles or photons occurring between
+101 < z < 119 m with the decay products within 18 < R < 50 cm at z = 120 m. The
+typical momentum spectrum of LLPs coming from meson decays peaks at 100 -- 250 GeV,
+with the median in the 200 -- 500 GeV range, depending on the LLP mass.
+
+3.1 Dark Photons
+Massive dark photons A(cid:48) are neutral gauge bosons, which are not directly charged under
+SM gauge groups. However, they can interact with SM particles via mixing with photons.
+A recent review can be found in ref. [5]. A massive virtual photon produced by any process
+in a hadron-hadron collision has some probability of conversion to an A(cid:48), governed by the
+kinetic mixing parameter . If mA(cid:48) (cid:46) 1 GeV, the most prolific source will be decays of π0,
+η, and η(cid:48) mesons. The fluxes of these particles are highest at small polar angles.
+
+ --  5  -- 
+
+Figure 2. FACET reach for dark photons (3 event contours) in a generic model with no BSM
+sources, as calculated with Foresee [38]. Existing bounds (gray shaded regions) are taken from
+CHARM (following Ref. [39]), BaBar [39], E137 [40], LHCb [41], NuCal [42, 43], along with the
+prospective limits taken from studies performed for Belle II [44], HPS [45, 46], LHCb [47, 48],
+NA62 [49], SeaQuest [50], FASER-2 [38], and SHiP [51].
+
+Fig. 2 shows limits calculated using the Foresee package [38] without assuming any
+other BSM sources of dark photons, such as heavy Z(cid:48) bosons, which can extend the mass
+range and require the energy of the LHC.
+For mA(cid:48) > 1 GeV the main production mechanisms are: q + ¯q → A(cid:48) + X; Drell -- 
+Yan: q + ¯q → A(cid:48); bremsstrahlung: p → A(cid:48) + p and q → A(cid:48) + q; and heavy-quark decays:
+c → A(cid:48) + X, b → A(cid:48) + X. The decay modes to SM particles of a minimal dark photon are
+the same as the final states in e+e−
+A comparison of the reach of FACET and other experiments for dark photons in all final
+states in the model of ref. [52] is given in figure 3 (left). In this model, the main production
+mechanism of dark photons is via radiation in a rather rich hidden sector, which contains
+a Dirac fermion ψ and two gauge bosons, which mix with the SM weak hypercharge field
+Bµ. FACET covers a unique region of the mixing parameter 1 vs. mass (or alternatively
+lifetime vs. mass) phase space. Figure 3 (right) shows the number of events as a function of
+lifetime cτ for three A(cid:48) masses for the model parameters corresponding to the reach shown
+in figure 3 (left).
+
+→ γ∗ at √s = mA(cid:48).
+
+Our reach estimates do not include dark photons that are created in hadronic showers,
+
+e.g., from π0 and η meson decays in the iron absorber, and are therefore conservative.
+
+ --  6  -- 
+
+101100Dark Photon Mass mA0 [GeV]108107106105104103Kinetic Mixing SeaQuestNA62SHiPHPSBelle IILHCbLHCbE137CHARMNuCalBaBarFACETFASER-2Dark PhotonsFigure 3. Left: FACET reach for dark photons (5 event contours) in the parameter space of
+coupling 1 and mass mA(cid:48) in the model of ref. [52]. Of the other projects shown, only FASER and
+MTD, the CMS Phase-2 MIP Timing Detector, are currently approved. Right: Number of dark
+photon events as a function of cτ for mA(cid:48) = 2, 4, and 10 GeV in this model.
+
+3.2 Heavy Neutral Leptons
+Many extensions of the SM involve heavy right-handed neutrinos or heavy neutral leptons
+Ni (where the subscript i indicates flavor), which may explain the light neutrino masses
+through the seesaw mechanism [8, 53, 54].
+
+These particles may be produced in any kinematically allowed SM weak leptonic decay,
+e.g., of s, c, b, t quarks, or W or Z bosons. We consider a specific extension of the SM [55],
+with a Z(cid:48) boson (which can be light and yet have escaped detection due to the small coupling
+to SM particles) and three heavy right-handed Majorana neutrinos Ni. In this model, the
+decay Z(cid:48)
+→ NiNi is allowed, and the Ni can be long-lived and decay to SM particles,
+e.g., a lepton of the same flavor and a virtual W ∗ or Z∗ boson. For the Z(cid:48) masses in the
+10 -- 100 GeV range, most interesting in this model, the branching fraction of the Z(cid:48)
+→ NiNi
+decays amounts to about 20%, i.e., rather large and similar to that for the Z boson decays
+into SM neutrinos.
+
+Fig. 4 shows the coverage in the mixing parameter VµN vs. mN plane in the case of a
+single Majorana neutrino N mixed with a muon neutrino. In this case, FACET has a unique
+sensitivity at high masses, above ∼15 GeV for lifetimes cτ between ∼0.1 and ∼100 m.
+3.3 Axion-Like Particles
+Pseudoscalar particles, such as extremely light axions, were initially proposed to solve the
+strong-CP problem of QCD. More massive axion-like particles (ALPs, a) may exist, and
+if produced at the LHC [11, 61], they may decay with long lifetimes into photon pairs (or
+γe+e−) or lepton pairs, after penetrating thick absorbers. FACET will be well-placed to
+discover such ALPs in certain regions of their mass and the coupling to SM gauge bosons.
+
+ --  7  -- 
+
+10−210−1100101102cτ(m)10−210−1100101102NFACETN=5mψ=15GeV,2=0.01,L=3ab−1mA0=2GeVmA0=4GeVmA0=10GeVFigure 4. FACET reach in the mixing parameter vs. mass plane for a heavy neutral lepton (3
+event contours), along with projections for other proposed experiments, as well as for MAPP and
+the upgraded LHCb detectors [55].
+
+Figure 5. FACET sensitivity to ALPs in the W -dominance model (3 event contours), as a function
+of mass and coupling, as calculated with Foresee [38]. The gray-shaded regions are excluded by
+current bounds, while dashed lines correspond to projected sensitivity of various experiments, as
+calculated in refs. [56, 57]. The BaBar limits are from ref. [58]. More details can be found in
+refs. [59, 60] and references therein.
+
+An overview of the FACET reach for ALPs is given in figure 5 in a specific W -dominance
+ALP model [56, 57], as a function of the ALP mass and the coupling to W bosons, gaW W .
+
+ --  8  -- 
+
+101100ALP ma [GeV]107106105104103gaWW [GeV1]Belle2 3KOTO 2KOTO 4NA62 0NA62 2LHC Z3SN1987E137BaBarLEPE949NA62KOTOKTEVNA48/2E949CDF           ALPs (W dominance)FACETFASER-2Figure 6. Reach of FACET and other existing and proposed experiments for a dark Higgs boson φ
+(3 event contours) with the assumption of either 0% (left) or 2.5% (right) branching fraction for the
+H(125) → φφ decays. In the second scenario, FACET offers a unique coverage all the way to half
+mH for a range of mixing angles. FACET and FASER-2 contours are calculated with Foresee [38].
+Current exclusions from LHCb [62, 63] are shown as gray shaded regions. Also, sensitivity from
+studies for MATHUSLA [64], CODEX-b [65], LHCb upgrade [65], and SHiP [66] are shown.
+
+3.4 Dark Higgs Bosons
+The possible existence of a dark-sector partner φ of the 125 GeV Higgs boson has attracted
+attention, as discussed, e.g., in refs. [12, 13, 67]. A dark Higgs field provides a simple
+mechanism to give mass to the dark photon A(cid:48). The corresponding dark Higgs boson φ
+may be the lightest dark sector state and can decay into SM particles via mixing with the
+Higgs boson, governed by the mixing angle θ. Unitarity and perturbativity suggest that
+the dark Higgs boson cannot be much heavier than the dark gauge boson A(cid:48), while it can
+be significantly lighter. The dark Higgs boson can be very long-lived due to its suppressed
+couplings to the accessible light SM states.
+
+For mass ranges below ∼5 GeV the dominant production mechanism is through B
+meson decays, e.g., B → K + φ, with φ decaying to pairs of most massive SM fermions
+accessible kinematically, e.g., to a pair of muons for light φ, or to a pair of τ leptons or
+charm quarks for a heavier φ. A heavier φ may also decay to another pair of new scalars,
+s, which may in turn be LLPs.
+
+The reach of FACET for a dark Higgs boson decaying to a detectable final state is given
+in figure 6. In addition to the production via B meson decays (left plot), we also consider
+the case of a small, non-zero trilinear coupling φφH between the SM Higgs and dark Higgs
+bosons, resulting in a 2.5% branching fraction of the H(125) → φφ decay (right plot). This
+value is lower than the projected limits on the BSM Higgs boson decay branching fraction at
+the HL-LHC [68]. In this case, the low-mass reach is slightly improved compared to the case
+with no trilinear coupling, as a new decay mode b → sφφ, where b and s are the bottom
+and strange quarks, respectively, is present due to a virtual Higgs boson exchange [13].
+However, the most striking feature in this model is that FACET offers a unique sensitivity
+
+ --  9  -- 
+
+1006×1012×1003×1004×100Dark Higgs Mass m [GeV]106105104103102Mixing SHiPMATHUSLACodexBLHCbLHCb B0LHCb B+Dark HiggsFACETFASER-2100101Dark Higgs Mass m [GeV]108107106105104103102Mixing SHiPMATHUSLACodexBLHCbLHCb B0LHCb B+Dark HiggsFACET, (H)=2.5%FASER-2, (H)=2.5%for the dark Higgs boson masses up to the kinematic limit of mH /2 due to a large number
+of Higgs bosons that are produced at the HL-LHC with a significant longitudinal boost,
+resulting in at least one of the two dark Higgs bosons decaying within the FACET detector
+acceptance [15].
+
+4 Triggers
+
+As a part of the CMS Phase-2 Upgrade at the HL-LHC, the Level-1 (L1) trigger system will
+be upgraded, with a latency increased to 12.5 µs and output rate to the High-Level Trigger
+(HLT) increased to 750 kHz. The HLT will analyse the data with close to off-line perfor-
+mance, sending data to long-term storage at a rate of about 7.5 kHz. FACET will provide
+an additional external trigger to the CMS L1 Global Trigger, built from the hodoscope,
+tracking, calorimeter, and muon detector information, and using the same hardware and
+code to be used in the upgraded CMS detectors.
+
+The L1 triggers will be formed from, among others:
+1. ≥ 2 tracks with a small distance of closest approach inside a decay volume;
+2. ≥ 2 muon tracks through the toroidal spectrometer;
+3. ≥ 1 cluster of energy in the electromagnetic calorimeter above some threshold and
+
+with a direction requirement based on the tracker and/or the calorimeter;
+
+4. ≥ 1 cluster of energy in the hadron calorimeter above some threshold and with a
+
+direction requirement based on the tracker.
+
+To achieve maximum sensitivity for the LLP search, FACET will be exposed to all
+bunch crossings. The goal of the trigger is to select all candidates for X 0 → ≥ 2 charged
+tracks or two photons (even if merged), while excluding decays of the SM particles, such as
+K0 and Λ.
+
+The fluka [34, 35] code, regularly used for LHC background calculations, predicts
+that there will be about 30 charged particles with the momentum above 1 GeV (mostly
+protons, π±, and e±, with ∼1.9 µ±) entering the tracker at R > 18 cm per bunch crossing
+(with a pileup of 140). These are all background tracks, and will be tagged as such by the
+front hodoscope and ignored. The L1 track trigger will form tracks (at 119 < z < 122 m)
+and calculate the position of candidate vertices inside the decay volume, as well as confirm
+that the decay signature is consistent with an LLP originating at IP5.
+
+Since the planned rate of L1 triggers for CMS is 750 kHz, FACET triggers at a L1 rate
+of a few kHz is a goal, which should be achievable by tuning thresholds. The HLT can apply
+selections close to the offline analysis to reduce the rate to long-term storage to (cid:46)100 Hz
+out of 7.5 KHz total rate-to-tape for CMS. The FACET-triggered events will include the
+full CMS data, and the FACET information will be included in all CMS triggered events.
+The FACET data will be (cid:28) 1% of the full CMS data. The FACET trigger could also be
+run in a standalone mode, with only FACET information saved, and without correlating
+with the central CMS detector.
+
+ --  10  -- 
+
+For charged particles with θ < 1 mrad that come through the dipole D1 aperture, the
+rates will be high, but some SM channels, e.g., e+e− and µ+µ−, are interesting and special
+triggers for those can be included. Such triggers will be prescaled, but the data will be
+useful for checks throughout the LHC running.
+
+For any low-pileup LHC runs, with proton, as well as with ion beams, a different
+set of triggers will be prepared. Since many bunch crossings will then have only a single
+interaction, correlations between leading charged hadrons and the central event can be
+studied.
+
+5 Backgrounds
+
+FACET is unique among all LHC LLP search proposals in having a very large volume of
+LHC-quality vacuum for decays. Vertices with R > 15 cm inside a fiducial volume with two
+or more associated tracks cannot have come from interactions; they must be due to decays2.
+Our goal is to have no background events even with 3 ab−1 of integrated luminosity in many
+decay channels; in which case even a few signal candidate events can mark a discovery.
+
+Neutral hadrons of concern are K0
+
+S, K0
+
+The direct path from the collision region to the decay volume has 200 -- 300 λint (de-
+pending on θ) of magnetized iron, effectively eliminating all SM particles, except neutrinos.
+Therefore the only SM particles entering the decay volume are indirect, from interactions
+in the beam pipe and LHC components. Most are at large enough polar angle θ to miss
+the tracker, nevertheless the fluka code predicts that there will be about ∼30 charged
+particles with the momentum above 1 GeV entering the tracker at R > 18 cm per bunch
+crossing. There is a significantly larger flux of lower-momentum charged particles enter-
+ing the hodoscope, most of which have large enough polar angles to miss the downstream
+tracker. This drives the need for at least two layers of ∼2 × 2 cm2 pads in the hodoscope.
+L, Λ, and Ξ0, with about one entering the decay
+volume per bunch crossing. Their decay tracks will be well measured and their energies
+determined in the calorimeter. A Monte Carlo simulation shows that the parent mass and
+the direction can be reconstructed with this information. Requiring the parent track to
+point back to the IP5 interaction region and using the decay position information (flat in
+z for an LLP) will reduce this neutral-hadron background that may still be overwhelming
+for X 0 → h+h− (where h± denotes charged hadrons) with mX 0 (cid:46) 0.8 GeV.
+The situation is much better for lepton pairs. Only K0 decays can contribute; for
+S either through both charged pions being misidentified as electrons or as muons, or by
+K0
+genuine dilepton decays, all of which have very small branching fractions < 10−8. The
+L meson has common semileptonic decays to π±e∓νe and π±µ∓νe, so only one π± has
+K0
+to be misidentified as a lepton. The missing neutrino smears the pointing from IP5, the
+reconstructed mass is a continuum with mX 0 < 500 MeV, and the z distribution of the
+vertex is not nearly uniform as it would be for an LLP.
+L → µ+µ−
+decays in the vacuum volume given the branching fraction of 7 × 10−9. The µ+µ− mass
+
+In 2×1015 bunch crossings (3 ab−1) we expect several thoU.S.A.nd true K0
+
+2Interactions of beam bunches with residual gas molecules in the LHC during the HL-LHC operations
+
+are actively being studied [69], but such vertices would be close to the outgoing beams with R < 11 cm.
+
+ --  11  -- 
+
+is reconstructed and, if compatible with mK0, the momentum, the decay time cτ and
+the total momentum are known. While it would be interesting (and an excellent control
+measurement) to observe these rare K0 dilepton decays, they will not be a background to
+X 0 → l+l− decays for mX 0 (cid:38) 0.6 GeV.
+A potential background in the X 0 → l+l− channel is from pileup, with two muons
+or electrons from different collisions in the same bunch crossing appearing to come from a
+common vertex in the decay volume. Studies done with fluka show that the transverse dis-
+tribution of muons is approximately proportional to 1/R, the density ranging from 2× 10−4
+to 8 × 10−5 cm−2. The total is an average of 1.9 muons (both charges) per bunch crossing
+within 18 < R < 50 cm. This background will be eliminated by charged-particle tagging
+in the upstream hodoscope and precision vertexing. If the inefficiency of the hodoscope is
+10−4 (10−5) there will be ∼107 (∼105) bunch crossings in 3 ab−1 with two or more untagged
+muons entering the decay volume. A Monte Carlo study of pairs of uncorrelated muons was
+used to determine the probability that any pair has a distance of closest approach < 60 µm;
+the prediction is 150 (1.5) two-track vertices from pileup, which is further reduced by a fac-
+tor of two by the opposite-sign track requirement. Further requiring the vector sum of the
+muon momenta to point back to the IP5 interaction region eliminates this background.
+
+A search for X 0 → γγ, e.g., for an axion-like particle, having no charged tracks and
+less precise vertex location, will be challenging, with a large background from photons from
+π0, η, and η(cid:48) meson decays, as well as from K0
+S → π0π0 decays. The electromagnetic section
+of the calorimeter measures both the shower directions and the distance of closest approach
+of the two photons, albeit without the high precision which is achieved for tracks. Requiring
+matching in x,y,z,t using position and timing information and that the momentum of the
+diphoton pair points back to IP5 will suppress these backgrounds, especially for mγγ (cid:38)
+1 GeV. Studies based on full detector simulation are under way to determine whether this
+background could be controlled.
+
+Many BSM particles with masses above about 1 GeV have decay modes to more than
+two charged particles. The only SM hadrons that can decay to four charged particles inside
+the FACET decay volume are K0, via the following decays: K0
+L →
+e+e−π+π−, K0
+L → µ+µ−e+e−. With the expected K0 fluxes FACET
+will detect such decays, but they will not constitute a background for 4-body decays with
+mX 0 (cid:38) 0.6 GeV.
+
+L → e+e−e+e−, and K0
+
+S → e+e−π+π− , K0
+
+We have also considered pileup of two unrelated neutral-hadron (e.g., K0
+
+S, Λ) decays,
+but to be a background to X 0 → 4 hadrons these decays must be superimposed in x,y,z,
+consistent in time, and the apparent "parent" must point back to IP5. In addition, for some
+of the signals we may veto pair masses compatible with that of a neutral K0 or Λ. These
+requirements eliminate the background from pileup.
+
+To summarize, while decays of neutral hadrons inside the vacuum volume will be a
+major source of background for hadronic decays of LLPs with mX 0 (cid:46) 0.8 GeV, decays to
+leptons and multihadrons at higher masses should have vanishing backgrounds even in 3
+ab−1, thanks to 200 -- 300 λint of the iron absorber, the vacuum decay volume, high-precision
+tracking, a high-granularity calorimeter, and muon momentum measurement in the toroidal
+spectrometer.
+
+ --  12  -- 
+
+6 Summary
+
+FACET is proposed as a new subsystem for the CMS experiment in the high-luminosity LHC
+era. The primary objective is to search for beyond the standard model long-lived particles
+decaying in a large vacuum volume, during the high-luminosity LHC phase, corresponding
+to an integrated luminosity of about 3 ab−1 of proton-proton collisions at √s = 14 TeV.
+The FACET detector requires an enlarged beam pipe section between z = 101 and 119 m,
+followed by high-precision tracking and calorimeter modules using identical technology to
+the CMS Phase-2 upgrade. These are designed for the high-radiation environment expected
+in the high-luminosity LHC era. The searches can be background-free in many channels,
+especially for neutral long-lived particles with masses (cid:38)1 GeV. FACET will make an in-
+clusive search for dark photons, heavy neutral leptons, axion-like particles, and dark Higgs
+bosons with a sensitivity defined by their masses and couplings to standard model particles.
+The couplings must be large enough to give a detectable production cross section in the
+forward direction, and for the particles to decay to visible states, while small enough for the
+particles to traverse 35 -- 50 m of iron upstream of the decay volume. FACET will explore a
+unique area in the parameter space of mass and couplings, largely complementary to other
+existing and proposed searches, yet with some overlap ensuring seamless coverage.
+
+7 Acknowledgments
+
+We thank V. Kashikhin (Fermilab) for the preliminary toroid design, P. Fessia (CERN
+ATS-DO) and V. Baglin (CERN TE-VSC) for information on the LHC and beam pipe,
+respectively. We are grateful to Felix Kling for a number of helpful discussions related
+to signal simulation and the foresee package. The work of G. Landsberg is partially
+supported by the DOE Award No. DE-SC0010010. S. Kulkarni is supported by the Austrian
+Science Fund Elise-Richter grant project number V592-N27. The University of Iowa group
+work is supported by the DOE Award No. DE-SC0010113.
+Istanbul University group
+work is supported by FUA-2018-32919 from the Scientific Research Projects Coordination
+Unit of Istanbul University. The University of Maryland group effort is supported by the
+DOE Award No. DE-SC0010072. M. Du, R. Fang, and Z. Liu are supported in part by
+the National Natural Science Foundation of China under Grant No. 11775109. V.Q. Tran
+is supported in part by the National Natural Science Foundation of China under Grant
+No. 19Z103010239. We acknowledge support provided by the following funding agencies:
+Academy of Finland and HIP (Finland), TUBITAK and TENMAK (Turkey), DOE and
+NSF (U.S.A.).
+
+References
+
+[1] R. Essig et al., Working Group Report: New Light Weakly Coupled Particles, in Community
+
+Summer Study 2013: Snowmass on the Mississippi, 2013 [1311.0029].
+
+[2] J. Alimena et al., Searching for long-lived particles beyond the Standard Model at the Large
+
+Hadron Collider, J. Phys. G 47 (2020) 090501 [1903.04497].
+
+ --  13  -- 
+
+[3] P. Agrawal et al., Feebly-interacting particles: FIPs 2020 workshop report, Eur. Phys. J. C
+
+81 (2021) 1015 [2102.12143].
+
+[4] L.B. Okun, Limits of electrodynamics: paraphotons?, Sov. Phys. JETP 56 (1982) 502.
+[5] A. Caputo, A.J. Millar, C.A.J. O'Hare and E. Vitagliano, Dark photon limits: A handbook,
+
+Phys. Rev. D 104 (2021) 095029 [2105.04565].
+
+[6] T. Araki, K. Asai, H. Otono, T. Shimomura and Y. Takubo, Dark photon from light scalar
+
+boson decays at FASER, JHEP 03 (2021) 072 [2008.12765].
+
+[7] G. Cottin, Searches for long-lived particles and Heavy Neutral Leptons: Theory perspective,
+
+PoS LHCP2021 (2021) 003.
+
+[8] SHiP collaboration, Sensitivity of the SHiP experiment to Heavy Neutral Leptons, JHEP 04
+
+(2019) 077 [1811.00930].
+
+[9] J.L. Feng, I. Galon, F. Kling and S. Trojanowski, Axionlike particles at FASER: The LHC as
+
+a photon beam dump, Phys. Rev. D 98 (2018) 055021 [1806.02348].
+
+[10] M. Bauer, M. Heiles, M. Neubert and A. Thamm, Axion-Like Particles at Future Colliders,
+
+Eur. Phys. J. C 79 (2019) 74 [1808.10323].
+
+[11] D. d'Enterria, Collider constraints on axion-like particles, in Workshop on Feebly Interacting
+
+Particles, 2021 [2102.08971].
+
+[12] M. Duerr, A. Grohsjean, F. Kahlhoefer, B. Penning, K. Schmidt-Hoberg and
+
+C. Schwanenberger, Hunting the dark Higgs, JHEP 04 (2017) 143 [1701.08780].
+
+[13] J.L. Feng, I. Galon, F. Kling and S. Trojanowski, Dark Higgs bosons at the ForwArd Search
+
+ExpeRiment, Phys. Rev. D 97 (2018) 055034 [1710.09387].
+
+[14] CMS collaboration, The CMS Experiment at the CERN LHC, JINST 3 (2008) S08004.
+[15] I. Boiarska, K. Bondarenko, A. Boyarsky, M. Ovchynnikov, O. Ruchayskiy and A. Sokolenko,
+Light scalar production from Higgs bosons and FASER 2, JHEP 05 (2020) 049 [1908.04635].
+
+[16] NA62 collaboration, The Beam and detector of the NA62 experiment at CERN, JINST 12
+
+(2017) P05025 [1703.08501].
+
+[17] M. Drewes, J. Hajer, J. Klaric and G. Lanfranchi, NA62 sensitivity to heavy neutral leptons
+
+in the low scale seesaw model, JHEP 07 (2018) 105 [1801.04207].
+
+[18] J.L. Feng, I. Galon, F. Kling and S. Trojanowski, ForwArd Search ExpeRiment at the LHC,
+
+Phys. Rev. D 97 (2018) 035001 [1708.09389].
+
+[19] FASER collaboration, Technical Proposal for FASER: ForwArd Search ExpeRiment at the
+
+LHC, 1812.09139.
+
+[20] C. Ahdida, R. Albanese, A. Alexandrov, M. Andreini, A. Anokhina, A. Bay et al.,
+
+"SND@LHC - Scattering and Neutrino Detector at the LHC." Jan, 2021.
+
+[21] milliQan collaboration, Sensitivity to millicharged particles in future proton-proton
+
+collisions at the LHC with the milliQan detector, Phys. Rev. D 104 (2021) 032002
+[2104.07151].
+
+[22] J.L. Pinfold, The MoEDAL experiment: a new light on the high-energy frontier, Phil. Trans.
+
+Roy. Soc. Lond. A 377 (2019) 20190382.
+
+[23] J.L. Pinfold, The MoEDAL Experiment at the LHC -- A Progress Report, Universe 5 (2019)
+
+47.
+
+ --  14  -- 
+
+[24] MATHUSLA collaboration, A Letter of Intent for MATHUSLA: A Dedicated Displaced
+
+Vertex Detector above ATLAS or CMS., 1811.00927.
+
+[25] D. Curtin et al., Long-Lived Particles at the Energy Frontier: The MATHUSLA Physics
+
+Case, Rept. Prog. Phys. 82 (2019) 116201 [1806.07396].
+
+[26] G. Aielli et al., Expression of interest for the CODEX-b detector, Eur. Phys. J. C 80 (2020)
+
+1177 [1911.00481].
+
+[27] FASER collaboration, FASER's physics reach for long-lived particles, Phys. Rev. D 99
+
+(2019) 095011 [1811.12522].
+
+[28] FASER collaboration, FASER: ForwArd Search ExpeRiment at the LHC, 1901.04468.
+[29] M. Bauer, O. Brandt, L. Lee and C. Ohm, ANUBIS: Proposal to search for long-lived neutral
+
+particles in CERN service shafts, 1909.13022.
+
+[30] S. Foroughi-Abari, F. Kling and Y.-D. Tsai, Looking forward to millicharged dark sectors at
+
+the LHC, Phys. Rev. D 104 (2021) 035014 [2010.07941].
+
+[31] W. Baldini et al., SHADOWS (Search for Hidden And Dark Objects With the SPS),
+
+2110.08025.
+
+[32] J.H. Kim, I.S. Hwang and J.H. Yoo, Search for sub-millicharged particles at J-PARC, JHEP
+
+05 (2021) 031 [2102.11493].
+
+[33] H. Abramowicz et al., Conceptual design report for the LUXE experiment, Eur. Phys. J. ST
+
+230 (2021) 2445 [2102.02032].
+
+[34] FLUKA collaboration. https://fluka.cern".
+[35] G. Battistoni et al., Overview of the FLUKA code, Annals Nucl. Energy 82 (2015) 10.
+[36] CMS collaboration, The Phase-2 Upgrade of the CMS Endcap Calorimeter,
+
+CERN-LHCC-2017-023, CMS-TDR-019 CERN (2017), DOI.
+
+[37] GEANT4 collaboration, Geant4  --  A simulation toolkit, Nucl. Instrum. Meth. A 506
+
+(2003) 250.
+
+[38] F. Kling and S. Trojanowski, Forward experiment sensitivity estimator for the LHC and
+
+future hadron colliders, Phys. Rev. D 104 (2021) 035012 [2105.07077].
+
+[39] BaBar collaboration, Search for a Dark Photon in e+e− Collisions at BaBar, Phys. Rev.
+
+Lett. 113 (2014) 201801 [1406.2980].
+
+[40] J.D. Bjorken, S. Ecklund, W.R. Nelson, A. Abashian, C. Church, B. Lu et al., Search for
+
+Neutral Metastable Penetrating Particles Produced in the SLAC Beam Dump, Phys. Rev. D
+38 (1988) 3375.
+
+[41] LHCb collaboration, Search for A(cid:48)
+
+→ µ+µ− Decays, Phys. Rev. Lett. 124 (2020) 041801
+[42] J. Blümlein and J. Brunner, New Exclusion Limits on Dark Gauge Forces from Proton
+
+[1910.06926].
+
+Bremsstrahlung in Beam-Dump Data, Phys. Lett. B 731 (2014) 320 [1311.3870].
+
+[43] J. Blumlein and J. Brunner, New Exclusion Limits for Dark Gauge Forces from Beam-Dump
+
+Data, Phys. Lett. B 701 (2011) 155 [1104.2747].
+
+[44] Belle collaboration, Search for the dark photon in B0 → A(cid:48)A(cid:48), A(cid:48)
+
+π+π− decays at Belle, JHEP 04 (2021) 191 [2012.02538].
+
+→ e+e−, µ+µ−, and
+
+ --  15  -- 
+
+[45] M.R. Solt, Searching for long-lived dark photons with the heavy photon search experiment,
+
+Ph.D. Thesis, Stanford U. (2020) .
+
+[46] M. Battaglieri et al., US Cosmic Visions: New Ideas in Dark Matter 2017: Community
+
+Report, in U.S. Cosmic Visions: New Ideas in Dark Matter, 2017 [1707.04591].
+
+[47] P. Ilten, J. Thaler, M. Williams and W. Xue, Dark photons from charm mesons at LHCb,
+
+Phys. Rev. D 92 (2015) 115017 [1509.06765].
+
+[48] P. Ilten, Y. Soreq, J. Thaler, M. Williams and W. Xue, Proposed Inclusive Dark Photon
+
+Search at LHCb, Phys. Rev. Lett. 116 (2016) 251803 [1603.08926].
+
+[49] NA62 collaboration, Dark Sectors at fixed targets: The example of NA62, Frascati Phys. Ser.
+
+66 (2018) 312 [1807.10170].
+
+[50] A. Berlin, S. Gori, P. Schuster and N. Toro, Dark Sectors at the Fermilab SeaQuest
+
+Experiment, Phys. Rev. D 98 (2018) 035011 [1804.00661].
+
+[51] SHiP collaboration, Sensitivity of the SHiP experiment to dark photons decaying to a pair of
+
+charged particles, Eur. Phys. J. C 81 (2021) 451 [2011.05115].
+
+[52] M. Du, R. Fang, Z. Liu and V.Q. Tran, Enhanced long-lived dark photon signals at lifetime
+
+frontier detectors, 2111.15503.
+
+[53] P. Minkowski, µ → eγ at a Rate of One Out of 109 Muon Decays?, Phys. Lett. B 67 (1977)
+
+421.
+
+[54] D. Chang, R.N. Mohapatra, J. Gipson, R.E. Marshak and M.K. Parida, Experimental Tests
+
+of New SO(10) Grand Unification, Phys. Rev. D 31 (1985) 1718.
+
+[55] F. Deppisch, S. Kulkarni and W. Liu, Heavy neutrino production via Z(cid:48) at the lifetime
+
+frontier, Phys. Rev. D 100 (2019) 035005 [1905.11889].
+
+[56] S. Gori, G. Perez and K. Tobioka, KOTO vs. NA62 Dark Scalar Searches, JHEP 08 (2020)
+
+110 [2005.05170].
+
+[57] F. Kling and S. Trojanowski, Looking forward to test the KOTO anomaly with FASER, Phys.
+
+Rev. D 102 (2020) 015032 [2006.10630].
+
+[58] BaBar collaboration, Search for an Axion-Like Particle in B Meson Decays, 2111.01800.
+[59] J. Beacham et al., Physics Beyond Colliders at CERN: Beyond the Standard Model Working
+
+Group Report, J. Phys. G 47 (2020) 010501 [1901.09966].
+
+[60] M.J. Dolan, T. Ferber, C. Hearty, F. Kahlhoefer and K. Schmidt-Hoberg, Revised constraints
+
+and Belle II sensitivity for visible and invisible axion-like particles, JHEP 12 (2017) 094
+[1709.00009].
+
+Lett. 115 (2015) 161802 [1508.04094].
+
+[61] K. Mimasu and V. Sanz, ALPs at Colliders, JHEP 06 (2015) 173 [1409.4792].
+[62] LHCb collaboration, Search for hidden-sector bosons in B0→ K∗0µ+µ− decays, Phys. Rev.
+[63] LHCb collaboration, Search for long-lived scalar particles in B+ → K +χ(µ+µ−) decays,
+[64] J.P. Chou, D. Curtin and H.J. Lubatti, New Detectors to Explore the Lifetime Frontier,
+
+Phys. Rev. D 95 (2017) 071101 [1612.07818].
+
+Phys. Lett. B 767 (2017) 29 [1606.06298].
+
+[65] V.V. Gligorov, S. Knapen, M. Papucci and D.J. Robinson, Searching for Long-lived Particles:
+
+A Compact Detector for Exotics at LHCb, Phys. Rev. D 97 (2018) 015023 [1708.09395].
+
+ --  16  -- 
+
+[66] S. Alekhin et al., A facility to Search for Hidden Particles at the CERN SPS: the SHiP
+
+physics case, Rept. Prog. Phys. 79 (2016) 124201 [1504.04855].
+
+[67] E. Bertuzzo and M. Taoso, Probing light dark scalars with future experiments, JHEP 03
+
+(2021) 272 [2011.04735].
+
+[68] A. Dainese, M. Mangano, A.B. Meyer, A. Nisati, G. Salam and M.A. Vesterinen, eds., Report
+
+on the Physics at the HL-LHC,and Perspectives for the HE-LHC, vol. 7/2019 of CERN
+Yellow Reports: Monographs, CERN, Geneva, Switzerland (2019),
+10.23731/CYRM-2019-007.
+
+[69] R. Bruce et al., Collimation-induced experimental background studies at the CERN Large
+
+Hadron Collider, Phys. Rev. Accel. Beams 22 (2019) 021004.
+
+ --  17  -- 
+
+

@@ -1,0 +1,1001 @@
+CONFIDENCE-AWARE MULTI-TEACHER KNOWLEDGE DISTILLATION
+
+Hailin Zhang
+
+Defang Chen
+
+Can Wang(cid:63)
+
+Zhejiang University, China; ZJU-Bangsun Joint Research Center.
+
+{zzzhl, defchern, wcan}@zju.edu.cn
+
+2
+2
+0
+2
+
+ 
+
+b
+e
+F
+1
+1
+
+ 
+
+ 
+ 
+]
+
+G
+L
+.
+s
+c
+[
+ 
+ 
+
+2
+v
+7
+0
+0
+0
+0
+
+.
+
+1
+0
+2
+2
+:
+v
+i
+X
+r
+a
+
+ABSTRACT
+
+Knowledge distillation is initially introduced to utilize ad-
+ditional supervision from a single teacher model for the
+student model training. To boost the student performance,
+some recent variants attempt to exploit diverse knowledge
+sources from multiple teachers. However, existing studies
+mainly integrate knowledge from diverse sources by aver-
+aging over multiple teacher predictions or combining them
+using other label-free strategies, which may mislead stu-
+dent in the presence of low-quality teacher predictions. To
+tackle this problem, we propose Confidence-Aware Multi-
+teacher Knowledge Distillation (CA-MKD), which adap-
+tively assigns sample-wise reliability for each teacher pre-
+diction with the help of ground-truth labels, with those
+teacher predictions close to one-hot labels assigned large
+weights. Besides, CA-MKD incorporates features in in-
+termediate layers to stable the knowledge transfer process.
+Extensive experiments show our CA-MKD consistently
+outperforms all compared state-of-the-art methods across
+various teacher-student architectures. Code is available:
+https://github.com/Rorozhl/CA-MKD.
+
+Index Terms --  knowledge distillation, multiple teachers,
+
+confidence-aware weighting
+
+1. INTRODUCTION
+
+Nowadays, deep neural networks have achieved unprece-
+dented success in various applications [1, 2, 3]. However,
+these complex models requiring huge memory footprint and
+computational resources are difficult to be applied on embed-
+ded devices. Knowledge distillation (KD) is thus proposed as
+a model compression technique to resolve this issue, which
+improves the accuracy of a lightweight student model by dis-
+tilling the knowledge from a pre-trained cumbersome teacher
+model [4]. The transferred knowledge was originally formal-
+ized as softmax outputs (soft targets) of the teacher model
+[4] and latter extended to the intermediate teacher layers for
+achieving more promising performance [5, 6, 7].
+
+(cid:63)Corresponding author
+This work is supported by National Key R&D Program of China (Grant
+No: 2019YFB1600700), the Starry Night Science Fund of Zhejiang Univer-
+sity Shanghai Institute for Advanced Study (Grant No: SN-ZJU-SIAS-001)
+and National Natural Science Foundation of China (Grant No: U1866602).
+
+Fig. 1. Comparison of the previous average direction (green
+line) and our proposed confidence-aware direction (red line).
+
+As the wisdom of the masses exceeds that of the wisest in-
+dividual, some multi-teacher knowledge distillation (MKD)
+methods are proposed and have been proven to be benefi-
+cial [8, 9, 10, 11, 12]. Basically, they combine predictions
+from multiple teachers with the fixed weight assignment [8,
+9, 10] or other various label-free schemes, such as calculat-
+ing weights based on a optimization problem or entropy crite-
+rion [11, 12], etc. However, fixed weights fail to differentiate
+high-quality teachers from low-quality ones [8, 9, 10], and
+the other schemes may mislead the student in the presence of
+low-quality teacher predictions [11, 12]. Figure 1 provides an
+intuitive illustration on this issue, where the student trained
+with the average weighting strategy might deviate from the
+correct direction once most teacher predictions are biased.
+
+Fortunately, we actually have ground-truth labels in hand
+to quantify our confidence about teacher predictions and then
+filter out low-quality predictions for better student training.
+To this end, we propose Confidence-Aware Multi-teacher
+Knowledge Distillation (CA-MKD) to learn sample-wise
+weights by taking the prediction confidence of teachers into
+consideration for adaptive knowledge integration. The con-
+fidence is obtained based on the cross entropy loss between
+prediction distributions and ground-truth labels. Compared
+with previous label-free weighting strategies, our technique
+enables the student to learn from a relatively correct direction.
+Note that our confidence-aware mechanism not only is
+able to adaptively weight different teacher predictions based
+on their sample-wise confidence, but also can be extended to
+the student-teacher feature pairs in intermediate layers. With
+the help of our generated flexible and effective weights, we
+could avoid those poor teacher predictions dominating the
+knowledge transfer process and considerably improve the stu-
+dent performance on eight teacher-student architecture com-
+binations (as shown in Table 1 and 3).
+
+2. RELATED WORK
+
+Knowledge Distillation. Vanilla KD aims to transfer knowl-
+edge from a complex network (teacher) to a simple network
+(student) with the KL divergence minimization between their
+softened outputs [13, 4]. Mimicking the teacher representa-
+tions from intermediate layers was latter proposed to explore
+more knowledge forms [5, 6, 14, 15, 7]. Compared to these
+methods that require pre-training a teacher, some works si-
+multaneously train multiple students and encourage them to
+learn from each other instead [16, 17]. Our technique dif-
+fers from these online KD methods since we attempt to distill
+knowledge from multiple pre-trained teachers.
+Multi-teacher Knowledge Distillation. Rather than employ-
+ing a single teacher, MKD boosts the effectiveness of distil-
+lation by integrating predictions from multiple teachers. A
+bunch of methods are proposed, such as simply assigning av-
+erage or other fixed weights for different teachers [8, 9, 10],
+and calculating the weights based on entropy [12], latent fac-
+tor [18] or multi-objective optimization in the gradient space
+[11]. However, these label-free strategies may mislead the
+student training in the presence of low-quality predictions.
+For instance, entropy-based strategy will prefer models with
+blind faith since it favors predictions with low variance [12];
+optimization-based strategy favors majority opinion and will
+be easily misled by noisy data [11]. In contrast, our CA-MKD
+quantifies the teacher predictions based on ground-truth labels
+and further improves the student performance.
+
+3. METHODOLOGY
+
+We denote D = {xi, yi}N
+i as a labeled training set, N is
+the number of samples, K is the number of teachers. F ∈
+Rh×w×c is the output of the last network block. We denote
+z = [z1, ..., zC] as the logits output, where C is the category
+(cid:80)
+number. The final model prediction is obtained by a softmax
+function σ (zc) = exp(zc/τ )
+j exp(zj /τ ) with temperature τ. In the
+following sections, we will introduce our CA-MKD in detail.
+
+3.1. The Loss of Teacher Predictions
+
+Fig. 2. An overview of our CA-MKD. The weight calculation
+of teacher predictions and intermediate teacher features are
+depicted as the red lines and green lines, respectively.
+
+then aggregated with calculated weights
+
+LKD = − K(cid:88)
+
+C(cid:88)
+
+wk
+
+KD
+
+zc
+Tk
+
+log (σ (zc
+
+S)) .
+
+(3)
+
+k=1
+
+c=1
+
+According to the above formulas, the teacher whose pre-
+diction is closer to ground-truth labels will be assigned larger
+KD, since it has enough confidence to make accu-
+weight wk
+rate judgement for correct guidance. In contrast, if we simply
+acquire the weights by calculating the entropy of teacher pre-
+dictions [12], the weight will become large when the output
+distribution is sharp regardless of whether the highest prob-
+ability category is correct. In this case, those biased targets
+may misguide the student training and further hurt its distilla-
+tion performance.
+
+3.2. The Loss of Intermediate Teacher Features
+
+In addition to KD Loss, inspired by FitNets [5], we believe
+that the intermediate layers are also beneficial for learning
+structural knowledge, and thus extend our method to interme-
+diate layers for mining more information. The calculation of
+intermediate feature matching is presented as follows
+
+To effectively aggregate the prediction distributions of multi-
+ple teachers, we assign different weights which reflects their
+sample-wise confidence by calculating the cross entropy loss
+between teacher predictions and ground-truth labels
+
+= − C(cid:88)
+yc log(cid:0)σ(cid:0)zc
+1 − exp(cid:0)Lk
+(cid:16)Lj
+(cid:80)
+
+c=1
+
+j exp
+
+Tk
+
+CEKD
+
+(cid:1)(cid:1) ,
+(cid:1)
+
+CEKD
+
+Lk
+
+CEKD
+
+wk
+
+KD =
+
+1
+
+K − 1
+
+ ,
+
+(cid:17)
+
+(1)
+
+(2)
+
+zS→Tk = WTk hS,
+
+= − C(cid:88)
+yc log(cid:0)σ(cid:0)zc
+1 − exp(cid:0)Lk
+(cid:16)Lj
+(cid:80)
+
+c=1
+
+j exp
+
+S→Tk
+
+CEinter
+
+CEinter
+
+(cid:1)(cid:1) ,
+(cid:1)
+(cid:17)
+
+(4)
+
+(5)
+
+(6)
+
+ .
+
+Lk
+
+CEinter
+
+wk
+
+inter =
+
+1
+
+K − 1
+
+where WTk is the final classifier of the kth teacher. hS ∈ Rc
+is the last student feature vector, i.e, hS = AvgPooling(FS).
+Lk
+is obtained by passing hS through each teacher clas-
+sifier. The calculation of wk
+
+inter is similar to that of wk
+
+CEinter
+
+KD.
+
+where Tk denotes the kth teacher. The less Lk
+sponds to the larger wk
+
+corre-
+KD. The overall teacher predictions are
+
+CEKD
+
+Table 1. Top-1 test accuracy of MKD methods by distilling the knowledge on multiple teachers with the same architectures.
+ResNet32x4
+79.31±0.14
+
+ResNet32x4
+79.31±0.14
+
+ResNet32x4
+79.31±0.14
+
+WRN40-2
+76.62±0.26
+
+ResNet56
+73.28±0.30
+
+VGG13
+75.17±0.18
+
+VGG13
+75.17±0.18
+
+79.62
+
+76.00
+
+77.07
+
+81.16
+
+81.16
+
+Teacher
+Ensemble
+
+Student
+
+AVER [8]
+
+FitNet-MKD [5]
+
+EBKD [12]
+AEKD [11]
+CA-MKD
+
+ShuffleNetV1 MobileNetV2
+65.64±0.19
+71.70±0.43
+70.21±0.10
+76.30±0.25
+76.59±0.17
+70.69±0.56
+70.91±0.22
+76.61±0.14
+76.34±0.24
+70.47±0.15
+77.94±0.31
+71.38±0.02
+
+77.07
+VGG8
+
+70.74±0.40
+74.07±0.23
+73.97±0.22
+74.10±0.27
+73.78±0.03
+74.30±0.16
+
+MobileNetV2
+65.64±0.19
+68.91±0.35
+68.48±0.07
+68.24±0.82
+68.39±0.50
+69.41±0.20
+
+ResNet8x4
+72.79±0.14
+74.99±0.24
+74.86±0.21
+75.59±0.15
+74.75±0.28
+75.90±0.13
+
+ShuffleNetV2
+72.94±0.24
+75.87±0.19
+76.09±0.13
+76.41±0.12
+75.95±0.20
+77.41±0.14
+
+81.16
+VGG8
+
+70.74±0.40
+73.26±0.39
+73.27±0.19
+73.60±0.22
+73.11±0.27
+75.26±0.32
+
+Table 2. Top-1 test accuracy of CA-MKD compared to
+single-teacher knowledge distillation methods.
+
+Teacher
+
+Student
+
+KD [4]
+FitNet [5]
+
+AT [6]
+VID [14]
+CRD [15]
+CA-MKD
+
+WRN40-2
+76.62±0.26
+ShuffleNetV1
+71.70±0.19
+75.77±0.14
+76.22±0.21
+76.44±0.38
+76.32±0.08
+76.58±0.23
+77.94±0.31
+
+ResNet32x4
+79.31±0.14
+
+VGG8
+
+70.74±0.40
+72.90±0.34
+72.55±0.66
+72.16±0.12
+73.09±0.29
+73.57±0.25
+75.26±0.13
+
+ResNet56
+73.28±0.30
+MobileNetV2
+65.64±0.43
+69.96±0.14
+69.02±0.28
+69.79±0.26
+69.45±0.17
+71.15±0.44
+71.38±0.02
+
+K(cid:88)
+
+k=1
+
+To stable the knowledge transfer process, we design the
+student to be more focused on imitating the teacher with a
+similar feature space and wk
+inter indeed serves as such a sim-
+ilarity measure representing the discriminability of a teacher
+classifier in the student feature space. The ablation study also
+shows that utilizing wk
+KD for the knowledge
+aggregation in intermediate layers is more effective.
+
+inter instead of wk
+
+Linter =
+
+interFTk − r (FS)2
+wk
+2,
+
+(7)
+
+where r(·) is a function for aligning the student and teacher
+feature dimensions. The (cid:96)2 loss function is used as distance
+measure of intermediate features. Finally, the overall training
+loss between feature pairs will be aggregated by wk
+
+inter.
+
+In our work, only the output features of the last block are
+
+adopted to avoid incurring too much computational cost.
+
+3.3. The Overall Loss Function
+
+In addition to the aforementioned two losses, a regular cross
+entropy with the ground-truth labels is calculated
+
+LCE = − C(cid:88)
+
+c=1
+
+yc log (σ(zc
+
+S)) .
+
+(8)
+
+The overall loss function of our CA-MKD is summarize as
+
+L = LCE + αLKD + βLinter,
+
+(9)
+
+where α and β are hyper-parameters to balance the effect of
+knowledge distillation and standard cross entropy losses.
+
+4. EXPERIMENT
+
+In this section, we conduct extensive experiments on CIFAR-
+100 dataset [19] to verify the effectiveness of our proposed
+CA-MKD. We adopt eight different teacher-student combi-
+nations based on popular neural network architectures. All
+compared multi-teacher knowledge distillation (MKD) meth-
+ods use three teachers except for special declarations.
+
+Compared Methods. Besides the naıve AVER [8], we
+reimplement a single-teacher based method FitNet [5] on
+multiple teachers and denote it as FitNet-MKD. FitNet-MKD
+will leverage extra information coming from averaged inter-
+mediate teacher features. We also reimplement an entropy-
+based MKD method [12], which has achieved remarkable
+results in acoustic experiments, on our image classification
+task and we denote it as EBKD. As for AEKD, we adopt its
+logits-based version with the author provided code [11].
+
+Hyper-parameters. All neural networks are optimized
+by stochastic gradient descent with momentum 0.9, weight
+decay 0.0001. The batch size is set to 64. As the previous
+works do [15, 7], the initial learning rate is set to 0.1, ex-
+cept MobileNetV2, ShuffleNetV1 and ShuffleNetV2 are set
+to 0.05. The learning rate is multiplied by 0.1 at 150, 180 and
+210 of the total 240 training epochs. For the sake of fairness,
+the temperature τ is set to 4 and the α is set to 1 in all methods.
+Furthermore, we set the β of our CA-MKD to 50 throughout
+the experiments. All results are reported in means and stan-
+dard deviations over 3 runs with different random seeds.
+
+4.1. Results on the Same Teacher Architectures
+
+Table 1 shows the top-1 accuracy comparison on CIFAR-100.
+We also include the results of teacher ensemble with the ma-
+jority voting strategy. We can find that CA-MKD surpasses
+
+Table 3. Top-1 test accuracy of MKD approaches by distilling the knowledge on multiple teachers with different architectures.
+
+VGG8
+
+70.74±0.40
+
+AVER
+
+74.55±0.24
+
+FitNet-MKD
+74.47±0.21
+
+EBKD
+
+74.07±0.17
+
+AEKD
+
+74.69±0.29
+
+CA-MKD
+75.96±0.05
+
+ResNet8x4 ResNet20x4 ResNet32x4
+
+79.31
+
+72.79
+
+78.39
+
+Fig. 3. The visualization results of learned weights by CA-
+MKD on each training sample.
+
+all competitors cross various architectures. Specifically, com-
+pared to the second best method (EBKD), CA-MKD out-
+performs it with 0.81% average improvement1, and achieves
+1.66% absolute accuracy improvement in the best case.
+
+To verify the benefits of diverse information brought by
+multiple teachers, we compare CA-MKD with some excellent
+single-teacher based methods. The results in Table 6 show the
+student indeed has the potential to learn knowledge from mul-
+tiple teachers, and its accuracy is further improved compared
+with the single-teacher methods to a certain extent.
+
+4.2. Results on the Different Teacher Architectures
+
+Table 3 shows the results of training a student (VGG8)
+with three different teacher architectures, i.e., ResNet8x4,
+ResNet20x4 and ResNet32x4. We find the student accu-
+racy becomes even higher than that of training with three
+ResNet32x4 teachers, which may be attributed to that the
+knowledge diversity is enlarged in different architectures.
+
+Since the performance of ResNet20x4/ResNet32x4 is bet-
+ter than that of ResNet8x4, we could reasonably believe that
+for most training samples, the student will put larger weights
+on predictions from the former two rather than the latter one,
+which is verified in Figure 3. Moreover, our CA-MKD can
+capture those samples on which the predictions are more con-
+fident by ResNet8x4, and assign them dynamic weights to
+help the student model achieve better performance.
+
+4.3. Impact of the Teacher Number
+
+As shown in Figure 4, the student model trained with CA-
+MKD generally achieves satisfactory results. For example,
+
+1Average Improvement= 1
+n
+
+, where
+the accuracies of CA-MKD, EBKD in the i-th teacher-student combination
+are denoted as Acci
+
+EBKD, respectively.
+
+CA−MKD, Acci
+
+EBKD
+
+Acci
+
+CA−MKD − Acci
+
+(cid:16)
+
+(cid:80)n
+
+i
+
+(cid:17)
+
+Fig. 4. The effect of different teacher numbers.
+
+Table 4. Ablation study with VGG13 & MobileNetV2.
+CA-MKD
+avg weight
+67.74±0.87
+69.41±0.20
+
+w/o Linter
+68.11±0.02
+
+w/o wk
+68.82±0.63
+
+inter
+
+on the "ResNet56 & MobileNetV2" setting, the accuracy of
+CA-MKD increases continually as the number of teachers in-
+creases and it surpasses the competitors with three teachers
+even those competitors are trained with more teachers.
+
+4.4. Ablation Study
+
+We summarize the observations from Table 4 as follows:
+
+(1) avg weight. Simply averaging multiple teachers will
+cause 1.67% accuracy drop, which confirms the necessity of
+treating different teachers based on their specific quality.
+(2) w/o Linter. The accuracy will appear considerably
+reduction as we remove the Equation (7), demonstrating the
+intermediate layer contains useful information for distillation.
+KD obtained from
+the last layer to integrate intermediate features. The lower
+result indicates the benefits of designing a separate way of
+calculating weights for the intermediate layer.
+
+inter. we directly use the wk
+
+(3) w/o wk
+
+5. CONCLUSION
+
+In this paper, we introduce confidence-aware mechanism on
+both predictions and intermediate features for multi-teacher
+knowledge distillation. The confidence of teachers is calcu-
+lated based on the closeness between their predictions or fea-
+tures and the ground-truth labels for the reliability identifica-
+tion on each training sample. With the guidance of labels,
+our technique effectively integrates diverse knowledge from
+multiple teachers for the student training. Extensive empiri-
+cal results show that our method outperforms all competitors
+in various teacher-student architectures.
+
+[11] Shangchen Du, Shan You, Xiaojie Li, Jianlong Wu, Fei
+Wang, Chen Qian, and Changshui Zhang, "Agree to
+disagree: Adaptive ensemble knowledge distillation in
+gradient space," Advances in Neural Information Pro-
+cessing Systems, vol. 33, 2020.
+
+[12] Kisoo Kwon, Hwidong Na, Hoshik Lee, and Nam Soo
+Kim,
+"Adaptive knowledge distillation based on en-
+tropy," in ICASSP 2020-2020 IEEE International Con-
+ference on Acoustics, Speech and Signal Processing
+(ICASSP). IEEE, 2020, pp. 7409 -- 7413.
+
+[13] Jimmy Ba and Rich Caruana, "Do deep nets really need
+to be deep?," in Advances in Neural Information Pro-
+cessing Systems, 2014, pp. 2654 -- 2662.
+
+[14] Sungsoo Ahn, Shell Xu Hu, Andreas Damianou, Neil D
+Lawrence, and Zhenwen Dai, "Variational information
+distillation for knowledge transfer," in Proceedings of
+the IEEE/CVF Conference on Computer Vision and Pat-
+tern Recognition, 2019, pp. 9163 -- 9171.
+
+[15] Yonglong Tian, Dilip Krishnan, and Phillip Isola, "Con-
+in International
+
+trastive representation distillation,"
+Conference on Learning Representations, 2020.
+
+[16] Xu Lan, Xiatian Zhu, and Shaogang Gong, "Knowl-
+edge distillation by on-the-fly native ensemble," arXiv
+preprint arXiv:1806.04606, 2018.
+
+[17] Defang Chen, Jian-Ping Mei, Can Wang, Yan Feng, and
+Chun Chen, "Online knowledge distillation with diverse
+peers.," in Proceedings of the AAAI Conference on Arti-
+ficial Intelligence, 2020, pp. 3430 -- 3437.
+
+[18] Yuang Liu, Wei Zhang, and Jun Wang, "Adaptive multi-
+teacher multi-level knowledge distillation," Neurocom-
+puting, vol. 415, pp. 106 -- 113, 2020.
+
+[19] Alex Krizhevsky and Geoffrey Hinton, "Learning mul-
+tiple layers of features from tiny images," Technical Re-
+port, 2009.
+
+[20] Sukmin Yun, Jongjin Park, Kimin Lee, and Jinwoo Shin,
+"Regularizing class-wise predictions via self-knowledge
+distillation," in Proceedings of the IEEE/CVF confer-
+ence on computer vision and pattern recognition, 2020,
+pp. 13876 -- 13885.
+
+6. REFERENCES
+
+[1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian
+Sun, "Deep residual learning for image recognition," in
+Proceedings of the IEEE conference on computer vision
+and pattern recognition, 2016, pp. 770 -- 778.
+
+[2] David Silver, Julian Schrittwieser, Karen Simonyan,
+Ioannis Antonoglou, Aja Huang, Arthur Guez, Thomas
+Hubert, Lucas Baker, Matthew Lai, Adrian Bolton,
+et al., "Mastering the game of go without human knowl-
+edge," Nature, vol. 550, no. 7676, pp. 354 -- 359, 2017.
+
+[3] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
+Kristina Toutanova, "BERT: pre-training of deep bidi-
+rectional transformers for language understanding," in
+North American Chapter of the Association for Com-
+putational Linguistics: Human Language Technologies,
+2019, pp. 4171 -- 4186.
+
+[4] Geoffrey Hinton, Oriol Vinyals, and Jeff Dean, "Distill-
+ing the knowledge in a neural network," arXiv preprint
+arXiv:1503.02531, 2015.
+
+[5] Adriana Romero, Nicolas Ballas, Samira Ebrahimi Ka-
+hou, Antoine Chassang, Carlo Gatta, and Yoshua Ben-
+gio, "Fitnets: Hints for thin deep nets," in International
+Conference on Learning Representations, 2015.
+
+[6] Sergey Zagoruyko and Nikos Komodakis, "Paying more
+attention to attention:
+improving the performance of
+convolutional neural networks via attention transfer," in
+International Conference on Learning Representations,
+2017.
+
+[7] Defang Chen, Jian-Ping Mei, Yuan Zhang, Can Wang,
+Zhe Wang, Yan Feng, and Chun Chen, "Cross-layer
+distillation with semantic calibration," in Proceedings
+of the AAAI Conference on Artificial Intelligence, 2021,
+vol. 35, pp. 7028 -- 7036.
+
+[8] Shan You, Chang Xu, Chao Xu, and Dacheng Tao,
+"Learning from multiple teacher networks," in Proceed-
+ings of the 23rd ACM SIGKDD International Confer-
+ence on Knowledge Discovery and Data Mining, 2017,
+pp. 1285 -- 1294.
+
+[9] Takashi Fukuda, Masayuki Suzuki, Gakuto Kurata,
+Samuel Thomas, Jia Cui, and Bhuvana Ramabhadran,
+"Efficient knowledge distillation from an ensemble of
+teachers.," in Interspeech, 2017, pp. 3697 -- 3701.
+
+[10] Meng-Chieh Wu, Ching-Te Chiu, and Kun-Hsuan Wu,
+"Multi-teacher knowledge distillation for compressed
+video action recognition on deep neural networks," in
+ICASSP 2019-2019 IEEE International Conference on
+Acoustics, Speech and Signal Processing (ICASSP).
+IEEE, 2019, pp. 2202 -- 2206.
+
+larger resolutions, which requires a different training proce-
+dure. We follow the setting of a previous work [20].
+
+Table 5. Top-1 test accuracy of CA-MKD compared to
+multiple-teacher knowledge distillation methods.
+
+Dataset
+
+Teacher
+
+Student
+
+AVER
+
+FitNet-MKD
+
+EBKD
+AEKD
+
+CA-MKD
+
+Dogs
+
+ResNet34
+64.76±1.06
+
+ShuffleNetV2x0.5
+
+59.36±0.73
+64.49±0.16
+64.11±0.80
+64.32±0.23
+64.19±0.34
+65.19±0.23
+
+Tinyimagenet
+ResNet32x4
+53.38±0.11
+
+VGG8
+
+44.40±0.15
+47.82±0.15
+47.82±0.05
+47.20±0.10
+47.62±0.38
+49.55±0.12
+
+Table 6. Top-1 test accuracy of CA-MKD compared to
+single-teacher knowledge distillation methods.
+
+Dataset
+
+Teacher
+
+Student
+
+KD
+FitNet
+
+AT
+VID
+CRD
+
+CA-MKD
+
+Dogs
+
+ResNet34
+
+65.97
+
+ShuffleNetV2x0.5
+
+59.36±0.73
+63.90±0.08
+62.45±0.61
+63.48±0.60
+64.45±0.23
+64.61±0.17
+65.19±0.23
+
+Tinyimagenet
+ResNet32x4
+
+53.45
+VGG8
+
+44.40±0.15
+47.42±0.07
+47.24±0.28
+45.73±0.05
+47.76±0.08
+48.11±0.07
+49.55±0.12
+
+Appendix
+1.1. The Detailed Description of wk
+
+inter
+
+To stable the knowledge transfer process, we design the stu-
+dent to be more focused on imitating the teacher with a simi-
+lar feature space and wk
+inter indeed serves as such a similarity
+measure representing the discriminability of a teacher classi-
+fier in the student feature space.
+
+A more detailed discussion is presented in the follow-
+ing paragraphs.As shown in Figure 5, samples belonging to
+class-1 and class-2 are depicted as circles and triangles, re-
+spectively. Although the decision surfaces of teacher-1 (in
+Figure 5(b)) and teacher-2 (in Figure 5(c)) correctly classify
+these samples in their own feature spaces, their discriminabil-
+ity in the student feature space is different (in Figure 5(a)).
+
+In order to stabilize the whole knowledge transfer process,
+we expect the student to pay more attention to mimicking the
+teacher with a similar feature space. In this sense, we con-
+clude that teacher-1 for the student is more suitable since its
+decision surface performs better compared to that of teacher-2
+in the student feature space, as shown in Figure 5(a).
+
+Suppose the point A, B, C are the extracted features of
+the same sample in the feature space of student, teacher-1
+and teacher-2, respectively. If we move the student feature
+(point A) towards the feature from teacher-1 (point B), point
+A will be correctly classified by the student's own classifier
+with only minor or even no adjustment. But if we move the
+student feature (point A) towards the feature from teacher-2
+(point C), it will become even harder to be correctly classified
+by the student, which may disrupt the training of the student
+classifier and slow down the model convergence.
+
+Fig. 5. The comparison of teacher-1 and teacher-2 classifiers.
+
+2.2. Additional Dataset experiments
+
+we add more experiments on Dogs and Tinyimagenet datasets
+to further verify the effectiveness of our proposed CA-MKD.
+Table 5 and Table 6 show that our CA-MKD can consistently
+surpass all the competitors in two more challenging datasets.
+The hyper-parameters for the Tinyimagenet dataset are
+exactly the same as those of CIFAR-100 in our submission.
+Another dataset (Dogs) contains fine-grained images with
+
+
