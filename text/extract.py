@@ -14,9 +14,9 @@ def extract_columns(input_file, output_file, selected_columns):
             writer.writerow(selected_data)
 
 # Example usage
-csv_file = 'v1.33-2023-09-21-ror-data.csv'  # Replace with the path to your CSV file
+csv_file = 'v1.34-2023-10-12-ror-data.csv'  # Replace with the path to your CSV file
 
 columns = ['id', 'name', 'aliases', 'acronyms']  # Replace with the names of the columns you want to extract
-output_file = "extracted_ror_data.csv"
+output_file = "1.34_extracted_ror_data.csv"
 
 extract_columns(csv_file, output_file, columns)

@@ -1,3 +1,5 @@
+import compare
+
 data="""https://ror.org/02bfwt286,Monash University,,
 https://ror.org/01sf06y89,Macquarie University,,
 https://ror.org/00jtmb277,University of Wollongong,Wollongong University,UOW
@@ -112,11 +114,72 @@ https://ror.org/01t0n3b84,Consorzio Pisa Ricerche,,
 https://ror.org/0267vjk41,University of Hertfordshire,,
 https://ror.org/034fmtr90,empirica - Communication and Technology Research,,
 https://ror.org/019wt1929,Sheffield Hallam University,,SHU
-https://ror.org/05b6ypc36,Volvo (Sweden),Aktiebolaget Volvo"""
+https://ror.org/05b6ypc36,Volvo (Sweden),Aktiebolaget Volvo
+https://ror.org/0116zj450,University of Indonesia,School of Medicine for Javanese,UI
+https://ror.org/0412y9z21,Far Eastern Federal University,Dalnevostochny federalny universitet,"""
+
+text = """Which Student is Best? A Comprehensive Knowledge Distillation
+Exam for Task-Specific BERT Models
+Made Nindyatama Nityasyaa, Haryo Akbarianto Wibowoa, Rendi Chevia, Radityo Eko Prasojoa,b and
+Alham Fikri Ajia
+
+aKata.ai Research Team, Jakarta, Indonesia
+bUniversity of Indonesia, Depok, Indonesia
+ARTICLE INFO
+Keywords:
+Knowledge Distillation
+Text Classification
+Sequence Labeling
+BERT
+Indonesian
+Scattering of a plane wave by an inhomogeneous 1D dielectric layer with 
+
+gradient refractive index 
+
+N.A. Vanyushkin, A.H. Gevorgyan, S.S. Golik 
+
+Far Eastern Federal University, 10 Ajax Bay, Russky Island, Vladivostok, 690922, Russia, 
+ 
+Abstract 
+
+We propose a new method for calculating reflection and transmission coefficients for an arbitrarily 
+polarized electromagnetic plane wave incident on a one-dimensional dielectric medium of finite 
+thickness and with dielectric permittivity being an arbitrary continuous function of the coordinate. 
+We have shown that the problem of plane wave scattering by an inhomogeneous layer is reduced 
+to a system of first order differential equations that contain the derivative of the refractive index 
+or  dielectric  permittivity  of  the  layer,  which  can  be  used,  for  example,  when  searching  for  an 
+analytical solution. This method also makes it easy to obtain the distribution of the field strength 
+within  the  layer.  The  reflection  spectra  and  field  distribution  obtained  using  this  method  were 
+compared with the analytical solution based on Mathieu functions. """
+nameMap = {}
+trie = compare.Trie()
 def process_line(line):
     elements = line.strip().split(",")  # 以逗号为分隔符分割行
-    return [elem.strip() for elem in elements[1:] if elem.strip()]  # 提取非空字符串元素
+    id = elements[0]
+    names = elements[1:]
+    print(names)
+    for name in names:
+        if name != '':
+            trie.insert(name,id)
+
+
 
 for line in data.strip().split("\n"):
-    processed_elements = process_line(line)
-    print(", ".join(processed_elements))
+    process_line(line)
+
+result = []
+for i in range(len(text)):
+    for j in range(i+1, len(text)+1):
+        substring = text[i:j]
+        print("check string:"+substring)
+        rlt = trie.search(substring)
+        if rlt:
+            if rlt.is_word:
+                print(f"Match found for substring: '{substring}'")
+                result.extend(rlt.matchedIds)
+        else:
+            break
+
+print(result)
+
+

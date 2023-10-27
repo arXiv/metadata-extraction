@@ -4,26 +4,28 @@ class TrieNode:
     def __init__(self):
         self.children = {}
         self.is_word = False
+        self.matchedIds = []
 
 class Trie:
     def __init__(self):
         self.root = TrieNode()
 
-    def insert(self, word):
+    def insert(self, word, id):
         node = self.root
         for char in word:
             if char not in node.children:
                 node.children[char] = TrieNode()
             node = node.children[char]
         node.is_word = True
+        node.matchedIds.append(id)
 
     def search(self, word):
         node = self.root
         for char in word:
             if char not in node.children:
-                return False
+                return None
             node = node.children[char]
-        return node.is_word
+        return node
 
     def starts_with(self, prefix):
         node = self.root
@@ -53,19 +55,13 @@ class Trie:
 trie = Trie()
 
 # Insert words into the Trie
-trie.insert("apple")
-trie.insert("banana")
-trie.insert("orange")
-trie.insert("grape")
+trie.insert("apple",1)
+trie.insert("banana",2)
+trie.insert("orange",3)
+trie.insert("grape",4)
+trie.insert("grape",5)
 
 # Search for words
 print(trie.search("apple"))  # True
-print(trie.search("pear"))   # False
+print(trie.search("grape"))   # False
 
-# Check if prefix exists
-print(trie.starts_with("app"))  # True
-print(trie.starts_with("pea"))  # False
-
-# Get all words with a given prefix
-print(trie.get_all_words("or"))  # ['orange']
-print(trie.get_all_words("a"))   # ['apple']
