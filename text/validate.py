@@ -25,7 +25,8 @@ if __name__ == "__main__":
     ]
 
     for paper in paper_names:
-        test_result = test_paper("./samples/" + paper)
+        print("validation of paper:"+paper+"\n")
+        test_result = getresult("./samples/" + paper)
         expect_result = data_dict[paper.split('v')[0]]
         common_elements = list(set(test_result).intersection(expect_result))
         test_diff_elements = list(set(test_result) - set(expect_result))

@@ -51,17 +51,5 @@ class Trie:
         for char, child_node in node.children.items():
             self._dfs(child_node, prefix + char, results)
 
-# Create a Trie
-trie = Trie()
 
-# Insert words into the Trie
-trie.insert("apple",1)
-trie.insert("banana",2)
-trie.insert("orange",3)
-trie.insert("grape",4)
-trie.insert("grape",5)
-
-# Search for words
-print(trie.search("apple"))  # True
-print(trie.search("grape"))   # False
 
