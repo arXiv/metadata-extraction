@@ -30,6 +30,7 @@ def test_paper(file_path,jdugeFirst: bool):
         text = contents[0]
     else:
         text = contents[-2]
+    text = text.replace("Univ.", "University")
     text = text.upper()
     text = text.replace(",", "")
     text = text.replace("\n", " ")
@@ -37,7 +38,8 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("  ", " ")
 
     result = set()
-    for i in range(len(text)):
+    i = 0
+    while i < len(text):
         for j in range(i+1, len(text)+1):
             substring = text[i:j]
             #print("check string:"+substring)
@@ -51,6 +53,9 @@ def test_paper(file_path,jdugeFirst: bool):
                     result.update(rlt.matchedIds)
             else:
                 break
+        while text[i] != ' ':
+            i += 1
+        i += 1
     return result
 
 def init_trie():
