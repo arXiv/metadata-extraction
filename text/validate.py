@@ -55,74 +55,51 @@ if __name__ == "__main__":
         for key in data:
             data_dict[key] = data[key]
 
-    # paper_names = [
-    #     "2201.00001v3.txt",
-    #     "2201.00002v1.txt",
-    #     "2201.00003v1.txt",
-    #     "2201.00004v1.txt",
-    #     "2201.00005v1.txt",
-    #     "2201.00006v2.txt",
-    #     "2201.00007v3.txt",
-    #     "2201.00008v3.txt",
-    #     "2201.00009v3.txt",
-    #     "2201.00010v1.txt"
-    # ]
-
     paper_names = extract_paper_from_json()
 
     print(paper_names)
 
     hit_cnt = 0
     miss_cnt = 0
-    excess_cnt = 0
+    overshoot_cnt = 0
 
     size = 0
 
     for paper in paper_names:
-        print("validation of paper:"+paper+"\n")
-        test_result = getresult("./papers/" + paper)
-        expect_result = data_dict[paper.split('v')[0]]
+        print("validation of paper:" + paper + "\n")
 
-        common_elements = list(set(test_result).intersection(expect_result))
-        overshoot_elements = list(set(test_result) - set(expect_result))
-        missed_elements = list(set(expect_result) - set(test_result))
-        # print("validation of paper:"+paper+"\n")
-        pred = getresult("./samples/" + paper)
+        pred = getresult("./papers/" + paper)
         true = data_dict[paper.split('v')[0]]
 
         common_inst = list(set(pred).intersection(true))
-        excess_inst = list(set(pred) - set(true))
+        overshoot_inst = list(set(pred) - set(true))
         missed_inst = list(set(true) - set(pred))
         
         size += len(true)
         hit_cnt += len(common_inst)
         miss_cnt += len(missed_inst)
-        excess_cnt += len(excess_inst)
+        overshoot_cnt += len(overshoot_inst)
 
         print("paper name: ", paper)
 
-        print("common: ", common_elements)
-        print("overshoot: ", overshoot_elements)
-        print("missed: ", missed_elements)
-
-        print("common_inst: ", common_inst)
-        print("excess_inst: ", excess_inst)
-        print("missed_inst: ", missed_inst)
+        print("common: ", common_inst)
+        print("overshoot: ", overshoot_inst)
+        print("missed: ", missed_inst)
 
         print("\n")
     
-        print("overall size = ", size)
-        print("hit_cnt = ", hit_cnt)
-        print("miss_cnt = ", miss_cnt)
-        print("excess_cnt = ", excess_cnt)
+    print("overall size = ", size)
+    print("hit_cnt = ", hit_cnt)
+    print("miss_cnt = ", miss_cnt)
+    print("overshoot_cnt = ", overshoot_cnt)
         
-        acc_rate = hit_cnt / size
-        miss_rate = miss_cnt / size
-        excess_rate = excess_cnt / size
+    acc_rate = hit_cnt / size
+    miss_rate = miss_cnt / size
+    overshoot_rate = overshoot_cnt / size
 
-        print("acc_rate = ", acc_rate)
-        print("miss_rate = ", miss_rate)
-        print("excess_rate = ", excess_rate)
+    print("acc_rate = ", acc_rate)
+    print("miss_rate = ", miss_rate)
+    print("excess_rate = ", overshoot_rate)
 
-        print("\n\n")
+    print("\n\n")
         
