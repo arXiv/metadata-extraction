@@ -19,6 +19,8 @@ def process_line(elements):
     # if it is not a common english word
     if not commonWords.search(name) or not commonWords.search(name).is_word:
         trie.insert(name, id)
+        if name[-1] == 's' or name[-1] == 'S':
+            trie.insert(name[:-1],id)
 
 def test_paper(file_path,jdugeFirst: bool):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -55,7 +57,7 @@ def test_paper(file_path,jdugeFirst: bool):
                         result.update(rlt.matchedIds)
                 else:
                     break
-            while text[i] != ' ':
+            while i < len(text) and text[i] != ' ':
                 i += 1
         i += 1
     return result
@@ -79,7 +81,7 @@ def init_trie():
 
 if __name__ == "__main__":
     init_trie()
-    file_path = './samples/2201.00015v1.txt'
+    file_path = './samples/2201.00016v2.txt'
     testResult = test_paper(file_path,True)
     if not testResult:
         testResult = test_paper(file_path,False)
