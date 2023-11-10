@@ -28,7 +28,9 @@ def get_all_paper_names():
     with open("latest_version_papers.json", "w") as file:
         json.dump(latest_version_papers, file)
 
-
+"""
+Extract given papers' full name 
+"""
 def extract_paper_from_json(sections=[]):
     # Open the JSON file for reading
     with open("latest_version_papers.json", "r") as file:
@@ -37,14 +39,25 @@ def extract_paper_from_json(sections=[]):
     
     paper_names = []
 
+    # by default, add all papers from validation.json
     if len(sections) == 0:
         for paper_id in data_dict:
             latest_version = latest_version_papers[paper_id]
             latest_paper_name = paper_id + "v" + latest_version + ".txt"
             paper_names.append(latest_paper_name)
+    # when sections is given
+    else:
+        for section in sections:
+            begin, end = section
+            for num in range(begin, end + 1):
+                padded_num_str = str(num).zfill(5)
+                paper_id = "2201." + padded_num_str
+                if paper_id in data_dict:
+                    latest_version = latest_version_papers[paper_id]
+                    latest_paper_name = paper_id + "v" + latest_version + ".txt"
+                    paper_names.append(latest_paper_name)
 
     return paper_names
-    # TODO: implement conditions when sections is given
 
 if __name__ == "__main__":
 
@@ -55,7 +68,8 @@ if __name__ == "__main__":
         for key in data:
             data_dict[key] = data[key]
 
-    paper_names = extract_paper_from_json()
+    # paper_names = extract_paper_from_json()
+    paper_names = extract_paper_from_json([[1, 3], [9, 12]])
 
     print(paper_names)
 
@@ -99,7 +113,7 @@ if __name__ == "__main__":
 
     print("acc_rate = ", acc_rate)
     print("miss_rate = ", miss_rate)
-    print("excess_rate = ", overshoot_rate)
+    print("overshoot_rate = ", overshoot_rate)
 
     print("\n\n")
         
