@@ -1,3 +1,13 @@
+# self defined
+
+# original ror data
+*ror-data.csv
+
+# ignore all the text papers, but keep the folder
+papers
+
+### ====================== ###
+
 # larger files
 data/*
 
