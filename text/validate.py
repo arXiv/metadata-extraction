@@ -21,22 +21,55 @@ if __name__ == "__main__":
         "2201.00007v3.txt",
         "2201.00008v3.txt",
         "2201.00009v3.txt",
-        "2201.00010v1.txt"
+        "2201.00010v1.txt",
+        "2201.00011v1.txt",
+        "2201.00012v1.txt",
+        "2201.00013v1.txt",
+        "2201.00014v1.txt",
+        "2201.00015v1.txt",
+        "2201.00016v2.txt",
+        "2201.00017v1.txt",
+        "2201.00018v1.txt",
+        "2201.00019v2.txt"
     ]
 
+    hit_cnt = 0
+    miss_cnt = 0
+    excess_cnt = 0
+
+    size = 0
+
     for paper in paper_names:
-        print("validation of paper:"+paper+"\n")
-        test_result = getresult("./samples/" + paper)
-        expect_result = data_dict[paper.split('v')[0]]
-        common_elements = list(set(test_result).intersection(expect_result))
-        test_diff_elements = list(set(test_result) - set(expect_result))
-        expect_diff_elements = list(set(expect_result) - set(test_result))
+        # print("validation of paper:"+paper+"\n")
+        pred = getresult("./samples/" + paper)
+        true = data_dict[paper.split('v')[0]]
+
+        common_inst = list(set(pred).intersection(true))
+        excess_inst = list(set(pred) - set(true))
+        missed_inst = list(set(true) - set(pred))
+        
+        size += len(true)
+        hit_cnt += len(common_inst)
+        miss_cnt += len(missed_inst)
+        excess_cnt += len(excess_inst)
 
         print("paper name: ", paper)
 
-        print("common: ", common_elements)
-        print("test_diff: ", test_diff_elements)
-        print("expect_diff: ", expect_diff_elements)
+        print("common_inst: ", common_inst)
+        print("excess_inst: ", excess_inst)
+        print("missed_inst: ", missed_inst)
 
-        print("\n\n")
-        
+        print("\n")
+    
+    print("overall size = ", size)
+    print("hit_cnt = ", hit_cnt)
+    print("miss_cnt = ", miss_cnt)
+    print("excess_cnt = ", excess_cnt)
+    
+    acc_rate = hit_cnt / size
+    miss_rate = miss_cnt / size
+    excess_rate = excess_cnt / size
+
+    print("acc_rate = ", acc_rate)
+    print("miss_rate = ", miss_rate)
+    print("excess_rate = ", excess_rate)
