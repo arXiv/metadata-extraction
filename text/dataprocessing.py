@@ -36,25 +36,27 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("\n", " ")
     text = text.replace("-", "")
     text = text.replace("  ", " ")
+    print(text)
 
     result = set()
     i = 0
     while i < len(text):
-        for j in range(i+1, len(text)+1):
-            substring = text[i:j]
-            #print("check string:"+substring)
-            rlt = trie.search(substring)
-            if rlt:
-                if rlt.is_word:
-                    if len(rlt.matchedIds) > 3:
-                        continue
-                    print(f"Match found for substring: '{substring}'")
-                    print(rlt.matchedIds)
-                    result.update(rlt.matchedIds)
-            else:
-                break
-        while text[i] != ' ':
-            i += 1
+        if not text[i].isdigit():
+            for j in range(i+1, len(text)+1):
+                substring = text[i:j]
+                #print("check string:"+substring)
+                rlt = trie.search(substring)
+                if rlt:
+                    if rlt.is_word:
+                        if len(rlt.matchedIds) > 3:
+                            continue
+                        print(f"Match found for substring: '{substring}'")
+                        print(rlt.matchedIds)
+                        result.update(rlt.matchedIds)
+                else:
+                    break
+            while text[i] != ' ':
+                i += 1
         i += 1
     return result
 
@@ -77,7 +79,7 @@ def init_trie():
 
 if __name__ == "__main__":
     init_trie()
-    file_path = './samples/2201.00004v1.txt'
+    file_path = './samples/2201.00015v1.txt'
     testResult = test_paper(file_path,True)
     if not testResult:
         testResult = test_paper(file_path,False)
