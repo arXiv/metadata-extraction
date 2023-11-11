@@ -1,0 +1,531 @@
+➜  text git:(text-matching) ✗ python3 validate.py
+['2201.00001v3.txt', '2201.00002v1.txt', '2201.00003v1.txt', '2201.00004v1.txt', '2201.00005v1.txt', '2201.00006v2.txt', '2201.00007v3.txt', '2201.00008v3.txt', '2201.00009v3.txt', '2201.00010v1.txt', '2201.00011v1.txt', '2201.00012v1.txt', '2201.00013v1.txt', '2201.00014v1.txt', '2201.00015v1.txt', '2201.00016v2.txt', '2201.00017v1.txt', '2201.00018v1.txt', '2201.00019v2.txt', '2201.00020v2.txt', '2201.00544v1.txt', '2201.00545v1.txt', '2201.00546v1.txt', '2201.00547v2.txt', '2201.00548v1.txt', '2201.00549v1.txt', '2201.00550v3.txt', '2201.00551v1.txt', '2201.00552v1.txt', '2201.00553v2.txt', '2201.00554v1.txt', '2201.00555v1.txt', '2201.00556v3.txt', '2201.00557v1.txt', '2201.00558v1.txt']
+validation of paper:2201.00001v3.txt
+
+Match found for substring: 'STANFORD UNIVERSITY'
+['https://ror.org/00f54p054']
+paper name:  2201.00001v3.txt
+common:  ['https://ror.org/00f54p054']
+overshoot:  []
+missed:  ['https://ror.org/04mv4n011']
+
+
+validation of paper:2201.00002v1.txt
+
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+paper name:  2201.00002v1.txt
+common:  ['https://ror.org/05g3dte14']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00003v1.txt
+
+Match found for substring: 'QATAR UNIVERSITY'
+['https://ror.org/00yhnba62']
+Match found for substring: 'AL AKHAWAYN UNIVERSITY'
+['https://ror.org/03erkev52']
+Match found for substring: 'CRACOW UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/00pdej676']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+paper name:  2201.00003v1.txt
+common:  ['https://ror.org/03erkev52', 'https://ror.org/00pdej676', 'https://ror.org/00yhnba62']
+overshoot:  ['https://ror.org/03gbw6p94']
+missed:  []
+
+
+validation of paper:2201.00004v1.txt
+
+Match found for substring: 'UNIVERSITY OF MICHIGAN ANN ARBOR'
+['https://ror.org/00jmfr291']
+Match found for substring: 'OREGON STATE UNIVERSITY'
+['https://ror.org/00ysfqy60']
+paper name:  2201.00004v1.txt
+common:  ['https://ror.org/00ysfqy60', 'https://ror.org/00jmfr291']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00005v1.txt
+
+Match found for substring: 'LAKEHEAD UNIVERSITY'
+['https://ror.org/023p7mg82']
+Match found for substring: 'LAKEHEAD UNIVERSITY'
+['https://ror.org/023p7mg82']
+paper name:  2201.00005v1.txt
+common:  ['https://ror.org/023p7mg82']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00006v2.txt
+
+Match found for substring: 'UNIVERSITY OF ELECTRONIC SCIENCE AND TECHNOLOGY OF CHINA'
+['https://ror.org/04qr3zq92']
+Match found for substring: 'LANZHOU UNIVERSITY'
+['https://ror.org/01mkqqe32']
+paper name:  2201.00006v2.txt
+common:  ['https://ror.org/04qr3zq92', 'https://ror.org/01mkqqe32']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00007v3.txt
+
+Match found for substring: 'ZHEJIANG UNIVERSITY'
+['https://ror.org/00a2xv884']
+Match found for substring: 'JOINT RESEARCH CENTER'
+['https://ror.org/05a4nj078', 'https://ror.org/02ef88m96']
+Match found for substring: 'INSTITUTE FOR ADVANCED STUDY'
+['https://ror.org/00f809463', 'https://ror.org/03xg85719', 'https://ror.org/05fj6by70']
+Match found for substring: 'NATIONAL NATURAL SCIENCE FOUNDATION OF CHINA'
+['https://ror.org/01h0zpd94']
+Match found for substring: 'FOUNDATION '
+['https://ror.org/03n1ntw18']
+paper name:  2201.00007v3.txt
+common:  ['https://ror.org/00a2xv884']
+overshoot:  ['https://ror.org/05fj6by70', 'https://ror.org/00f809463', 'https://ror.org/05a4nj078', 'https://ror.org/02ef88m96', 'https://ror.org/01h0zpd94', 'https://ror.org/03xg85719', 'https://ror.org/03n1ntw18']
+missed:  []
+
+
+validation of paper:2201.00008v3.txt
+
+Match found for substring: 'HONG KONG UNIVERSITY OF SCIENCE AND TECHNOLOGY'
+['https://ror.org/00q4vv597']
+Match found for substring: 'UNIVERSITY OF SCIENCE AND TECHNOLOGY'
+['https://ror.org/05bj7sh33']
+Match found for substring: 'CHONGQING UNIVERSITY'
+['https://ror.org/023rhb549']
+Match found for substring: 'NATIONAL CHUNG HSING UNIVERSITY'
+['https://ror.org/05vn3ca78']
+Match found for substring: 'NATIONAL YANG MING CHIAO TUNG UNIVERSITY'
+['https://ror.org/00se2k293']
+paper name:  2201.00008v3.txt
+common:  ['https://ror.org/023rhb549', 'https://ror.org/05vn3ca78', 'https://ror.org/00se2k293', 'https://ror.org/00q4vv597']
+overshoot:  ['https://ror.org/05bj7sh33']
+missed:  []
+
+
+validation of paper:2201.00009v3.txt
+
+Match found for substring: 'NANYANG TECHNOLOGICAL UNIVERSITY'
+['https://ror.org/02e7b5302']
+Match found for substring: 'ORCID'
+['https://ror.org/04fa4r544']
+paper name:  2201.00009v3.txt
+common:  ['https://ror.org/02e7b5302']
+overshoot:  ['https://ror.org/04fa4r544']
+missed:  []
+
+
+validation of paper:2201.00010v1.txt
+
+Match found for substring: 'INDIAN SPACE RESEARCH ORGANISATION'
+['https://ror.org/00cwrns71']
+Match found for substring: 'INDIAN INSTITUTE OF TECHNOLOGY DELHI'
+['https://ror.org/049tgcd06']
+Match found for substring: 'BANARAS HINDU UNIVERSITY'
+['https://ror.org/04cdn2797']
+paper name:  2201.00010v1.txt
+common:  ['https://ror.org/00cwrns71', 'https://ror.org/049tgcd06', 'https://ror.org/04cdn2797']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00011v1.txt
+
+Match found for substring: 'SOUTHWEST JIAOTONG UNIVERSITY'
+['https://ror.org/00hn7w693']
+Match found for substring: 'SOUTHWEST JIAOTONG UNIVERSITY'
+['https://ror.org/00hn7w693']
+Match found for substring: 'CHENGDU UNIVERSITY'
+['https://ror.org/034z67559']
+Match found for substring: 'CHENGDU UNIVERSITY OF INFORMATION TECHNOLOGY'
+['https://ror.org/01yxwrh59']
+Match found for substring: 'UNIVERSITY OF INFORMATION TECHNOLOGY'
+['https://ror.org/03bxja712', 'https://ror.org/05kdc4973']
+Match found for substring: 'UK'
+['https://ror.org/03q36cn05']
+paper name:  2201.00011v1.txt
+common:  ['https://ror.org/01yxwrh59', 'https://ror.org/00hn7w693']
+overshoot:  ['https://ror.org/03bxja712', 'https://ror.org/034z67559', 'https://ror.org/05kdc4973', 'https://ror.org/03q36cn05']
+missed:  ['https://ror.org/01ee9ar58']
+
+
+validation of paper:2201.00012v1.txt
+
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+paper name:  2201.00012v1.txt
+common:  ['https://ror.org/02e2c7k09']
+overshoot:  ['https://ror.org/03gbw6p94']
+missed:  []
+
+
+validation of paper:2201.00013v1.txt
+
+Match found for substring: 'INTERNATIONAL MONETARY FUND'
+['https://ror.org/05m4rmw09']
+Match found for substring: 'LINKÖPING UNIVERSITY'
+['https://ror.org/05ynxx418']
+Match found for substring: 'CHALMERS UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/040wg7k59']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+paper name:  2201.00013v1.txt
+common:  ['https://ror.org/040wg7k59', 'https://ror.org/05ynxx418']
+overshoot:  ['https://ror.org/03gbw6p94', 'https://ror.org/05m4rmw09']
+missed:  []
+
+
+validation of paper:2201.00014v1.txt
+
+Match found for substring: 'CHINESE ACADEMY OF SCIENCE'
+['https://ror.org/034t30j35']
+Match found for substring: 'CHINESE ACADEMY OF SCIENCES'
+['https://ror.org/034t30j35']
+Match found for substring: 'INSTITUTE OF COMPUTING TECHNOLOGY'
+['https://ror.org/0090r4d87']
+Match found for substring: 'CHINESE ACADEMY OF SCIENCE'
+['https://ror.org/034t30j35']
+Match found for substring: 'CHINESE ACADEMY OF SCIENCES'
+['https://ror.org/034t30j35']
+paper name:  2201.00014v1.txt
+common:  []
+overshoot:  ['https://ror.org/034t30j35', 'https://ror.org/0090r4d87']
+missed:  ['https://ror.org/05qbk4x57', 'https://ror.org/05vt9qd57', 'https://ror.org/05t8y2r12', 'https://ror.org/03vs3wt56']
+
+
+validation of paper:2201.00015v1.txt
+
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'SHANGHAI UNIVERSITY'
+['https://ror.org/006teas31']
+Match found for substring: 'SHANGHAI UNIVERSITY OF ENGINEERING SCIENCE'
+['https://ror.org/0557b9y08']
+Match found for substring: 'FOUNDATION '
+['https://ror.org/03n1ntw18']
+paper name:  2201.00015v1.txt
+common:  ['https://ror.org/0557b9y08', 'https://ror.org/0220qvk04']
+overshoot:  ['https://ror.org/03n1ntw18', 'https://ror.org/006teas31']
+missed:  []
+
+
+validation of paper:2201.00016v2.txt
+
+Match found for substring: 'BEIHANG UNIVERSITY'
+['https://ror.org/00wk2mp56']
+Match found for substring: 'WASEDA UNIVERSITY'
+['https://ror.org/00ntfnx83']
+Match found for substring: 'UNIVERSITY OF SOUTHERN CALIFORNIA'
+['https://ror.org/03taz7m60']
+paper name:  2201.00016v2.txt
+common:  ['https://ror.org/03taz7m60', 'https://ror.org/00wk2mp56', 'https://ror.org/00ntfnx83']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00017v1.txt
+
+Match found for substring: 'CHEMNITZ UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/00a208s56']
+Match found for substring: 'UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/03gbw6p94']
+Match found for substring: 'LUND UNIVERSITY'
+['https://ror.org/012a77v79']
+paper name:  2201.00017v1.txt
+common:  ['https://ror.org/00a208s56', 'https://ror.org/012a77v79']
+overshoot:  ['https://ror.org/03gbw6p94']
+missed:  []
+
+
+validation of paper:2201.00018v1.txt
+
+Match found for substring: 'MATHEMATICAL INSTITUTE'
+['https://ror.org/02fhy7464']
+Match found for substring: 'UNIVERSITY OF OXFORD'
+['https://ror.org/052gg0110']
+Match found for substring: 'UK'
+['https://ror.org/03q36cn05']
+Match found for substring: 'INFN SEZIONE DI MILANO'
+['https://ror.org/04w4m6z96']
+Match found for substring: 'UNIVERSITY OF PENNSYLVANIA'
+['https://ror.org/00b30xv10']
+paper name:  2201.00018v1.txt
+common:  ['https://ror.org/00b30xv10', 'https://ror.org/052gg0110']
+overshoot:  ['https://ror.org/04w4m6z96', 'https://ror.org/02fhy7464', 'https://ror.org/03q36cn05']
+missed:  ['https://ror.org/01ynf4891', 'https://ror.org/022hq6c49']
+
+
+validation of paper:2201.00019v2.txt
+
+Match found for substring: 'ADIYAMAN UNIVERSITY'
+['https://ror.org/02s4gkg68']
+Match found for substring: 'BOSTON UNIVERSITY'
+['https://ror.org/05qwgg493']
+Match found for substring: 'BROWN UNIVERSITY'
+['https://ror.org/05gq02987']
+Match found for substring: 'NAWI GRAZ'
+['https://ror.org/01mm16571']
+Match found for substring: 'UNIVERSITY OF GRAZ'
+['https://ror.org/01faaaf77']
+Match found for substring: 'UNIVERSITY OF HELSINKI'
+['https://ror.org/040af2s02']
+Match found for substring: 'UNIVERSITY OF IOWA'
+['https://ror.org/036jqmy94']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+Match found for substring: 'UNIVERSITY OF MARY'
+['https://ror.org/055f0jp24']
+Match found for substring: 'NANJING UNIVERSITY'
+['https://ror.org/01rxvg760']
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'PHENIKAA UNIVERSITY'
+['https://ror.org/03anxx281']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+paper name:  2201.00019v2.txt
+common:  ['https://ror.org/03a5qrr21', 'https://ror.org/040af2s02', 'https://ror.org/01rxvg760', 'https://ror.org/05gq02987', 'https://ror.org/036jqmy94', 'https://ror.org/0220qvk04', 'https://ror.org/03anxx281', 'https://ror.org/01faaaf77']
+overshoot:  ['https://ror.org/055f0jp24', 'https://ror.org/01mm16571', 'https://ror.org/05qwgg493', 'https://ror.org/02s4gkg68']
+missed:  ['https://ror.org/01dzn5f42', 'https://ror.org/047s2c258', 'https://ror.org/02866re76', 'https://ror.org/01ggx4157', 'https://ror.org/020hgte69']
+
+
+validation of paper:2201.00020v2.txt
+
+Match found for substring: 'NANYANG TECHNOLOGICAL UNIVERSITY'
+['https://ror.org/02e7b5302']
+Match found for substring: 'INSTITUTE OF HIGH PERFORMANCE COMPUTING'
+['https://ror.org/02n0ejh50']
+paper name:  2201.00020v2.txt
+common:  ['https://ror.org/02e7b5302', 'https://ror.org/02n0ejh50']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00544v1.txt
+
+Match found for substring: 'UNITED STATES NAVAL ACADEMY'
+['https://ror.org/00znex860']
+Match found for substring: 'NAVAL ACADEMY'
+['https://ror.org/05syseh24']
+Match found for substring: 'PRIVATE UNIVERSITY COLLEGE OF EDUCATION OF THE DIOCESE OF LINZ'
+['https://ror.org/00wb8n271']
+Match found for substring: 'UNIVERSITY OF SZEGED'
+['https://ror.org/01pnej532']
+paper name:  2201.00544v1.txt
+common:  ['https://ror.org/00wb8n271', 'https://ror.org/00znex860', 'https://ror.org/01pnej532']
+overshoot:  ['https://ror.org/05syseh24']
+missed:  []
+
+
+validation of paper:2201.00545v1.txt
+
+Match found for substring: 'PRIVATE UNIVERSITY COLLEGE OF EDUCATION OF THE DIOCESE OF LINZ'
+['https://ror.org/00wb8n271']
+Match found for substring: 'UNIVERSITY OF SZEGED'
+['https://ror.org/01pnej532']
+paper name:  2201.00545v1.txt
+common:  ['https://ror.org/00wb8n271', 'https://ror.org/01pnej532']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00546v1.txt
+
+Match found for substring: 'UNIVERSITY OF LUXEMBOURG'
+['https://ror.org/036x5ad56']
+Match found for substring: 'STATE OF THE ART'
+['https://ror.org/001rzdq81']
+Match found for substring: 'EUROPEAN PARLIAMENT'
+['https://ror.org/058fj5k57']
+Match found for substring: 'EUROPEAN PARLIAMENT'
+['https://ror.org/058fj5k57']
+paper name:  2201.00546v1.txt
+common:  ['https://ror.org/036x5ad56']
+overshoot:  ['https://ror.org/001rzdq81', 'https://ror.org/058fj5k57']
+missed:  ['https://ror.org/00pd74e08']
+
+
+validation of paper:2201.00547v2.txt
+
+Match found for substring: 'CAMBRIDGE UNIVERSITY PRES'
+['https://ror.org/03jsdjx34']
+Match found for substring: 'CAMBRIDGE UNIVERSITY PRESS'
+['https://ror.org/03jsdjx34']
+paper name:  2201.00547v2.txt
+common:  []
+overshoot:  ['https://ror.org/03jsdjx34']
+missed:  ['https://ror.org/042nb2s44']
+
+
+validation of paper:2201.00548v1.txt
+
+Match found for substring: 'TSINGHUA UNIVERSITY'
+['https://ror.org/03cve4549']
+Match found for substring: 'JINAN UNIVERSITY'
+['https://ror.org/02xe5ns62', 'https://ror.org/04bgbsx11']
+paper name:  2201.00548v1.txt
+common:  ['https://ror.org/03cve4549', 'https://ror.org/04bgbsx11']
+overshoot:  ['https://ror.org/02xe5ns62']
+missed:  []
+
+
+validation of paper:2201.00549v1.txt
+
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARI'
+['https://ror.org/042tfbd02']
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARIS'
+['https://ror.org/042tfbd02']
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARI'
+['https://ror.org/042tfbd02']
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARIS'
+['https://ror.org/042tfbd02']
+Match found for substring: 'CESSI'
+['https://ror.org/02np0kc30']
+paper name:  2201.00549v1.txt
+common:  ['https://ror.org/042tfbd02']
+overshoot:  ['https://ror.org/02np0kc30']
+missed:  ['https://ror.org/04teye511']
+
+
+validation of paper:2201.00550v3.txt
+
+Match found for substring: 'CHINA SCHOLARSHIP COUNCIL'
+['https://ror.org/04atp4p48']
+Match found for substring: 'CHANGSHU INSTITUTE OF TECHNOLOGY'
+['https://ror.org/05g6ben79']
+Match found for substring: 'SOUTHWEST UNIVERSITY'
+['https://ror.org/01kj4z117']
+paper name:  2201.00550v3.txt
+common:  ['https://ror.org/05g6ben79', 'https://ror.org/01kj4z117']
+overshoot:  ['https://ror.org/04atp4p48']
+missed:  []
+
+
+validation of paper:2201.00551v1.txt
+
+Match found for substring: 'HOHAI UNIVERSITY'
+['https://ror.org/01wd4xt90']
+paper name:  2201.00551v1.txt
+common:  ['https://ror.org/01wd4xt90']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00552v1.txt
+
+Match found for substring: 'HENAN UNIVERSITY'
+['https://ror.org/003xyzq10']
+Match found for substring: 'HUNAN NORMAL UNIVERSITY'
+['https://ror.org/053w1zy07']
+paper name:  2201.00552v1.txt
+common:  ['https://ror.org/003xyzq10', 'https://ror.org/053w1zy07']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00553v2.txt
+
+Match found for substring: 'NANKAI UNIVERSITY'
+['https://ror.org/01y1kjr75']
+paper name:  2201.00553v2.txt
+common:  []
+overshoot:  ['https://ror.org/01y1kjr75']
+missed:  []
+
+
+validation of paper:2201.00554v1.txt
+
+Match found for substring: 'EUROPEAN UNION'
+['https://ror.org/019w4f821']
+Match found for substring: 'ACADEMY OF FINLAND'
+['https://ror.org/05k73zm37']
+Match found for substring: 'ACADEMY OF FINLAND'
+['https://ror.org/05k73zm37']
+paper name:  2201.00554v1.txt
+common:  []
+overshoot:  ['https://ror.org/019w4f821', 'https://ror.org/05k73zm37']
+missed:  ['https://ror.org/020hwjq30', 'https://ror.org/03yj89h83']
+
+
+validation of paper:2201.00555v1.txt
+
+paper name:  2201.00555v1.txt
+common:  []
+overshoot:  []
+missed:  ['https://ror.org/020hwjq30', 'https://ror.org/03yj89h83', 'https://ror.org/03dvp8k55', 'https://ror.org/04w9fbh59']
+
+
+validation of paper:2201.00556v3.txt
+
+Match found for substring: 'LABORATOIRE DE PHYSIQUE THÉORIQUE'
+['https://ror.org/01w0hda30']
+Match found for substring: 'UNIVERSITÉ DE TOULOUSE'
+['https://ror.org/004raaa70']
+Match found for substring: 'DONOSTIA INTERNATIONAL PHYSICS CENTER'
+['https://ror.org/02e24yw40']
+Match found for substring: 'CENTRE FOR QUANTUM TECHNOLOGIE'
+['https://ror.org/01mgdzc49']
+Match found for substring: 'CENTRE FOR QUANTUM TECHNOLOGIES'
+['https://ror.org/01mgdzc49']
+Match found for substring: 'NATIONAL UNIVERSITY OF SINGAPORE'
+['https://ror.org/01tgyzw49']
+paper name:  2201.00556v3.txt
+common:  ['https://ror.org/004raaa70', 'https://ror.org/02e24yw40', 'https://ror.org/01tgyzw49']
+overshoot:  ['https://ror.org/01mgdzc49', 'https://ror.org/01w0hda30']
+missed:  ['https://ror.org/027jrtw17']
+
+
+validation of paper:2201.00557v1.txt
+
+Match found for substring: 'FAR EASTERN FEDERAL UNIVERSITY'
+['https://ror.org/0412y9z21']
+paper name:  2201.00557v1.txt
+common:  ['https://ror.org/0412y9z21']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00558v1.txt
+
+Match found for substring: 'ORCID'
+['https://ror.org/04fa4r544']
+paper name:  2201.00558v1.txt
+common:  []
+overshoot:  ['https://ror.org/04fa4r544']
+missed:  ['https://ror.org/0116zj450']
+
+
+overall size =  85
+hit_cnt =  61
+miss_cnt =  24
+overshoot_cnt =  42
+acc_rate =  0.7176470588235294
+miss_rate =  0.2823529411764706
+overshoot_rate =  0.49411764705882355

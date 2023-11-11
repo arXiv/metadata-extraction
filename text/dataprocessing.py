@@ -38,7 +38,7 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("\n", " ")
     text = text.replace("-", "")
     text = text.replace("  ", " ")
-    print(text)
+    # print(text)
 
     result = set()
     i = 0

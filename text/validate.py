@@ -69,7 +69,7 @@ if __name__ == "__main__":
             data_dict[key] = data[key]
 
     # paper_names = extract_paper_from_json()
-    paper_names = extract_paper_from_json([[1, 3], [9, 12]])
+    paper_names = extract_paper_from_json()
 
     print(paper_names)
 
