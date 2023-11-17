@@ -3,6 +3,8 @@
 # original ror data
 *ror-data.csv
 
+*.bkp
+
 # ignore all the text papers, but keep the folder
 papers
 
