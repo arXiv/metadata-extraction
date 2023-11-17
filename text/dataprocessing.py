@@ -19,7 +19,7 @@ def process_line(elements):
     # if it is not a common english word
     if not commonWords.search(name) or not commonWords.search(name).is_word:
         trie.insert(name, id)
-        if name[-1] == 's' or name[-1] == 'S':
+        if (name[-1] == 's' or name[-1] == 'S') and ("university" in name.lower()):
             trie.insert(name[:-1],id)
 
 def test_paper(file_path,jdugeFirst: bool):
@@ -35,10 +35,11 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("Univ.", "University")
     text = text.upper()
     text = text.replace(",", "")
+    text = text.replace("-\n", "")
     text = text.replace("\n", " ")
     text = text.replace("-", "")
     text = text.replace("  ", " ")
-    # print(text)
+    print(text)
 
     result = set()
     i = 0
@@ -81,7 +82,7 @@ def init_trie():
 
 if __name__ == "__main__":
     init_trie()
-    file_path = './samples/2201.00016v2.txt'
+    file_path = 'papers/2201.00011v1.txt'
     testResult = test_paper(file_path,True)
     if not testResult:
         testResult = test_paper(file_path,False)
