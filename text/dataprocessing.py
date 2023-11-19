@@ -5,22 +5,26 @@ nameMap = {}
 trie = compare.Trie()
 commonWords = compare.Trie()
 
+def normalization(s:str):
+    return (s.upper().replace("-", " ").replace("–", " ").replace("\"","").replace(",","").strip())
 def process_line(elements):
     id = elements[0]
-    # names = elements[1:]
-    # for name in names:
-    #     if name != '':
-
-    # only use the full name to compare
-
-    name = elements[1].upper()
-    name = name.replace("-", " ")
-    name = name.replace("–", " ")
-    # if it is not a common english word
-    if not commonWords.search(name) or not commonWords.search(name).is_word:
-        trie.insert(name, id)
-        if (name[-1] == 's' or name[-1] == 'S') and ("university" in name.lower()):
-            trie.insert(name[:-1],id)
+    official = elements[1]
+    aliases = elements[2].split(';')
+    names = []
+    names.append(official)
+    names.extend(aliases)
+    c = 0
+    for name in names:
+        if name != '':
+            name = normalization(name)
+            # filter out the alasis
+            if (c==0 or len(name) > 11):
+                if (not commonWords.search(name) or not commonWords.search(name).is_word) and (name != "ORCID") and ("FOUND" not in name) and ("FUND" not in name):
+                    trie.insert(name, id)
+                    if (name[-1] == 's' or name[-1] == 'S') and ("university" in name.lower()):
+                        trie.insert(name[:-1],id)
+        c += 1
 
 def test_paper(file_path,jdugeFirst: bool):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -37,17 +41,20 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace(",", "")
     text = text.replace("-\n", "")
     text = text.replace("\n", " ")
-    text = text.replace("-", "")
+    text = text.replace("-", " ")
     text = text.replace("  ", " ")
+    text = text.replace("  "," ")
     print(text)
 
     result = set()
     i = 0
+    startIdx = 2
     while i < len(text):
-        if not text[i].isdigit():
-            for j in range(i+1, len(text)+1):
-                substring = text[i:j]
-                #print("check string:"+substring)
+        for k in range(i,i+startIdx):
+            tempResult = []
+            for j in range(k+1, len(text)+1):
+                substring = text[k:j]
+                #print(substring)
                 rlt = trie.search(substring)
                 if rlt:
                     if rlt.is_word:
@@ -55,11 +62,19 @@ def test_paper(file_path,jdugeFirst: bool):
                             continue
                         print(f"Match found for substring: '{substring}'")
                         print(rlt.matchedIds)
-                        result.update(rlt.matchedIds)
+                        tempResult.clear()
+                        tempResult.extend(rlt.matchedIds)
+
                 else:
+                    if len(tempResult) > 0:
+                        result.update(tempResult)
+                        i = j-1
+                    else:
+                        while i < len(text) and text[i] != ' ':
+                            i += 1
                     break
-            while i < len(text) and text[i] != ' ':
-                i += 1
+            if len(tempResult) > 0:
+                break
         i += 1
     return result
 
@@ -71,7 +86,8 @@ def init_trie():
             parts = line.split()
             if len(parts) >= 2 and parts[1].isdigit():
                 if int(parts[1]) >= 0:
-                    commonWords.insert(parts[0].upper(), 0)
+                    name = parts[0].upper().replace("-", " ").replace("–", " ")
+                    commonWords.insert(name, 0)
 
     RorDataPath = '1.34_extracted_ror_data.csv'
     with open(RorDataPath, newline='', encoding='utf-8') as csvfile:
@@ -82,7 +98,7 @@ def init_trie():
 
 if __name__ == "__main__":
     init_trie()
-    file_path = 'papers/2201.00011v1.txt'
+    file_path = 'papers/2201.00555v1.txt'
     testResult = test_paper(file_path,True)
     if not testResult:
         testResult = test_paper(file_path,False)
