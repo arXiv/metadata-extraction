@@ -4,7 +4,7 @@
 # file_path = 'import2ES.csv'
 #
 # # Elasticsearch配置
-# es = Elasticsearch("http://localhost:9200",basic_auth=('elastic', 'mgqfZjZzydr*MtLMNdiO'))  # 修改为您的Elasticsearch实例地址
+# es = Elasticsearch("http://localhost:9200",basic_auth=('elastic', '*MtLMNdiO'))  # 修改为您的Elasticsearch实例地址
 # index_name = 'education_institutions'
 #
 # # 读取CSV文件
