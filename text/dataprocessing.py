@@ -1,10 +1,9 @@
 import compare
 import csv
 
-nameMap = {}
 trie = compare.Trie()
 commonWords = compare.Trie()
-
+full_text = ''
 def normalization(s:str):
     return (s.upper().replace("-", " ").replace("–", " ").replace("\"","").replace(",","").strip())
 def process_line(elements):
@@ -13,20 +12,20 @@ def process_line(elements):
     aliases = elements[2].split(';')
     names = []
     names.append(official)
-    names.extend(aliases)
+    #names.extend(aliases)
     c = 0
     for name in names:
         if name != '':
             name = normalization(name)
             # filter out the alasis
             if (c==0 or len(name) > 11):
-                if (not commonWords.search(name) or not commonWords.search(name).is_word) and (name != "ORCID") and ("FOUND" not in name) and ("FUND" not in name):
+                if (not commonWords.search(name) or not commonWords.search(name).is_word) and (name != "ORCID") and ("FOUND" not in name) and ("FUND" not in name) and(name != "CHINA SCHOLARSHIP COUNCIL") and name != "EUROPEAN PARLIAMENT":
                     trie.insert(name, id)
                     if (name[-1] == 's' or name[-1] == 'S') and ("university" in name.lower()):
                         trie.insert(name[:-1],id)
         c += 1
 
-def test_paper(file_path,jdugeFirst: bool):
+def test_paper(file_path, jdugeFirst: bool):
     with open(file_path, 'r', encoding='utf-8') as file:
         file_contents = file.read()
 
@@ -44,7 +43,11 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("-", " ")
     text = text.replace("  ", " ")
     text = text.replace("  "," ")
-    print(text)
+    #print(text)
+    # with open('paper.txt', 'a', encoding='utf-8') as file:
+    #     file.write(text)
+    #     file.write("\n")  # 如果需要在字符串后添加换行符
+    #     file.write("-------------------------------------------------------------------------------------------------\n")
 
     result = set()
     i = 0
@@ -58,7 +61,8 @@ def test_paper(file_path,jdugeFirst: bool):
                 rlt = trie.search(substring)
                 if rlt:
                     if rlt.is_word:
-                        if len(rlt.matchedIds) > 3:
+                        if len(rlt.matchedIds) > 1:
+                            #get country and conduct fuzzy match on ES
                             continue
                         print(f"Match found for substring: '{substring}'")
                         print(rlt.matchedIds)
