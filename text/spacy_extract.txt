@@ -1,0 +1,211 @@
+(arxiv) ➜  text git:(text-matching) ✗ /Users/yangd19/anaconda3/envs/arxiv/bin/python /Users/yangd19/Documents/Code/metadata-extraction/text/spacy_test.py
+./papers/2201.00001v1.txt
+['Modeling Advection', 'Matérn Gaussian Processes for Traffic Flow', 'Amazon Research', 'Stanford University', 'CA 94305', 'Amazon Research', 'the Directed Graph Advection Matérn Gaussian Process', 'Waldherr', 'GPKF', '∼ N(cid:0)0,(cid:0', 'Machine Learning', 'the Physical Sciences']
+
+
+./papers/2201.00001v2.txt
+['Modeling Advection', 'Matérn Gaussian Processes for Traffic Flow', 'Amazon Research', 'Stanford University', 'CA 94305', 'Amazon Research', 'the Directed Graph Advection Matérn Gaussian Process', 'Küper', 'Waldherr', 'GPKF', '∼ N(cid:0)0,(cid:0', 'Machine Learning', 'the Physical Sciences']
+
+
+./papers/2201.00001v3.txt
+['Modeling Advection', 'Matérn Gaussian Processes for Traffic Flow', 'Amazon Research', 'Stanford University', 'CA 94305', 'Amazon Research', 'the Directed Graph Advection Matérn Gaussian Process', 'Küper', 'Waldherr', 'GPKF', '∼ N(cid:0)0,(cid:0', 'Amazon AI', 'Machine Learning', 'the Physical Sciences']
+
+
+./papers/2201.00002v1.txt
+['TDSR', 'TDSR', 'the Korteweg-de Vries', 'NLS', 'Allen-Cahn', 'NLS', 'NLS', 'Ablowitz', 'Ablowitz', 'KdV', 'NLS', 'NLS', 'KdV']
+
+
+./papers/2201.00003v1.txt
+['El Mostafa Kalmounb', 'aMathematics Program', 'Department of Mathematics, Statistics and Physics', 'College of Arts and Sciences', 'Qatar University', 'Al Akhawayn University', 'Cracow University of Technology', 'Laplace', 'Dirichlet-Neumann', 'Neumann', 'Boundary', 'Nanofibers', 'Neumann']
+
+
+./papers/2201.00004v1.txt
+['Department of Aerospace Engineering\n\nUniversity of Michigan', 'Michigan 48109', 'School of Mechanical', 'Industrial & Manufacturing Engineering', 'Oregon State University', 'linear', 'ACI 318', 'Stochastic Finite Element Method', 'the Sequential Optimization and Reliability\nAssessment']
+
+
+./papers/2201.00005v1.txt
+['Software Engineering', 'Lakehead University', 'LOS', 'Stroke, Machine Learning', 'Data Mining, Statistical Analysis', 'Healthcare', 'LOS', 'Information', 'LOS']
+
+
+./papers/2201.00006v1.txt
+['Institute of Fundamental', 'Frontier Sciences', 'University of Electronic Science and Technology of China', 'School of Life Sciences', 'Lanzhou University', 'RL', 'TSC', 'MaxQueue', 'TSC', 'QL-CoLight', 'QL-DQN', 'XLight', 'RL', 'MaxQueue', 'CoLight', 'MaxPressure[14', 'RL', 'RL', 'RL', 'TSC methods[16', 'MPLight', 'MPLight', 'vehicles[18', 'image[13', 'delay[18', 'TSC', 'MaxQueue', 'RL', 'TSC', 'QL-XLight', 'RL', 'QL-DQN', 'QL-MPLight', 'RL', 'TSC', 'TSC']
+
+
+./papers/2201.00006v2.txt
+['Institute of Fundamental', 'Frontier Sciences', 'University of Electronic Science and Technology of China', 'Lanzhou University', 'RL', 'TSC', 'RL', 'TSC', 'QL', 'TSC', 'RL', 'AttentionLight', 'QL-XLight', 'SCOOT', 'FixedTime', 'RL', 'TSC', 'RL', 'RL', 'RL', 'TSC', 'PressLight', 'TSC', 'FRAP', 'FRAP', 'LIT', 'IntelliLight', 'PressLight', 'IntelliLight', 'LIT', 'PressLight', 'FRAP', 'PressLight', 'Atari', 'RL', 'TSC', 'RL', 'Atari', 'TSC']
+
+
+./papers/2201.00007v1.txt
+['Zhejiang University', 'Confidence-Aware Multi', 'MKD', 'MKD', 'National Key R&D Program of China', 'National Natural Science Foundation of China', 'Confidence-Aware Multi']
+
+
+./papers/2201.00007v2.txt
+['Zhejiang University', 'ZJU-Bangsun Joint Research Center', 'Confidence-Aware', 'National Key R&D Program of China', 'the Starry Night Science Fund of Zhejiang Univer-', 'Shanghai Institute for Advanced Study', 'SN', 'National Natural Science Foundation of China', 'MKD', 'Confidence-Aware Multi']
+
+
+./papers/2201.00007v3.txt
+['Zhejiang University', 'ZJU-Bangsun Joint Research Center', 'Confidence-Aware', 'National Key R&D Program of China', 'the Starry Night Science Fund of Zhejiang Univer-', 'Shanghai Institute for Advanced Study', 'SN', 'National Natural Science Foundation of China', 'MKD', 'Confidence-Aware Multi']
+
+
+./papers/2201.00008v1.txt
+['Accurate Spatial-Temporal\n\n', 'Temporal Transformer', 'Transformer', 'RMSE', 'Transformer', 'the Department of Computer Science and Engineering', 'University of Science and Technology', 'College of Computer Science', 'Department of Computer Science', 'Department of Computer Science', 'National Chung Hsing University', 'Ming Chiao Tung University']
+
+
+./papers/2201.00008v2.txt
+['Accurate Spatial-Temporal\n\n', 'Spatial-Temporal Transformer', 'Transformer', 'RMSE', 'MAPE', 'STDN', 'DSAN', 'Transformer', 'the Department of Computer Science and Engineering', 'University of Science and Technology', 'College of Computer Science', 'Department of Computer Science', 'National Chung Hsing University', 'Department of Computer Science']
+
+
+./papers/2201.00008v3.txt
+['Accurate Spatial-Temporal\n\n', 'Traffic Forecasting', 'Spatial-Temporal Transformer', 'Transformer', 'RMSE', 'MAPE', 'STDN', 'DSAN', 'Transformer', 'Computer Science and Engineering', 'The Hong Kong University', 'Science and Technology', 'College of Computer Science', 'Department of Computer Science', 'National Chung Hsing University', 'Department of Computer Science']
+
+
+./papers/2201.00009v1.txt
+['the Distributional Gap of Confidence\n\nOptimization Score', 'CO', 'Intelligence', 'CO', 'GAX', 'CO', 'GAX', 'AI', 'Google', 'eXplainable Artificial Intelligence', 'AI', 'ML', 'Tjoa & Guan', 'SHapley\nAdditive exPlanations (SHAP', 'Lundberg & Lee', 'CAM', '1Nanyang Technological University', 'Singapore 2Alibaba Inc.', 'Proceedings', 'International Conference on Machine Learning', 'Balti-', 'Layerwise Relevance Propagation', 'LRP', 'Zeiler & Fergus', 'fed', 'Selvaraju', 'Fong\n& Vedaldi', 'Tjoa & Guan', 'Rudin', 'eXplanation', 'GAX', 'Confidence Optimization (CO']
+
+
+./papers/2201.00009v2.txt
+['AI', 'ML', 'AI', 'Google', 'eXplainable Artificial\nIntelligence', 'Adadi & Berrada', 'Tjoa & Guan', 'SHapley Additive', 'SHAP', 'Lundberg &\n\n', '1Nanyang Technological University', '2Alibaba Inc.', 'Proceedings', 'International Conference on Machine Learning', 'Balti-', 'CAM', 'Selvaraju', 'Layerwise Relevance Propagation', 'LRP', 'Zeiler & Fergus', 'Olah', 'Selvaraju', 'Fong & Vedaldi', 'Tjoa & Guan', 'Rudin', 'eXplanation']
+
+
+./papers/2201.00009v3.txt
+['Improving Deep Neural Network Classification Confidence', 'Nanyang Technological University', 'AI\nImage', 'eXplainable AI', 'ImageNet', 'AI', 'ML', 'AI', 'Google', 'eXplainable Artificial Intelligence', 'SHAP', 'CAM', 'Layerwise\nRelevance Propagation', 'LRP', 'Alibaba Inc.', '2School of Computer Science and Engineering', 'NTU', 'the Augmentative eXplanation', 'Optimization (CO', 'CO', 'CO', 'GAX']
+
+
+./papers/2201.00010v1.txt
+['Space Research Organisation', 'Bangalore-560094', 'Indian Institute of Technology', 'Delhi-110016', 'Physics', 'Banaras Hindu University', 'Varanasi-221005', 'N', 'mohammadhasan786@gmail.com']
+
+
+./papers/2201.00011v1.txt
+['JOURNAL OF LATEX', 'VOL', 'IEEE', 'IEEE', 'DBWM', 'DBWM', 'Data Mining', 'Federated Learning', 'Time Series Classification', 'anomaly\ndetection', 'ECG', 'Wang', 'the School of Computing', 'Artificial Intelligence', 'Southwest Jiaotong University', 'cn16bz@icloud.com', 'Southwest Jiaotong University', 'Chengdu University of Information Technology', 'the School of Computer Science', 'ECG', 'Google', 'FL', 'FL', 'FL', 'FL', 'FedAvg', 'COVID-19', 'FedSteg', 'FTL']
+
+
+./papers/2201.00012v1.txt
+['Delft University of Technology\n\nDelft', 'Delft University of Technology\n\nDelft', 'Delft University of Technology\n\nDelft', 'Delft University of Technology\n\nDelft', 'RL', 'Inverse Reinforcement Learning', 'Value Alignment', 'RL', 'RL', 'AI', 'MORL', 'AI', 'MORL', 'IRL', 'RL', 'MORL', 'linear']
+
+
+./papers/2201.00013v1.txt
+["The International Monetary Fund's", 'Institute for Analytical Sociology, Department of Management and Engineering', 'Linköping \nUniversity', 'The Division of Data Science and Artificial Intelligence of the Department of Computer \nScience and Engineering', 'Chalmers University of Technology']
+
+
+./papers/2201.00014v1.txt
+['Global Transition Patterns', 'CAS', 'Institute of Computing Technology', 'CAS', 'bXiamen Data Intelligence Academy of ICT', 'CAS', 'cMeituan-Dianping Group', 'Chinese Academy of Sciences', 'eManagement Science & Information Systems', 'Rutgers University', 'fBaidu Inc.', 'gSoochow University', 'Location', 'Social Network', 'POI', 'POI', 'POI', 'POI', 'POI', 'Location', 'Social Network', 'LBSN', 'POI', 'POI', 'POI', 'Neural Networks', 'POI', 'POI', 'POI', 'POI', 'POI', 'POI', 'POI']
+
+
+./papers/2201.00015v1.txt
+['Device Activity Detection for Massive Grant-Free\n', 'Frequency-Selective Rayleigh Fading', 'Shanghai Univ', 'Engineering Science', 'N', 'P', 'MLE', 'MLE', 'MLE', 'Rayleigh', 'IoT', 'CS', 'CS', 'AMP', 'the National Key Research', 'Development Program of China', 'Grant 2018YFB1801102', 'the Natural Science Foundation', 'Grant', 'GROUP', 'MLE', 'MLE', 'MAP', 'OFDM', 'N', 'Rayleigh', 'MLE', 'MLE-', 'MLE', 'Rayleigh']
+
+
+./papers/2201.00016v1.txt
+['Framework for\n\nLog Anomaly Detection\n\nHongcheng Guo1∗', 'Beihang University', 'Waseda University', 'jiaya', 'jiaqi', 'AIOps', 'Transformer', 'frame-', 'Log anomaly detection (TRANSLOG', 'Breier', 'AIOps', 'BGL', 'Red Storm', 'the "Program Not Running', 'BGL', 'Spirit', 'log data', 'Du et al.', 'Transformer', 'BERT', 'Radford', 'BGL', 'BGL', 'SCSI', 'ProgramBGL', 'pbs', 'GM', 'LANaiis', 'GM', 'LANaiis']
+
+
+./papers/2201.00016v2.txt
+['Framework for\n\nLog Anomaly Detection\n\nHongcheng Guo1∗', 'Beihang University', 'Waseda University', 'jiaya', 'jiaqi', 'AIOps', 'log sequences', 'Transformer', 'Log\nanomaly detection', 'Breier', 'AIOps', 'BGL', 'Red Storm', 'the "Program Not Running', 'BGL', 'Spirit', 'Liberty', 'log data', 'Du et al.', 'Transformer', 'BERT', 'Radford', 'BGL', 'Red Storm', 'BGL', 'SCSI', 'ProgramBGL', 'pbs', 'GM', 'LANaiis', 'GM', 'LANaiis']
+
+
+./papers/2201.00017v1.txt
+['Chemnitz University of Technology', 'Lund University', 'MSC Subject', 'Stieltjes', 'Gomory']
+
+
+./papers/2201.00018v1.txt
+['Relative Defects', 'Relative Theories', '1Mathematical Institute, University of Oxford', 'Oxford', '6GG', 'Milano-Bicocca', 'INFN', 'Milano-Bicocca', 'Physics', 'Astronomy, University of Pennsylvania', 'PA 19104', 'TQFT']
+
+
+./papers/2201.00019v1.txt
+['CMS', 'Boston Univ', 'J. Hirschauer', 'S. Kulkarni', 'Istanbul Univ', 'CMS', 'FACET', 'CMS', 'TeV', 'SM', 'CMS', 'FACET', 'FACET']
+
+
+./papers/2201.00019v2.txt
+['JHEP', 'CMS', 'D.R. Green', 'J. Hirschauer', 'S. Kulkarni', 'J.E. Brücken', 'I. Hos', 'aDepartment of Physics', 'Adiyaman University', 'Adiyaman', 'bPhysics Department', 'Boston University', 'MA 02215', 'cDepartment of Physics', 'Brown University', 'RI 02912', 'eFermi National Accelerator Laboratory', 'PO Box 500', 'IL 60510', 'Institute of Physics', 'NAWI Graz', 'University of Graz', 'gHelsinki Institute of Physics', 'University of Helsinki,', 'hDepartment of Physics', 'Astronomy, University of Iowa', 'iPhysics Department', 'Istanbul University', 'jDepartment of Engineering Sciences', 'Istanbul University-Cerrahpasa', '34320 Avcilar', 'kDepartment of Physics', 'University of Maryland', 'lDepartment of Physics', 'Nanjing University', 'Mathematical Sciences', 'Ozyegin University', 'Tong University', 'Shanghai 200240', 'PHENIKAA University', 'the Istanbul University']
+
+
+./papers/2201.00020v1.txt
+['Multiple Graviton Modes', 'Fractional Quantum Hall Effect', 'Physical and Mathematical Sciences', 'Nanyang Technological University', 'Hall (FQH', 'CHS', 'GMP', 'FQH', 'CHS', 'Hall (FQH', 'graviton', '2D', 'FQH', 'Newton', 'Hamilto-', 'FQH', 'FQH', 'graviton', 'GM', 'FQH', 'GMP', 'LL', 'GM', 'LL', 'non-Laughlin FQH', 'GM', 'FQH']
+
+
+./papers/2201.00020v2.txt
+['Multiple Graviton Modes', 'Fractional Quantum Hall Effect', 'Physical and Mathematical Sciences', 'Nanyang Technological University', 'Hall (FQH', 'CHS', 'GMP', 'FQH', 'CHS', 'Hall (FQH', 'graviton', '2D', 'FQH', 'Newton', 'FQH', 'FQH', 'graviton', 'GM', 'FQH', 'GMP', 'LL', 'GM', 'LL', 'non-Laughlin FQH', 'GM', 'gravitons[17']
+
+
+./papers/2201.00544v1.txt
+['GeoGebra', 'United States Naval Academy', 'The Private University College', 'Bolyai Institute', 'University of Szeged\n\nSzeged', 'GeoGebra', 'GeoGebra', 'Relation', 'GeoGebra', 'GeoGebra', 'RQE', 'CAD', 'RQE', 'Automated Deduction in Geometry']
+
+
+./papers/2201.00545v1.txt
+['GeoGebra', 'The Private University College of Education', 'Bolyai Institute', 'University of Szeged\n\nSzeged', 'GeoGebra', 'PRF', 'RQE', '1D', 'SAT', 'GeoGebra', 'GeoGebra', 'GeoGebra', 'GeoGebra', 'RQE/CAD', 'RQE', 'Automated Deduction in Geometry']
+
+
+./papers/2201.00546v1.txt
+['a Technology Readiness Methodology', 'University of Munster', 'Technology', 'TRL', 'NASA', 'TRL', 'TRL', 'the General Data Protection', 'cid:63)The', 'the Luxembourg National Research\nFund', 'FNR', 'C18', 'NASA', 'EU', 'TRL', 'EU', 'the European Parliament', 'the Council of 27 April 2016', 'Directive 95/46/EC', 'General Data Protection\nRegulation', 'EU', 'the European Parliament', 'the Council of 6']
+
+
+./papers/2201.00547v1.txt
+['Shelah', 'Kk', 'Kn', 'Kk', 'linear', 'NSF', '†Massachusetts Institute of Technology', 'MA 02139', 'MIT Department of Science']
+
+
+./papers/2201.00547v2.txt
+['Shelah', 'Kk', 'Kn', 'Kk', 'linear', 'NSF', '†Massachusetts Institute of Technology', 'MA 02139', 'MIT Department of Science']
+
+
+./papers/2201.00548v1.txt
+['aShenzhen International Graduate School', 'Tsinghua University', 'bSchool of Intelligent Systems Science and Engineering', 'Jinan University', 'DJSP', 'MDP', 'GRL', 'D3QPN', 'RL', 'DJSP', 'DJSP', 'JSP', 'NP']
+
+
+./papers/2201.00549v1.txt
+['Institut', 'Institut', 'PUC & IMFD', 'PUC & IMFD\n\n', 'linear']
+
+
+./papers/2201.00550v1.txt
+['China Scholarship\n\nCouncil', 'CSC', 'Mathematics, Changshu Institute of Technology', '‡School of Mathematics and Statistics', 'Southwest University', 'dfyang1228@163.com\n§Dipartimento']
+
+
+./papers/2201.00550v2.txt
+['China Scholarship\n\nCouncil', 'CSC', 'Mathematics, Changshu Institute of Technology', '‡School of Mathematics and Statistics', 'Southwest University', 'dfyang1228@163.com\n§Dipartimento']
+
+
+./papers/2201.00550v3.txt
+['China Scholarship\n\nCouncil', 'CSC', 'Mathematics, Changshu Institute of Technology', '‡School of Mathematics and Statistics', 'Southwest University', 'dfyang1228@163.com\n§Dipartimento']
+
+
+./papers/2201.00551v1.txt
+['Science, Hohai University', 'quantum', 'AI', 'AI', 'quantum', 'quantum physics', 'quantum', 'QCD', 'the\nquartic anharmonic oscillator can', 'quantum']
+
+
+./papers/2201.00552v1.txt
+['Physics and Electronics', 'Henan University', '2 Department of Physics', 'Hunan Normal University', 'Synergetic Innovation Center for Quantum Effects and Applications', 'Key Laboratory', 'Quantum Control of Ministry of Education', 'hadronic\nphysics', 'QCD', 'Ds1(2460', 'BaBar', 'CLEO', 'the Review of Particle Physics', 'Ds1(2460', '§Electronic', 'MeV', 'JP', '0−', 'Ds1(2460', 'Ds1(2460', 'm[D∗']
+
+
+./papers/2201.00553v1.txt
+['Ising', 'School of Physics', 'Nankai University', 'quantum', 'quantum', 'quantum information science', 'QPT', 'QPT', 'QPT', 'QPT', 'Sec', 'Sec', 'Sec', 'QPT', 'Sec']
+
+
+./papers/2201.00553v2.txt
+['Ising', 'K L Zhang', 'School of Physics', 'Nankai University', 'Ising', 'quantum', 'quantum']
+
+
+./papers/2201.00554v1.txt
+['SDN', 'University, Espoo', '§University of Oulu', 'Adaptive  Streaming', 'Quality of Experience', 'SoftwareDefined', 'DNC', 'Quality of Experience', 'HTTP', 'SDN', 'ISP']
+
+
+./papers/2201.00555v1.txt
+['Deterministic Service Function Chaining', 'University, Espoo', '†Oulu University', '‡Beijing University of Posts and Telecommunications', 'Network  Function  Virtualization', 'Virtual Network Functions', 'VNF', 'VNF', 'SFC', 'SFC', 'ISP', 'SFC', 'Resource Orchestration', 'Working Group', 'Network Function Virtualization (NFV', 'Virtual  Network \nFunctions', 'NFV', 'CPU', 'NFV', 'RAN', 'VNF', 'Capital  Expense', 'SFC']
+
+
+./papers/2201.00556v1.txt
+['MBL', 'Ising-Majorana', 'de Physique Théorique', 'Université de Toulouse', 'International Physics Center', 'Paseo Manuel de Lardizabal 4', 'CNRS-UCA-SU-NUS-NTU International Joint Research Unit', 'Quantum Technologies', 'National University of Singapore', 'Ising-Majorana', 'MBL', 'FIG', 'Ising-Majorana', 'MBL', 'MBL', 'MBL SG', 'MBL', 'MBL SG', 'MBL', 'MBL', 'MBL', 'IRC', 'MBL', 'IRC', 'MBL', 'Ising-Majorana', 'IM', 'MBL', 'SG', 'TFI', 'SG', 'MBL', 'MBL', 'SG', 'IRC']
+
+
+./papers/2201.00556v2.txt
+['Ising/Majorana', 'de Physique Théorique', 'Université de Toulouse', 'International Physics Center', 'Paseo Manuel de Lardizabal 4', 'CNRS-UCA-SU-NUS-NTU International Joint Research Unit', 'Quantum Technologies', 'National University of Singapore', 'Ising/Majorana', 'MBL', 'MBL', 'MBL', 'Ising-Majorana', 'IM', 'MBL', 'MBL', 'SG', 'MBL', 'MBL SG', 'MBL', 'MBL', 'MBL', 'Ising', 'MBL', 'MBL', 'MBL', 'Ising/Majorana', 'IM', 'MBL', 'IRC', 'MBL', 'MBL', 'FIG', 'Ising-Majorana', 'MBL', 'MBL', 'MBL SG']
+
+
+./papers/2201.00556v3.txt
+['Ising-Majorana', 'de Physique Théorique', 'Université de Toulouse', 'International Physics Center', 'Paseo Manuel de Lardizabal 4', 'CNRS-UCA-SU-NUS-NTU International Joint Research Unit', 'Quantum Technologies', 'National University of Singapore', 'Ising/Majorana', 'MBL', 'MBL', 'MBL', 'Ising-Majorana', 'IM', 'MBL', 'MBL', 'SG', 'MBL', 'MBL SG', 'MBL', 'MBL', 'MBL', 'Ising', 'MBL', 'MBL', 'MBL', 'Ising/Majorana', 'IM', 'MBL', 'IRC', 'MBL', 'MBL', 'FIG', 'Ising-Majorana', 'MBL', 'MBL', 'MBL SG']
+
+
+./papers/2201.00557v1.txt
+['Bovard']
+
+
+./papers/2201.00558v1.txt
+['bUniversity', 'BERT', 'BERT', 'CNN', 'BERT-Tiny', 'BERT-Small', 'Transformer', 'CNN', 'CPU', 'RAM', 'BERT', 'NLP', 'Deep Learning', 'NLP', 'DL', 'NLP', 'Pennington', 'M.N. Nityasya', 'M.N. Nityasya', 'Recurrent Neural Networks', 'Neumann', 'Iyyer', 'Transformer', 'Kaiser', 'RNN', 'Transformer', 'Transformer', 'GPT', 'Radford', 'Sutskever', 'Radford', 'GPT-3', 'Mann', 'Ryder', 'Askell', 'BERT', 'Toutanova', 'ELECTRA', 'BART', 'T5 (Raffel', 'GLUE', 'Wang', 'GPT-3', 'BERT', 'GPT-2', 'GPT', 'NLP', 'Nityasya']
