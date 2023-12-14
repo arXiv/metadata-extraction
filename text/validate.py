@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-from dataprocessing import *
+import extractWithChat as model
+import dataprocessing as triematch
 
 data_dict = {}
 
@@ -61,7 +62,7 @@ def extract_paper_from_json(sections=[]):
 
 if __name__ == "__main__":
 
-    init_trie()
+    triematch.init_trie()
     # Read the JSON file
     with open('./validation.json') as file:
         data = json.load(file)
@@ -82,7 +83,11 @@ if __name__ == "__main__":
     for paper in paper_names:
         print("validation of paper:" + paper + "\n")
 
-        pred = getresult("./papers/" + paper)
+        trieResult = triematch.getresult("./papers/" + paper)
+        modelResult = model.getresult("./papers/" + paper)
+
+        pred = trieResult.union(modelResult)
+
         true = data_dict[paper.split('v')[0]]
 
         common_inst = list(set(pred).intersection(true))
@@ -116,4 +121,4 @@ if __name__ == "__main__":
     print("overshoot_rate = ", overshoot_rate)
 
     print("\n\n")
-        
+
