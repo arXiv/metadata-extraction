@@ -41,12 +41,9 @@ InteractiveShell.ast_node_interactivity = "all"
 import TexSoup as TS
 from TexSoup.tokens import MATH_ENV_NAMES
 
+
 # + tags=[]
 #importlib.reload(TS)
-
-# + tags=[]
-LOCAL_DATA_PATH = './data/2201_00_all/'
-
 
 # + tags=[]
 def pre_format(text):
@@ -136,15 +133,13 @@ def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
 
 
 # + tags=[]
-def source_from_tar(tar_path, encoding='utf-8'):
+def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
         fp = in_tar.extractfile(tex_main)
         wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
         source_text = pre_format(wrapped_file.read())
         return source_text
-
-
 # -
 
 # ## Check a file with parse errors
@@ -152,18 +147,18 @@ def source_from_tar(tar_path, encoding='utf-8'):
 # + active=""
 #
 
-# + tags=[]
-infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
-
-text = source_from_tar(infile_path)
-pyperclip.copy(text)
-soup = soup_from_tar(infile_path, tolerance=1)
-
-
-title = soup.find('title')
-if title: print(f"{title.name}: {title.text}")
-for sec in soup.find_all('section'):
-    print(f' {sec.name}: {sec.text}')
+# + tags=[] active=""
+# infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+#
+# text = source_from_tar(infile_path)
+# pyperclip.copy(text)
+# soup = soup_from_tar(infile_path, tolerance=1)
+#
+#
+# title = soup.find('title')
+# if title: print(f"{title.name}: {title.text}")
+# for sec in soup.find_all('section'):
+#     print(f' {sec.name}: {sec.text}')
 # -
 
 
@@ -173,20 +168,37 @@ for sec in soup.find_all('section'):
 # ## Quick check a folder of tar files
 
 # + tags=[]
+LOCAL_DATA_PATH = './data/2201_00_all/'
+
+# + tags=[]
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
 files_count = len(files)
 utf_count = 0
 latin_count = 0 
+inc_graphics_count = 0
+inc_alt_count = 0
 err_files = {}
 
 TOLERANCE = 1
 
+def update_counts(text):
+    global inc_alt_count
+    global inc_graphics_count
+    if "alt=" in text:
+        inc_alt_count += 1
+        print("Found alt in {tar_file}")
+        
+    if r"\usepackage{graphicx}" in text:
+        inc_graphics_count += 1
+
 with tqdm(total=files_count, desc="errors") as err_prog:
     for tar_file in tqdm(files, desc="Progress", display=True):
         # Is it unicode?
+        text = ""
         try:
-            soup = soup_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
+            text = source_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
             utf_count += 1
+            update_counts(text)
             continue
         except EOFError as eof:
             err_files[tar_file] = type(eof)
@@ -203,8 +215,9 @@ with tqdm(total=files_count, desc="errors") as err_prog:
 
         # Is it something else?
         try:
-            soup = soup_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
+            text = source_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
             latin_count += 1
+            update_counts(text)
             continue
         except KeyboardInterrupt as KB_err:
             break
@@ -212,12 +225,25 @@ with tqdm(total=files_count, desc="errors") as err_prog:
             err_files[tar_file] = type(e)
             _ = err_prog.update(1)
             pass
+            
+
+            
 
 
 # + tags=[]
 print(f"{files_count} processed, {len(err_files)} failures.")
 print(f"UTF8: {utf_count}; Latin1: {latin_count}")
 err_files
+
+# + tags=[]
+print(f"{files_count} processed, {inc_graphics_count} used graphicx package, {inc_alt_count} used alt.")
+# -
+
+source_from_tar('./data/2201_00_all/2201.00718v1.tar.gz', encoding='utf-8', tolerance=TOLERANCE)
+
+
+
+
 
 # + [markdown] tags=[]
 # ## Scratch below here
