@@ -1,0 +1,1508 @@
+/usr/local/bin/python3.11 /Users/haorunxue/PycharmProjects/metadata-extraction/text/validate.py
+['2201.00001v3.txt', '2201.00002v1.txt', '2201.00003v1.txt', '2201.00004v1.txt', '2201.00005v1.txt', '2201.00006v2.txt', '2201.00007v3.txt', '2201.00008v3.txt', '2201.00009v3.txt', '2201.00010v1.txt', '2201.00011v1.txt', '2201.00012v1.txt', '2201.00013v1.txt', '2201.00014v1.txt', '2201.00015v1.txt', '2201.00016v2.txt', '2201.00017v1.txt', '2201.00018v1.txt', '2201.00019v2.txt', '2201.00020v2.txt', '2201.00544v1.txt', '2201.00545v1.txt', '2201.00546v1.txt', '2201.00547v2.txt', '2201.00548v1.txt', '2201.00549v1.txt', '2201.00550v3.txt', '2201.00551v1.txt', '2201.00552v1.txt', '2201.00553v2.txt', '2201.00554v1.txt', '2201.00555v1.txt', '2201.00556v3.txt', '2201.00557v1.txt', '2201.00558v1.txt']
+validation of paper:2201.00001v3.txt
+
+Match found for substring: 'STANFORD UNIVERSITY'
+['https://ror.org/00f54p054']
+ Modeling Advection on Directed Graphs using Matérn Gaussian Processes for Traffic Flow Danielle C. Maddix Amazon Research 2795 Augustine Dr. Santa Clara CA 95054 dmmaddix@amazon.com Nadim Saad ∗ Stanford University 450 Serra Mall Stanford CA 94305 nsaad31@stanford.edu Yuyang Wang Amazon Research 2795 Augustine Dr. Santa Clara CA 95054 yuyawang@amazon.com Abstract The transport of traffic flow can be modeled by the advection equation. Finite difference and finite volumes methods have been used to numerically solve this hyperbolic equation on a mesh. Advection has also been modeled discretely on directed graphs using the graph advection operator [4 18]. In this paper we first show that we can reformulate this graph advection operator as a finite difference scheme. We then propose the Directed Graph Advection Matérn Gaussian Process (DGAMGP) model that incorporates the dynamics of this graph advection operator into the kernel of a trainable Matérn Gaussian Process to effectively model traffic flow and its uncertainty as an advective process on a directed graph. Introduction 1 The continuous linear advection equation models the flow of a scalar concentration along a vector field. The solutions to this hyperbolic partial differential equation may develop discontinuities or shocks over time depending on the initial condition. These shocks can model the formation of traffic jams and their propagation along a road [20]. Figure 1 illustrates an example where initially the first half of the road is 70% occupied with cars and the second half of the road is empty. The traffic propagates to the right until the whole road is 70% occupied. Classical methods such as finite differences and finite volumes have been used to predict the flow of traffic along a road [15 20]. These classical numerical methods do not incorporate any randomness into the model and can be limited in incorporating the uncertainty among different driver's behaviors [6]. Gaussian processes (GPs) [19] can learn unknown functions that allow use of prior information about their properties and for uncertainty modeling. Küper and Waldherr [10] propose the Gaussian Process Kalman Filter (GPKF) method to simulate spatiotemporal models and test on the advection equation. Raissi et al. [17] train GPs on data to learn the underlying physics of non linear advection diffusion equations. Additional physicsbased machine learning models [2] use the Matérn covariance function given below: u ∼ N(cid:0)0(cid:0) 2ν κ2 + ∆(cid:1)−ν(cid:1) Figure 1: Propagation of cars on a road using an advection process. where u denotes an unknown function ν < ∞ κ < ∞ and ∆ denotes the laplacian [1]. The Matérn kernel captures physical processes due to its finite differentiability and is also commonly used to (1) ∗Work conducted during an internship with Amazon AI. Fourth Workshop on Machine Learning and the Physical Sciences (NeurIPS 2021).
+{
+  "extracted_institutions": [
+    {
+      "name": "Amazon Research",
+      "country": "United States",
+      "city": "Santa Clara"
+    },
+    {
+      "name": "Stanford University",
+      "country": "United States",
+      "city": "Stanford"
+    }
+  ]
+}
+extracted names:
+{'Amazon Research', 'Stanford University'}
+paper name:  2201.00001v3.txt
+common:  ['https://ror.org/00f54p054']
+overshoot:  []
+missed:  ['https://ror.org/04mv4n011']
+
+
+validation of paper:2201.00002v1.txt
+
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+Match found for substring: 'FLORIDA STATE UNIVERSITY'
+['https://ror.org/05g3dte14']
+ TIME DEPENDENT DUHAMEL RENORMALIZATION METHOD WITH MULTIPLE CONSERVATION AND DISSIPATION LAWS SATHYANARAYANAN CHANDRAMOULI ASEEL FARHAT AND ZIAD MUSSLIMANI ABSTRACT. The time dependent spectral renormalization (TDSR) method was introduced by Cole and Musslimani as a novel way to numerically solve initial boundary value problems. An important and novel aspect of the TDSR scheme is its ability to incorporate physics in the form of conservation laws or dissipation rate equations. However the method was limited to include a single conserved or dissipative quantity. The present work significantly extends the computational features of the method with the (i) incorporation of multiple conservation laws and/or dissipation rate equations (ii) ability to enforce versatile boundary conditions and (iii) higher order time integration strategy. The TDSR method is applied on several prototypical evolution equations of physical significance. Examples include the Korteweg de Vries (KdV) multi dimensional nonlinear Schrodinger (NLS) and the Allen Cahn equations. Keywords: Renormalization method initial boundary value problems partial differential equations Duhamel's principle nonlinear waves soliton equations Hamiltonian and dissipative systems. 1. INTRODUCTION Numerical simulation of initial boundary value problems is of utmost importance in several engineering and scientific disciplines. Over the last few decades several time stepping methods have been developed and proposed to achieve this goal. Among them are the class of implicit/explicit Runge Kutta methods [35] exponential timedifferencing [12 25 37 43] and the split step operator splitting [40] to name a few. For evolution equations that arise in physical applications it is highly desirable to devise time stepping schemes that reflect the underlying physics at hand. Such structure preserving numerical schemes are of paramount importance for long time integration where either it is necessary to ensure numerical stability (e.g. if the numerics could conserve the L2 norm of the solution for the KdV/NLS) or preserve other features (such as capturing the correct shock speed in the context of systems of hyperbolic partial differential equations).To date there are various ways to input some physics into the numerical time integration. For example the geometric/symplectic integrators that preserve the Hamiltonian and symplectic structure [18] the operator splitting method that was used for the NLS equation to preserve the power and the non linear dispersion relation [40] the multi symplectic schemes designed for the generalized Schrodinger equations [21 23] the Taha Ablowitz [38] the Ablowitz Ladik [6] and the Ablowitz Musslimani [2 4] schemes that preserve the integrable structure of the KdV NLS and class of nonlocal NLS equations respectively. Other relevant works correspond to the conservative finite volume Godunov schemes [16 19 28] finite difference schemes that preserve the energy or dissipation property of the underlying model equation (see e.g.[15 36]) as well as a finite volume scheme that conserve mass and momentum of the KdV equation (see e.g. [13]). Recently Cole and Musslimani [11] proposed an alternative method to simulate dynamical systems that enables the inclusion of physics "on demand". The core idea is to make use of the Duhamel's principle to recast the underlying evolution equation as a space time integral equation. The resulting system is then solved iteratively using a novel time dependent renormalization process that controls both the numerical convergence properties of the scheme while at the same time preserving a single physical law. In this paper we extend the time dependent spectral renormalization method to allow for multiple conservation laws or dissipation rates to be simultaneously incorporated in the simulation. This is achieved by introducing as many time dependent renormalization factors as the number of conservation/dissipation laws being enforced. The solution sought is then written as a linear superposition of finite number of space time dependent auxiliary wave functions with the time dependent renormalization factors envisioned to play the role of "expansion coefficients". When inserted into the corresponding Duhamel's formula a finite set of "sub Duhamel" integral equations 1
+  "extracted_institutions": [
+    {
+      "name": "Harvard University",
+      "country": "United States",
+      "city": "Cambridge"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Harvard University",
+      "country": "United States",
+      "city": "Cambridge"
+    }
+  ]
+}
+extracted names:
+{'Harvard University'}
+paper name:  2201.00002v1.txt
+common:  ['https://ror.org/05g3dte14']
+overshoot:  ['https://ror.org/03vek6s52']
+missed:  []
+
+
+validation of paper:2201.00003v1.txt
+
+Match found for substring: 'QATAR UNIVERSITY'
+['https://ror.org/00yhnba62']
+Match found for substring: 'AL AKHAWAYN UNIVERSITY'
+['https://ror.org/03erkev52']
+Match found for substring: 'CRACOW UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/00pdej676']
+ Simulating local fields in carbon nanotube reinforced composites for infinite strip with voids Mohamed Nassera El Mostafa Kalmounb Vladimir Mityushevc and Natalia Rylkoc aMathematics Program Department of Mathematics Statistics and Physics College of Arts and Sciences Qatar University Doha Qatar bSchool of Science and Engineering Al Akhawayn University in Ifrane PO Box 104 Ifrane 53000 Morocco cFaculty of Computer Science and Telecommunications Cracow University of Technology Krak´ow Poland Abstract We consider the steady heat conduction problem within a thermal isotropic and homogeneous infinite strip composite reinforced by uniformly and randomly distributed non overlapping carbon nanotubes (CNTs) and containing voids. We treat the CNTs as thin perfectly conducting elliptic inclusions and assume the voids to be of circular shape and act as barriers to heat flow. We also impose isothermal conditions on the external boundaries by assuming the lower infinite wall to be a heater under a given temperature and the upper wall to be a cooler that can be held at a lower fixed temperature. The equations for the temperature distribution are governed by the two dimensional Laplace equation with mixed Dirichlet Neumann boundary conditions. The resulting boundary value problem is solved using the boundary integral equation with the generalized Neumann kernel. We illustrate the performance of the proposed method through several numerical examples including the case of the presence a large number of CNTs and voids. Keywords. Local fields in 2D composites Boundary integral equation Carbon nanotube composites 1 Introduction Nanofibers embedded in polymer matrices have attracted attention as one of the reinforcements for composite materials. Carbon nanotubes (CNTs) reinforced polymer nanocomposites are considered as conventional micro and macro composites [1]. Their thermal mechanical and electric properties are determined by experimental and theoretical investigations [2 3 4]. CNTs are considered as perfectly conducting inclusions which suggests imposing Dirichlet boundary conditions on the boundary of CNTs. On the other hand the classical problems for materials with holes in porous media and materials with voids and insulting inclusions are modeled by the Neumann boundary condition [5 6]. The present paper is devoted to the heat conduction within a 2D (two dimensional) thermal isotropic and homogeneous nanocomposite which takes the form of an infinite strip when it is reinforced by non overlapping and randomly distributed CNTs 1
+{
+  "extracted_institutions": [
+    {
+      "name": "Qatar University",
+      "country": "Qatar",
+      "city": "Doha"
+    },
+    {
+      "name": "Al Akhawayn University",
+      "country": "Morocco",
+      "city": "Ifrane"
+    },
+    {
+      "name": "Cracow University of Technology",
+      "country": "Poland",
+      "city": "Kraków"
+    }
+  ]
+}
+extracted names:
+{'Qatar University', 'Cracow University of Technology', 'Al Akhawayn University'}
+paper name:  2201.00003v1.txt
+common:  ['https://ror.org/00yhnba62', 'https://ror.org/00pdej676', 'https://ror.org/03erkev52']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00004v1.txt
+
+Match found for substring: 'UNIVERSITY OF MICHIGAN ANN ARBOR'
+['https://ror.org/00jmfr291']
+Match found for substring: 'OREGON STATE UNIVERSITY'
+['https://ror.org/00ysfqy60']
+ Robust reliability based topology optimization under random field material model Trung Pham∗ Department of Aerospace Engineering University of Michigan Ann Arbor Michigan 48109 USA Email: trungp@umich.edu School of Mechanical Industrial & Manufacturing Engineering Christopher Hoyle Oregon State University Corvallis Oregon 97331 6001 USA Email: chris.hoyle@oregonstate.edu This paper proposes an algorithm to find robust reliabilitybased topology optimized designs under a random field material model. The initial design domain is made of linear elastic material whose property i.e. Young's modulus is modeled by a random field. To facilitate computation the Karhunen− Lo`eve expansion discretizes the modeling random field into a small number of random variables. Robustness is achieved by optimizing a weighted sum of mean and standard deviation of a quantity of interest while reliability is employed through a probabilistic constraint. The Smolyaktype sparse grid and the stochastic response surface method are applied to reduce computational cost. Furthermore an efficient inverse reliability algorithm is utilized to decouple the double loop structure of reliability analysis. The proposed algorithm is tested on two common benchmark problems in literature. Finally Monte Carlo simulation is used to validate the claimed robustness and reliability of optimized designs. 1 Introduction A mechanical structure is characterized by its boundary and loading conditions its material properties and its topology. Finding an appropriate topology is often a major task in structural design which has fueled the rise of topology optimization (TO) in the last two decades. Without considering a designer's experience TO is a mathematical tool to identify the optimal size shape and connectivity of a design [1] resulting in improved performance while using the least amount of material. However research in TO often only concerns with deterministic inputs while uncertainty is inherent in nature which manifests itself in the stochasticity of random parameters of engineered systems. The anal ∗Address all correspondence related to this paper to this author. ysis and design of engineered systems are affected heavily by uncertainty; for example modern design codes such as ACI 318 [2] and AISC 360 [3] have comprehensive recommendations of safety factors for loading material property construction conditions etc. which obviously are intended to take into account uncertainty. Among different sources of uncertainty material property is intrinsically random in space which has been modeled by random field in the design of composite structures [4 5 6]. Such a modeling technique has been especially popular in the vast literature of the Stochastic Finite Element Method [7 8 9] which certainly proves its validity and the need to be considered in TO. So far uncertainty in TO has been treated separately by robust optimization or reliability based optimization while both robustness and reliability are desired properties of design under uncertainty. Therefore this paper presents an algorithm to find robust reliability based topology optimized design under a random field material model. There are a number of steps in our proposed algorithm which are addressed in depth in the subsequent sections. Here we provide a brief overview of them. First from a known covariance function the modeling random field is estimated by a random polynomial using the Karhunen− Lo`eve expansion. To make the design robust a weighted sum of mean and standard deviation of a quantity of interest which are computed by a Smolyak type sparse grid is considered as the objective function. Reliability of the design is reflected in the probabilistic constraint which is handled by the Sequential Optimization and Reliability Assessment (SORA) method [10]−a single loop inversereliability algorithm−coupled with the performance measure approach [11] to reduce the computational cost of reliability analysis. The stochastic response surface method approximates the random output which is required to solve the in 1 Copyright © by ASME
+{
+  "extracted_institutions": [
+    {
+      "name": "University of Michigan",
+      "country": "United States",
+      "city": "Ann Arbor"
+    },
+    {
+      "name": "Oregon State University",
+      "country": "United States",
+      "city": "Corvallis"
+    }
+  ]
+}
+extracted names:
+{'Oregon State University', 'University of Michigan'}
+paper name:  2201.00004v1.txt
+common:  ['https://ror.org/00jmfr291', 'https://ror.org/00ysfqy60']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00005v1.txt
+
+Match found for substring: 'LAKEHEAD UNIVERSITY'
+['https://ror.org/023p7mg82']
+Match found for substring: 'LAKEHEAD UNIVERSITY'
+['https://ror.org/023p7mg82']
+A Literature Review on Length of Stay Prediction for Stroke Patients using Machine Learning and Statistical Approaches Ola Alkhatib1 and Ayman Alahmar2 1Department of Computer Science Lakehead University Thunder Bay Ontario Canada 2Department of Software Engineering Lakehead University Thunder Bay Ontario Canada Abstract Hospital length of stay (LOS) is one of the most essential healthcare metrics that reflects the hospital quality of service and helps improve hospital scheduling and management. LOS prediction helps in cost management because patients who remain in hospitals usually do so in hospital units where resources are severely limited. In this study we reviewed papers on LOS prediction using machine learning and statistical approaches. Our literature review considers research studies that focus on LOS prediction for stroke patients. Some of the surveyed studies revealed that authors reached contradicting conclusions. For example the age of the patient was considered an important predictor of LOS for stroke patients in some studies while other studies concluded that age was not a significant factor. Therefore additional research is required in this domain to further understand the predictors of LOS for stroke patients. Keywords: Length of Stay Stroke Machine Learning Data Mining Statistical Analysis. 1. INTRODUCTION H EALTHCARE sectors show increasing costs in most regions around the world. Healthcare expenditure constitutes a significant share of the gross domestic product for many countries. There are many challenges associated with growth in the healthcare sector including increased pressure on the limited resources of hospitals. This issue has motivated researchers to conduct further research related to hospital resource optimization. Since hospitalization constitutes a significant cost of patient care many researchers have been investigating the problem of patient Length of Stay (LOS) prediction. LOS is defined as the duration of a patient hospitalization and it is determined as the difference between the timestamp of a patient hospital discharge and the timestamp of their hospital admission [1] [2]. LOS prediction is an important topic for many reasons such as: • Knowledge of LOS allows hospitals to manage their bed and room capacities so that • they can know how long a patient is expected to occupy hospital space. Information about LOS allows hospitals to determine the number of staff that must be scheduled over the day/night shifts to properly accommodate the patients. • Patients and their families can estimate the cost of a stay in paid hospitalizations. By investigating the existing literature we found that LOS prediction papers used machine learning/statistical approaches and can be divided into the type of disease under consideration. Some authors studied LOS prediction in general (i.e. without specifying a specific disease) while other researchers focused on LOS prediction pertinent to a specific disease (e.g. stroke 1
+  "extracted_institutions": [
+    {
+      "name": "Lakehead University",
+      "country": "Canada",
+      "city": "Thunder Bay"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Lakehead University",
+      "country": "Canada",
+      "city": "Thunder Bay"
+    }
+  ]
+}
+extracted names:
+{'Lakehead University'}
+paper name:  2201.00005v1.txt
+common:  ['https://ror.org/023p7mg82']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00006v2.txt
+
+Match found for substring: 'UNIVERSITY OF ELECTRONIC SCIENCE AND TECHNOLOGY OF CHINA'
+['https://ror.org/04qr3zq92']
+Match found for substring: 'LANZHOU UNIVERSITY'
+['https://ror.org/01mkqqe32']
+AttentionLight: Rethinking queue length and attention mechanism for traffic signal control Liang Zhang1 Qiang Wu2 Jianming Deng1* 2 Institute of Fundamental and Frontier Sciences University of Electronic Science and Technology of China Chengdu 1 College of Ecology Lanzhou University Lanzhou 730000 China 611731 China 2 2 0 2 r p A 6   ] G L . s c [  2 v 6 0 0 0 0 . 1 0 2 2 : v i X r a Abstract Using Reinforcement learning (RL) techniques for traffic signal control (TSC) is becoming increasingly popular. However most RL based TSC methods concentrate on the RL model structure and easily ignore the traffic state representation (vehicle number queue length waiting time delay etc.). Moreover some RL methods heavily depend on expert design for traffic signal phase competition. In this paper we rethink vehicles' queue length and attention mechanism for TSC: (1) redesign the queue length (QL) as traffic state representation and propose a TSC method called Max QueueLength (M QL) based on our QL state; (2) develop a general RLbased TSC paradigm called QL XLight with QL as state and reward and generate RL based methods by our QL XLight directly based on existing traditional and latest RL models; (3) propose a novel RL based model AttentionLight base on QL XLight that uses a self attention mechanism to capture the phase correlation does not require human knowledge on traffic signal phases' competition. Through comprehensive experiments on multiple real world datasets we demonstrate that:(1) our M QL method outperforms the latest RLbased methods; (2) AttentionLight achieves a new state ofthe art (SOTA); (3) the state representation is essential for TSC methods. Our code is released on Github1. Keywords: traffic signal control reinforcement learning effective state attention mechanism 1 Introduction With population growth and economy vehicles are increasing rapidly and traffic congestion has become an urgent problem. It is well known that traffic congestion causes fuel waste environmental pollution economic losses and waste of time. Improving transportation efficiency and mitigating traffic congestion is urgent. Because intersections are one of the most common forms of bottlenecks in urban areas traffic signal control is critical for effective traffic management. In many modern cities FixedTime [9] SCOOT [7] and SCATS [13] are the most common traffic signal control(TSC) systems which rely on manually traffic signal plans. FixedTime uses a fixed traffic signal plan with fixed cycle length and singal phase split. SCOOT and SCATS dynamically select the traffic signal plan according to the traffic corresponding author. Email: *Jianming Deng is the dengjm@lzu.edu.cn 1https:github.com/LiangZhang1996/QL XLight volume detected by loop sensors. These methods' specialized traffic signal plans are not suitable for dynamic traffic and various intersections. Reinforcement learning (RL) [18] is a branch of machine learning concerned with how intelligent agents ought to take actions in an environment in order to maximize the notion of cumulative reward. RL has attracted increasing attention for TSC and researchers have started using RL to solve TSC problems [20 27 33 19 16 25 26 1]. RL models can directly learn from the environment through trial andreward without requiring strict assumptions like traditional TSC methods. In addition RL models powered by deep neural networks [15] can learn to handle complex and dynamic environments. RL based TSC methods [25 1 26] become a promising solution for adapting the dynamic traffic. PressLight [25] can realize large scale traffic signal control. Furthermore MPLight [1] and CoLight [26] have demonstrated their capacity to deal with TSC at large scale. The model framework state representation and incentive design can all influence performance in RL based approaches. FRAP [32] develops a particular network that constructs phase features and models phase competition correlations to get the score of each phase. This novel network of FRAP yields excellent performance for TSC. CoLight [26] uses graph attention network [24] to realize intersection cooperation and achieves state of the art performance after getting more state representation. LIT [33] leverages the network from IntelliLight [27] and uses a simple state scheme and reward to outperform IntelliLight vastly. PressLight [25] also uses the network from IntelliLight and further optimizes the state and reward outperforming LIT considerably. MPLight [1] improves the state representation from PressLight and adopts a more efficient framework FRAP [32] significantly improves PressLight. In Atari games the state representation usually uses images (or information array) given by the game environments which does not require manual design. The state representations of RL based TSC are varied compared to RL approaches in Atari games [14]. Specifically in TSC field state representation mainly varies in: number of vehicles [27 33 30 25 32 30 26 29] vehicle image [20 27] traffic movement pressure [1] queue length [16 27] average velocity [16] current phase [27 33 30 25 32 30 26 29] and next phase [27 29]; reward representation mainly
+  "extracted_institutions": [
+    {
+      "name": "University of Electronic Science and Technology of China",
+      "country": "China",
+      "city": "Chengdu"
+    },
+    {
+      "name": "Lanzhou University",
+      "country": "China",
+      "city": "Lanzhou"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "University of Electronic Science and Technology of China",
+      "country": "China",
+      "city": "Chengdu"
+    },
+    {
+      "name": "Lanzhou University",
+      "country": "China",
+      "city": "Lanzhou"
+    }
+  ]
+}
+extracted names:
+{'University of Electronic Science and Technology of China', 'Lanzhou University'}
+paper name:  2201.00006v2.txt
+common:  ['https://ror.org/04qr3zq92', 'https://ror.org/01mkqqe32']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00007v3.txt
+
+Match found for substring: 'ZHEJIANG UNIVERSITY'
+['https://ror.org/00a2xv884']
+Match found for substring: 'ZHEJIANG UNIVERSITY'
+['https://ror.org/00a2xv884']
+CONFIDENCE AWARE MULTI TEACHER KNOWLEDGE DISTILLATION Hailin Zhang Defang Chen Can Wang(cid:63) Zhejiang University China; ZJU Bangsun Joint Research Center. {zzzhl defchern wcan}@zju.edu.cn 2 2 0 2  b e F 4 1   ] G L . s c [  3 v 7 0 0 0 0 . 1 0 2 2 : v i X r a ABSTRACT Knowledge distillation is initially introduced to utilize additional supervision from a single teacher model for the student model training. To boost the student performance some recent variants attempt to exploit diverse knowledge sources from multiple teachers. However existing studies mainly integrate knowledge from diverse sources by averaging over multiple teacher predictions or combining them using other label free strategies which may mislead student in the presence of low quality teacher predictions. To tackle this problem we propose Confidence Aware Multiteacher Knowledge Distillation (CA MKD) which adaptively assigns sample wise reliability for each teacher prediction with the help of ground truth labels with those teacher predictions close to one hot labels assigned large weights. Besides CA MKD incorporates features in intermediate layers to stable the knowledge transfer process. Extensive experiments show our CA MKD consistently outperforms all compared state of the art methods across various teacher student architectures. Code is available: https://github.com/Rorozhl/CA MKD. Index Terms  knowledge distillation multiple teachers confidence aware weighting 1. INTRODUCTION Nowadays deep neural networks have achieved unprecedented success in various applications [1 2 3]. However these complex models requiring huge memory footprint and computational resources are difficult to be applied on embedded devices. Knowledge distillation (KD) is thus proposed as a model compression technique to resolve this issue which improves the accuracy of a lightweight student model by distilling the knowledge from a pre trained cumbersome teacher model [4]. The transferred knowledge was originally formalized as softmax outputs (soft targets) of the teacher model [4] and latter extended to the intermediate teacher layers for achieving more promising performance [5 6 7]. (cid:63)Corresponding author This work is supported by National Key R&D Program of China (Grant No: 2019YFB1600700) the Starry Night Science Fund of Zhejiang University Shanghai Institute for Advanced Study (Grant No: SN ZJU SIAS 001) and National Natural Science Foundation of China (Grant No: U1866602). Fig. 1. Comparison of the previous average direction (green line) and our proposed confidence aware direction (red line). As the wisdom of the masses exceeds that of the wisest individual some multi teacher knowledge distillation (MKD) methods are proposed and have been proven to be beneficial [8 9 10 11 12]. Basically they combine predictions from multiple teachers with the fixed weight assignment [8 9 10] or other various label free schemes such as calculating weights based on a optimization problem or entropy criterion [11 12] etc. However fixed weights fail to differentiate high quality teachers from low quality ones [8 9 10] and the other schemes may mislead the student in the presence of low quality teacher predictions [11 12]. Figure 1 provides an intuitive illustration on this issue where the student trained with the average weighting strategy might deviate from the correct direction once most teacher predictions are biased. Fortunately we actually have ground truth labels in hand to quantify our confidence about teacher predictions and then filter out low quality predictions for better student training. To this end we propose Confidence Aware Multi teacher Knowledge Distillation (CA MKD) to learn sample wise weights by taking the prediction confidence of teachers into consideration for adaptive knowledge integration. The confidence is obtained based on the cross entropy loss between prediction distributions and ground truth labels. Compared with previous label free weighting strategies our technique enables the student to learn from a relatively correct direction. Note that our confidence aware mechanism not only is able to adaptively weight different teacher predictions based on their sample wise confidence but also can be extended to the student teacher feature pairs in intermediate layers. With the help of our generated flexible and effective weights we could avoid those poor teacher predictions dominating the knowledge transfer process and considerably improve the student performance on eight teacher student architecture combinations (as shown in Table 1 and 3).
+{
+  "extracted_institutions": [
+    {
+      "name": "Zhejiang University",
+      "country": "China",
+      "city": "Hangzhou"
+    }
+  ]
+}
+extracted names:
+{'Zhejiang University'}
+paper name:  2201.00007v3.txt
+common:  ['https://ror.org/00a2xv884']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00008v3.txt
+
+Match found for substring: 'HONG KONG UNIVERSITY OF SCIENCE AND TECHNOLOGY'
+['https://ror.org/00q4vv597']
+Match found for substring: 'CHONGQING UNIVERSITY'
+['https://ror.org/023rhb549']
+Match found for substring: 'NATIONAL CHUNG HSING UNIVERSITY'
+['https://ror.org/05vn3ca78']
+Match found for substring: 'NATIONAL YANG MING CHIAO TUNG UNIVERSITY'
+['https://ror.org/00se2k293']
+ A Lightweight and Accurate Spatial Temporal Transformer for Traffic Forecasting 1 Guanyao Li Shuhan Zhong S. H. Gary Chan Ruiyuan Li Chih Chieh Hung Wen Chih Peng Abstract We study the forecasting problem for traffic with dynamic possibly periodical and joint spatial temporal dependency between regions. Given the aggregated inflow and outflow traffic of regions in a city from time slots 0 to t − 1 we predict the traffic at time t at any region. Prior arts in the area often consider the spatial and temporal dependencies in a decoupled manner or are rather computationally intensive in training with a large number of hyper parameters to tune. We propose ST TIS a novel lightweight and accurate Spatial Temporal Transformer with information fusion and region sampling for traffic forecasting. ST TIS extends the canonical Transformer with information fusion and region sampling. The information fusion module captures the complex spatial temporal dependency between regions. The region sampling module is to improve the efficiency n) where n is the number of and prediction accuracy cutting the computation complexity for dependency learning from O(n2) to O(n regions. With far fewer parameters than state of the art models ST TIS's offline training is significantly faster in terms of tuning and computation (with a reduction of up to 90% on training time and network parameters). Notwithstanding such training efficiency extensive experiments show that ST TIS is substantially more accurate in online prediction than state of the art approaches (with an average improvement of 9.5% on RMSE and 12.4% on MAPE compared to STDN and DSAN). √ Index Terms spatial temporal forecasting; spatial temporal data mining; efficient Transformer; joint spatial temporal dependency; region sampling. ! 1 INTRODUCTION Traffic forecasting is to predict the inflow (i.e. the number of arriving objects per unit time) and outflow (i.e. the number of departing objects per unit time) of any region in a city at the next time slot. The objects can be people vehicles goods/items etc. Traffic forecasting has important applications in transportation retails public safety city planning etc [1] [2]. For example with traffic forecasting a taxi company may dispatch taxis in a timely manner to meet the supply and demand in different regions of a city. Yet another example is bike sharing where the company may want to balance bike supply and demand at dock stations (regions) based on such forecasting. Although there has been much effort on deep learning to improve the prediction accuracy of the state of the art forecasting models progressive improvements on benchmarks have been correlated with an increase in the number of parameters and the amount of training resources required to train the model making it costly to train and deploy large deep learning models [3]. Therefore a lightweight • Guanyao Li Shuhan Zhong and S. H. Gary Chan are with the Department of Computer Science and Engineering The Hong Kong University of Science and Technology. E mail: {gliaw szhongaj lxiangab gchan}@cse.ust.hk • Ruiyuan Li is with College of Computer Science Chongqing University. • Chih Chieh Hung is with Department of Computer Science and Engineer E mail: liruiyuan@cqu.edu.cn ing National Chung Hsing University. E mail: smalloshin@email.nchu.edu.tw • Wen Chih Peng is with Department of Computer Science National Yang Ming Chiao Tung University. E mail: wcpeng@g2.nctu.edu.tw and training efficient model is essential for fast delivery and deployment. In this work we study the following spatial temporal traffic forecasting problem: Given the historical (aggregated) inflow and outflow data of different regions from time slots 0 to t − 1 (with slot size of say 30 minutes) what is the design of a training efficient model to accurately predict the inflow and outflow of any region at time t? (Note that even though we consider predicting for the next time slot our work can be straightforwardly extended to any future time slot by successive application of the algorithm.) We seek a "small" training model with substantially fewer parameters which naturally leads to efficiency in tuning memory and computation time. Despite its training efficiency our lightweight model lightweight it should also achieve higher accuracy than the state of the art approaches in its online predictions. Intuitively region traffic is spatially and temporally correlated. As an example the traffic of a region could be correlated with that of another with some temporal lag due to the travel time between them. Moreover such dependency may be dynamic over different time slots and it may have temporal periodic patterns. This is the case for the traffic of office regions which exhibit high correlation with the residence regions in workday morning but much less than at night or weekend. To accurately predict the region traffic it is hence significantly crucial to account for the dynamic possibly periodical and joint spatial temporal (ST) dependency between regions no matter how far the regions is apart. Much effort has been devoted to capturing the dependency between regions for traffic forecasting. While
+  "extracted_institutions": [
+    {
+      "name": "The Hong Kong University of Science and Technology",
+      "country": "Hong Kong",
+      "city": "Hong Kong"
+    },
+    {
+      "name": "Chongqing University",
+      "country": "China",
+      "city": "Chongqing"
+    },
+    {
+      "name": "National Chung Hsing University",
+      "country": "Taiwan",
+      "city": "Taichung"
+    },
+    {
+      "name": "National Yang Ming Chiao Tung University",
+      "country": "Taiwan",
+      "city": "Hsinchu"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "The Hong Kong University of Science and Technology",
+      "country": "Hong Kong",
+      "city": "Hong Kong"
+    },
+    {
+      "name": "Chongqing University",
+      "country": "China",
+      "city": "Chongqing"
+    },
+    {
+      "name": "National Chung Hsing University",
+      "country": "Taiwan",
+      "city": "Taichung"
+    },
+    {
+      "name": "National Yang Ming Chiao Tung University",
+      "country": "Taiwan",
+      "city": "Hsinchu"
+    }
+  ]
+}
+extracted names:
+{'The Hong Kong University of Science and Technology', 'Chongqing University', 'National Yang Ming Chiao Tung University', 'National Chung Hsing University'}
+paper name:  2201.00008v3.txt
+common:  ['https://ror.org/05vn3ca78', 'https://ror.org/00se2k293', 'https://ror.org/00q4vv597', 'https://ror.org/023rhb549']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00009v3.txt
+
+Match found for substring: 'NANYANG TECHNOLOGICAL UNIVERSITY'
+['https://ror.org/02e7b5302']
+ Improving Deep Neural Network Classification Confidence using Heatmap based eXplainable AI Erico Tjoa1 Hong Jing Khok1 Tushar Chouhan2 and Guan Cuntai2 Nanyang Technological University 50 Nanyang Ave Singapore 639798 Singapore ARTICLE INFO Keywords: explainable artificial intelligence interpretability medical AI Image processing ABSTRACT This paper quantifies the quality of heatmap based eXplainable AI (XAI) methods w.r.t image classification problem. Here a heatmap is considered desirable if it improves the probability of predicting the correct classes. Different XAI heatmap based methods are empirically shown to improve classification confidence to different extents depending on the datasets e.g. Saliency works best on ImageNet and Deconvolution on Chest X Ray Pneumonia dataset. The novelty includes a new gap distribution that shows a stark difference between correct and wrong predictions. Finally the generative augmentative explanation is introduced a method to generate heatmaps capable of improving predictive confidence to a high level. 1. Introduction Artificial intelligence (AI) and machine learning (ML) models have been developed with various levels of transparency and interpretability. Recent issues related to the responsible usage of AI have been highlighted by large companies like Google [13] and Meta [18]; this may reflect the increasing demand for transparency and interpretability hence the demand for eXplainable Artificial Intelligence (XAI). In particular the blackbox nature of a deep neural network (DNN) is a well known problem in XAI. Many attempts to tackle the problem can be found in surveys like [1 7 9 33]. Popular XAI methods include post hoc methods such asLocalInterpretableModel agnosticExplanations(LIME) [21] and SHapley Additive exPlanations (SHAP) that uses a game theoretical concept [14]. Many heatmap generating XAI methods have also been developed for DNN in particular Class Activation Mappings (CAM) [36 24] Layerwise Relevance Propagation (LRP) [3] and many other wellknown methods as listed in aforementioned surveys papers. These methods are appealing because heatmap like attributions are intuitive and easy to understand. Although there are other remarkable ways to investigate interpretability and explainability e.g. methods that directly attempt to visualize the inner working of a DNN [34 16 17] we do not cover them here. This paper focuses on heatmap based methods. How good are heatmap based XAI methods. Several existing efforts have also been dedicated to quantitatively measure the quality of heatmaps and other explanations. For example heatmaps have been measured by their potentials to improve object localization performance [36 24]. The pointing game [8 20] is another example where localization concept is used to quantify XAI's performance. The "most relevant first" (MORF) framework has also been introduced Cuntai) ORCID(s): 0000 0002 1599 1594 (E. Tjoa); 0000 0002 0872 3276 (G. 1Also affiliated with Alibaba Inc. 2School of Computer Science and Engineering (SCSE) NTU to quantify the explainability of heatmaps by ordered removal of pixels based on their importance [23]; the MORF paper also emphasizes that there is a difference between computational relevance and human relevance i.e. objects which algorithms find salient may not be necessarily salient for a human observer. Others can be found e.g. in [32]. This paper quantifies the quality of a heatmap based on how much the heatmap improves classification confidence. Using heatmaps to improve the classification confidence of DNN. Heatmaps have been said to not "[tell] us anything except where the network is looking at" [22]. In this work we would like to refute such claims and show that heatmaps can be computationally useful. To test the usefulness of heatmaps in a direct way we perform the Augmentative eXplanation (AX) process: combine an image  with its heatmap Ò to obtain higher probability of predicting the correct class e.g. if () gives a 60% probability of making a correct prediction we consider using Ò such that ( + Ò) yields 65%. We empirically show existing XAI methods have the potential to improve classificationconfidence.Howeverheatmapsareusuallynot designed to explicitly improve classification performance hence improvements are not observed in general. This improvement is quantified through a metric we call the Confidence Optimization (CO) score. Briefly speaking CO score is a weighted difference between raw output values before and after heatmaps/attributions modify the images  + Ò. The metric assigns a positive/negative score if  + Ò increases/decreases the probability of making the correct prediction. This paper is arranged as the following. In the next section AX and Generative AX (GAX) are demonstrated through a two dimensional toy example. Explicit form of heatmaps/attribution values can be obtained in the toy example useful for lower level analysis and direct observation.Thefollowingsectiondescribesdatasetpre processing computation of CO scores for AX process on existing XAI methods formal definition GAX process and the results. E. Tjoa Guan C.: Preprint submitted to Elsevier Page 1 of 14
+  "extracted_institutions": [
+    {
+      "name": "Nanyang Technological University",
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Nanyang Technological University",
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  ]
+}
+extracted names:
+{'Nanyang Technological University'}
+paper name:  2201.00009v3.txt
+common:  ['https://ror.org/02e7b5302']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00010v1.txt
+
+Match found for substring: 'INDIAN SPACE RESEARCH ORGANISATION'
+['https://ror.org/00cwrns71']
+Match found for substring: 'INDIAN INSTITUTE OF TECHNOLOGY DELHI'
+['https://ror.org/049tgcd06']
+Match found for substring: 'BANARAS HINDU UNIVERSITY'
+['https://ror.org/04cdn2797']
+Locally finite free space as limiting case of P T symmetric medium Mohammad Hasan 13 Mohammad Umar 2 Bhabani Prasad Mandal 3 1Indian Space Research Organisation Bangalore 560094 INDIA 2 Indian Institute of Technology Delhi 110016 INDIA. 3Department of Physics Banaras Hindu University Varanasi 221005 INDIA. Abstract We explicitly prove that the transfer matrix of a finite layered P T symmetric system of fix length L consisting of N units of the potential system '+iV ' and '−iV ' of equal thickness becomes a unit matrix in the limit N → ∞. This result is true for waves of arbitrary wave vector k. This shows that in this limit the transmission coefficient is always unity while the reflection amplitude is zero for all waves traversing this length L. Therefore a free space of finite length L can be represented as a P T symmetric medium. 1 2 0 2 c e D 0 3   ] h p t n a u q [  1 v 0 1 0 0 0 . 1 0 2 2 : v i X r a 1e mail address: mhasan@isro.gov.in mohammadhasan786@gmail.com 2e mail address: pha212475@iitd.ac.in 3e mail address: bhabani.mandal@gmail.com bhabani@bhu.ac.in 1
+{
+  "extracted_institutions": [
+    {
+      "name": "Indian Space Research Organisation",
+      "country": "India",
+      "city": "Bangalore"
+    },
+    {
+      "name": "Indian Institute of Technology",
+      "country": "India",
+      "city": "Delhi"
+    },
+    {
+      "name": "Banaras Hindu University",
+      "country": "India",
+      "city": "Varanasi"
+    }
+  ]
+}
+extracted names:
+{'Indian Institute of Technology', 'Banaras Hindu University', 'Indian Space Research Organisation'}
+paper name:  2201.00010v1.txt
+common:  ['https://ror.org/04cdn2797', 'https://ror.org/00cwrns71', 'https://ror.org/049tgcd06']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00011v1.txt
+
+Match found for substring: 'SOUTHWEST JIAOTONG UNIVERSITY'
+['https://ror.org/00hn7w693']
+Match found for substring: 'SOUTHWEST JIAOTONG UNIVERSITY'
+['https://ror.org/00hn7w693']
+Match found for substring: 'CHENGDU UNIVERSITY'
+['https://ror.org/034z67559']
+Match found for substring: 'CHENGDU UNIVERSITY OF INFORMATION TECHNOLOGY'
+['https://ror.org/01yxwrh59']
+Match found for substring: 'UNIVERSITY OF NOTTINGHAM'
+['https://ror.org/01ee9ar58']
+ JOURNAL OF LATEX CLASS FILES VOL. 14 NO. 8 AUGUST 2015 1 An Efficient Federated Distillation Learning System for Multi task Time Series Classification Huanlai Xing Member IEEE Zhiwen Xiao Rong Qu Senior Member IEEE Zonghai Zhu and Bowen Zhao Abstract This paper proposes an efficient federated distillation learning system (EFDLS) for multi task time series classification (TSC). EFDLS consists of a central server and multiple mobile users where different users may run different TSC tasks. EFDLS has two novel components namely a feature based student teacher (FBST) framework and a distance based weights matching (DBWM) scheme. Within each user the FBST framework transfers knowledge from its teacher's hidden layers to its student's hidden layers via knowledge distillation with the teacher and student having identical network structure. For each connected user its student model's hidden layers' weights are uploaded to the EFDLS server periodically. The DBWM scheme is deployed on the server with the least square distance used to measure the similarity between the weights of two given models. This scheme finds a partner for each connected user such that the user's and its partner's weights are the closest among all the weights uploaded. The server exchanges and sends back the user's and its partner's weights to these two users which then load the received weights to their teachers' hidden layers. Experimental results show that the proposed EFDLS achieves excellent performance on a set of selected UCR2018 datasets regarding top 1 accuracy. Index Terms Deep Learning Data Mining Federated Learning Knowledge Distillation Time Series Classification. ! 1 INTRODUCTION T IME series data is a series of time ordered data points associated with one or more time dependent variables and has been successfully applied to areas such as anomaly detection [1] [2] traffic flow forecasting [3] service matching [4] stock prediction [5] electroencephalogram (ECG) detection [6] and parking behavior prediction [7]. A significant amount of research attention has been dedicated to time series classification (TSC) [8]. For example Wang et al. [9] introduced a fully convolutional network (FCN) for local feature extraction. Zhang et al. [10] devised an attentional prototype network (TapNet) to capture rich representations from the input. Karim et al. [11] proposed a long shortterm memory (LSTM) fully convolutional network (FCNLSTM) for multivariate TSC. A robust temporal feature network (RTFN) hybridizing temporal feature network and LSTM based attention network was applied to extracting both the local and global patterns of data [12]. Li et al. [13] put forward a shapelet neural network approach to mine highly diversified representative shapelets from the input. Lee et al. [14] designed a learnable dynamic temporal pooling method to reduce the temporal pooling size of the hidden representations obtained. TSC algorithms are usually data driven where data • H. Xing Z. Zhu and B. Zhao are with the School of Computing and Artificial Intelligence Southwest Jiaotong University Chengdu 611756 China (Emails: hxx@home.swjtu.edu.cn; zzhu@swjtu.edu.cn; cn16bz@icloud.com). • Z. Xiao is with Southwest Jiaotong University Chengdu 611756 China and Chengdu University of Information Technology Chengdu 610103 China (Email: xiao1994zw@163.com). the School of Computer Science University of Nottingham Nottingham NG7 2RD 455356 UK (Email: rong.qu@nottingham.ac.uk) • R. Qu is with the Manuscript received XX XX; revised XX XX (Corresponding author: Zhiwen Xiao). comes from various application domains. Some data may contain private and sensitive information such as bank account and ECG. However traditional data collection operations could not well protect such information easily resulting in users' privacy leakage during the data collection and distribution processes involved in model training. To overcome the problem above Google [15] [16] [17] invented federated learning (FL). FL allows users to collectively harvest the advantages of shared models trained from their local data without sending original data to others. FederatedAveraging (FedAvg) federated transfer learning (FTL) and federated knowledge distillation (FKD) are the three mainstream research directions. FedAvg calculates the average weights of the models of all users and shares the weights with each user in the FL system [18]. For instance Ma et al. [19] devised a communication efficient federated generalized tensor factorization for electronic health records. Liu et al. [20] used a federated adaptation framework to leverage the sparsity property of neural networks for generating privacypreserving representations. A hierarchical personalized FL method aggregated heterogeneous user models with privacy heterogeneity and model heterogeneity considered [21]. Yang et al. [22] modified the FedAvg method using partial networks for COVID 19 detection. FTL introduces transfer learning techniques to promote knowledge transfer between different users increasing system accuracy [23]. For example Yang et al. [24] developed an FTL framework FedSteg for secure image steganalysis. An FTL method with dynamic gradient aggregation was proposed to weight the local gradients during the aggregation step when handling speech recognition tasks [25]. Majeed et al. [26] proposed an FTL based structure to address traffic classification problems.
+{
+  "extracted_institutions": [
+    {
+      "name": "Southwest Jiaotong University",
+      "country": "China",
+      "city": "Chengdu"
+    },
+    {
+      "name": "Chengdu University of Information Technology",
+      "country": "China",
+      "city": "Chengdu"
+    },
+    {
+      "name": "University of Nottingham",
+      "country": "United Kingdom",
+      "city": "Nottingham"
+    }
+  ]
+}
+extracted names:
+{'Southwest Jiaotong University', 'Chengdu University of Information Technology', 'University of Nottingham'}
+paper name:  2201.00011v1.txt
+common:  ['https://ror.org/01yxwrh59', 'https://ror.org/01ee9ar58', 'https://ror.org/00hn7w693']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00012v1.txt
+
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+Match found for substring: 'DELFT UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/02e2c7k09']
+ MORAL: Aligning AI with Human Norms through Multi Objective Reinforced Active Learning Arkady Zgonnikov Markus Peschl Delft University of Technology Delft The Netherlands A.Zgonnikov@tudelft.nl Luciano C. Siebert Delft University of Technology Delft The Netherlands L.CavalcanteSiebert@tudelft.nl Delft University of Technology Delft The Netherlands peschl@protonmail.com Frans A. Oliehoek Delft University of Technology Delft The Netherlands F.A.Oliehoek@tudelft.nl ABSTRACT Inferring reward functions from demonstrations and pairwise preferences are auspicious approaches for aligning Reinforcement Learning (RL) agents with human intentions. However state of the art methods typically focus on learning a single reward model thus rendering it difficult to trade off different reward functions from multiple experts. We propose Multi Objective Reinforced Active Learning (MORAL) a novel method for combining diverse demonstrations of social norms into a Pareto optimal policy. Through maintaining a distribution over scalarization weights our approach is able to interactively tune a deep RL agent towards a variety of preferences while eliminating the need for computing multiple policies. We empirically demonstrate the effectiveness of MORAL in two scenarios which model a delivery and an emergency task that require an agent to act in the presence of normative conflicts. Overall we consider our research a step towards multi objective RL with learned rewards bridging the gap between current reward learning and machine ethics literature. KEYWORDS Active Learning; Inverse Reinforcement Learning; Multi Objective Decision Making; Value Alignment 1 INTRODUCTION The design of adequate reward functions poses a tremendous challenge for building reinforcement learning (RL) agents that ought to act in accordance with human intentions [4 13]. Besides complicating the deployment of RL in the real world [11] this can lead to major unforeseen societal impacts which need to be accounted for when building autonomous systems [6 45]. To tackle this the field of value alignment has largely focused on reward learning which aims to adopt a bottom up approach of finding goal specifications from observational data instead of manually specifying them [22 30 40]. However such technical approaches cannot on their own solve the normative value alignment problem of deciding which values should ultimately be encoded into an agent [15]. Nonetheless building methods that allow for learning and trading off different conflicting values could potentially alleviate this issue thus making such methods an important avenue of research for beneficial artificial intelligence (AI) [35]. Jointly optimizing for different rewards can be cast into multiobjective RL (MORL) [32] which constitutes a promising framework for building human aligned AI [42]. Using game theoretic notions of optimality MORL typically aims to find a solution or a set thereof that can represent a variety of preferences over the components of a vector valued reward function. While this can theoretically tackle the overoptimization of narrowly defined tasks the designer still needs to manually specify multiple reward functions. Inverse RL (IRL) [16 51] and preference based RL [10 46] offer techniques for avoiding the reward design problem altogether by learning a parametric reward model from demonstrations and pairwise preferences respectively. In this paper we combine these approaches in a multi objective setting with a focus on learning human norms. The motivation for this is twofold: Firstly previous research on learning multiple reward functions has mostly employed latent variable IRL models for finding multiagent [19] hierarchical [41 43] and multitask [17 50] rewards whereas finding aggregated rewards from conflicting sequential data has yet to be addressed. Secondly a major challenge of value alignment is ensuring that an agent can predict its adherence to norms in the environment. Such adherence is implicitly embedded in human goal specifications but missing in manually engineered reward functions [20]. Our goal therefore is to find a policy that acts on a common set of social norms while allowing for fine tuning the agent with respect to inherent disagreements that may arise. Contributions. We propose Multi Objective Reinforced Active Learning (MORAL) a method that combines active preference learning and IRL to interactively learn a policy of social norms from expert demonstrations. MORAL first finds a vector valued reward function through adversarial IRL which is subsequently used in an interactive MORL loop. By requesting pairwise preferences over trajectories of on policy experience from an expert MORAL learns a probability distribution over linear combinations of reward functions under which the optimal policy most closely matches the desired behavior. We show that our approach directly approximates a Pareto optimal solution in the space of expert reward functions without the need of enumerating through a multitude of preference weights. Finally we demonstrate that MORAL efficiently captures norms in two gridworld scenarios while being able to adapt the agent's behavior to a variety of preferences.1 1Source code is available at https://github.com/mlpeschl/moral_rl.
+{
+  "extracted_institutions": [
+    {
+      "name": "Delft University of Technology",
+      "country": "Netherlands",
+      "city": "Delft"
+    }
+  ]
+}
+extracted names:
+{'Delft University of Technology'}
+paper name:  2201.00012v1.txt
+common:  ['https://ror.org/02e2c7k09']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00013v1.txt
+
+Match found for substring: 'LINKÖPING UNIVERSITY'
+['https://ror.org/05ynxx418']
+Match found for substring: 'CHALMERS UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/040wg7k59']
+The International Monetary Fund's intervention in education systems its impact on children's chances of completing school and    Adel Daoud12 *    (Version 22 December 2021)  w 1. Institute for Analytical Sociology Department of Management and Engineering Linköping University Norrköping Sweden.w 2. The Division of Data Science and Artificial Intelligence of the Department of Computer Science and Engineering Chalmers University of Technology Gothenburg Sweden  * Corresponding author: adel.daoud@liu.se  1
+  "extracted_institutions": [
+    {
+      "name": "Linköping University",
+      "country": "Sweden",
+      "city": "Norrköping"
+    },
+    {
+      "name": "Chalmers University of Technology",
+      "country": "Sweden",
+      "city": "Gothenburg"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Linköping University",
+      "country": "Sweden",
+      "city": "Norrköping"
+    },
+    {
+      "name": "Chalmers University of Technology",
+      "country": "Sweden",
+      "city": "Gothenburg"
+    }
+  ]
+}
+extracted names:
+{'Linköping University', 'Chalmers University of Technology'}
+paper name:  2201.00013v1.txt
+common:  ['https://ror.org/040wg7k59', 'https://ror.org/05ynxx418']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00014v1.txt
+
+Match found for substring: 'CHINESE ACADEMY OF SCIENCES'
+['https://ror.org/034t30j35']
+Match found for substring: 'INSTITUTE OF COMPUTING TECHNOLOGY'
+['https://ror.org/0090r4d87']
+Match found for substring: 'UNIVERSITY OF CHINESE ACADEMY OF SCIENCE'
+['https://ror.org/05qbk4x57']
+Match found for substring: 'UNIVERSITY OF CHINESE ACADEMY OF SCIENCES'
+['https://ror.org/05qbk4x57']
+ Exploiting Bi directional Global Transition Patterns and Personal Preferences for Missing POI Category Identification Dongbo Xiac Fuzhen Zhuangba∗ Yanchi Liue Hengshu Zhuf Pengpeng Zhaog Chang Tanh Qing Head aKey Lab of Intelligent Information Processing of Chinese Academy of Sciences (CAS) Institute of Computing Technology CAS Beijing 100190 China bXiamen Data Intelligence Academy of ICT CAS China cMeituan Dianping Group China dUniversity of Chinese Academy of Sciences Beijing 100049 China eManagement Science & Information Systems Rutgers University USA fBaidu Inc. Beijing China gSoochow University China hiFLYTEK China Abstract Recent years have witnessed the increasing popularity of Location based Social Network (LBSN) services which provides unparalleled opportunities to build personalized Point of Interest (POI) recommender systems. Existing POI recommendation and location prediction tasks utilize past information for future recommendation or prediction from a single direction perspective while the missing POI category identification task needs to utilize the check in information both before and after the missing category. Therefore a long standing challenge is how to effectively identify the missing POI categories at any time in the real world check in data of mobile users. To this end in this paper we propose a novel neural network approach to identify the missing POI categories by integrating both bidirectional global non personal transition patterns and personal preferences of users. Specifically we delicately design an attention matching cell to model how well the check in category information matches their non personal transition patterns and personal preferences. Finally we evaluate our model on two real world datasets which clearly validate its effectiveness compared with the state of the art baselines. Furthermore our model can be naturally extended to address next POI category recommendation and prediction tasks with competitive performance. Keywords: Global Transition Patterns Personal Preferences Missing POI Category Identification 1. Introduction The rapid development and increasing popularity of Location based Social Network (LBSN) services encourage more and more users to share their real life experiences. Data collected by various LBSN services have been effectively leveraged for studying users' online activities and mobility patterns which provide unparalleled opportunities to built personalized POI recommender systems. Generally the user's historical visiting records can be regarded as a set of check ins that each one contains a POI a timestamp a POI category and so on. Indeed the category information is con ∗Corresponding author: Fuzhen Zhuang Email addresses: xidongbo@meituan.com (Dongbo Xi) zhuangfuzhen@ict.ac.cn (Fuzhen Zhuang) Preprint submitted to Neural Networks ducive to explaining users' activities and plays a crucial role in various POI oriented tasks. Most of the existing POI oriented studies mainly focus on recommending or predicting the category of POI where a user may go in the future or improve the performance of next POI recommendation. Recently considerable efforts have been made to address next POI category prediction (Zhang et al. 2017a) and utilize the category information to solve POI recommendation and location prediction problems (Chen et al. 2015; He et al. 2017; Ye et al. 2013). However these methods utilize past information for future prediction or recommendation from a single direction perspective while the missing POI category identification task needs to utilize the check in information before and after the missing category which naturally calls for a bi directional solution. Therefore a long standing challenge is how to January 4 2022
+  "extracted_institutions": [
+    {
+      "name": "Chinese Academy of Sciences",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "University of Chinese Academy of Sciences",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "Rutgers University",
+      "country": "USA",
+      "city": "New Brunswick"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Chinese Academy of Sciences",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "University of Chinese Academy of Sciences",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "Rutgers University",
+      "country": "USA",
+      "city": "New Brunswick"
+    }
+  ]
+}
+extracted names:
+{'Rutgers University', 'Chinese Academy of Sciences', 'University of Chinese Academy of Sciences'}
+paper name:  2201.00014v1.txt
+common:  ['https://ror.org/034t30j35', 'https://ror.org/05qbk4x57', 'https://ror.org/0090r4d87']
+overshoot:  []
+missed:  ['https://ror.org/05t8y2r12', 'https://ror.org/05vt9qd57', 'https://ror.org/03vs3wt56']
+
+
+validation of paper:2201.00015v1.txt
+
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'SHANGHAI UNIVERSITY'
+['https://ror.org/006teas31']
+Match found for substring: 'SHANGHAI UNIVERSITY OF ENGINEERING SCIENCE'
+['https://ror.org/0557b9y08']
+Device Activity Detection for Massive Grant Free Access Under Frequency Selective Rayleigh Fading Yuhang Jia Ying Cui Wuyang Jiang Shanghai Jiao Tong University China Shanghai Jiao Tong University China Shanghai University of Engineering Science China Jay Yoga@sjtu.edu.cn cuiying@sjtu.edu.cn jiang wuyang@sues.edu.cn 1 2 0 2 c e D 1 3  ] T I . s c [  1 v 5 1 0 0 0 . 1 0 2 2 : v i X r a Abstract Device activity detection and channel estimation for massive grant free access under frequency selective fading have unfortunately been an outstanding problem. This paper aims to address the challenge. Specifically we present an orthogonal frequency division multiplexing (OFDM) based massive grantfree access scheme for a wideband system with one M antenna base station (BS) N single antenna Internet of Things (IoT) devices and P channel taps. We obtain two different but equivalent models for the received pilot signals under frequencyselective Rayleigh fading. Based on each model we formulate device activity detection as a non convex maximum likelihood estimation (MLE) problem and propose an iterative algorithm to obtain a stationary point using optimal techniques. The two proposed MLE based methods have the identical computational complexity order O(N P L2) irrespective of M and degrade to the existing MLE based device activity detection method when P = 1. Conventional channel estimation methods can be readily applied for channel estimation of detected active devices under frequency selective Rayleigh fading based on one of the derived models for the received pilot signals. Numerical results show that the two proposed methods have different preferable system parameters and complement each other to offer promising device activity detection design for grant free massive access under frequency selective Rayleigh fading. I. INTRODUCTION Driven by the proliferation of the Internet of Things (IoT) massive machine type communication (mMTC) plays a vital role in the fifth generation (5G) cellular technologies and beyond. It is incredibly challenging to support enormous IoT devices which are energy limited and sporadically active and have little data to send once activate. Massive grant free access with multiple input multiple output (MIMO) has been recently proposed to address the challenge. Specifically devices are pre assigned specific non orthogonal pilots active devices directly send their pilots and the base station (BS) detects the active devices and estimates their channel conditions from the received signal of non orthogonal pilots [1]. Unfortunately vast potential non orthogonal pilots complicate the signal processing at the BS. Due to inherent sparse device activities in massive grant free access joint device activity detection and channel estimation can be formulated as compressed sensing (CS) problems and solved by CS based algorithms [2] [4]. Specifically [2] proposes an approximate message passing (AMP) algorithm with This work was supported in part by the National Key Research and Development Program of China under Grant 2018YFB1801102 and in part by the Natural Science Foundation of Shanghai under Grant 20ZR1425300. a minimum mean square error (MMSE) estimation denoiser. In [4] the authors propose an alternating direction method of multipliers (ADMM) based algorithm for GROUP LASSO [3]. Besides several works focus only on device activity detection as conventional channel estimation methods can be directly applied for estimating channel conditions of the detected active devices. For instance [5] formulates device activity detection as a maximum likelihood estimation (MLE) problem and proposes a coordinate descent method to obtain a stationary point. This MLE based method is also analyzed in [5] [6]. Motivated by [5] [7] formulates device activity detection with prior activity distribution as a maximum a posteriori probability (MAP) estimation problem and extends the coordinate descent method in [5] to obtain a stationary point. It is worth noting that all existing works [2] [4] [7] consider massive grant free access for a narrow band system under flat fading. However due to the signal corruption under frequencyselective fading the existing methods for activity detection and channel estimation designed for a narrow band system under flat fading are no longer applicable for a wideband system under frequency selective fading. On the other hand orthogonal frequency division multiplexing (OFDM) provides a high degree of robustness against channel frequency selectivity. It hence is an attractive choice for 4G LTE and 5G NR. In this paper we would like to shed some light toward this direction. Specifically we present an orthogonal frequency division multiplexing (OFDM) based massive grantfree access scheme with one M antenna BS N single antenna IoT devices and P channel taps. We obtain two different but equivalent models for the received pilot signals under frequency selective Rayleigh fading. Based on each model we formulate device activity detection as a non convex MLE problem and propose an iterative algorithm to obtain a stationary point using optimal techniques. The two proposed MLEbased device activity detection methods have the identical computational complexity order O(N P L2) and degrade to the existing MLE based device activity detection method [5] [6] when P = 1. Notice that conventional channel estimation methods can be readily applied for channel estimation of detected active devices under frequency selective Rayleigh fading based on one of the derived models for the received pilot signals. Numerical results show that the two proposed methods offer promising device activity detection design for
+  "extracted_institutions": [
+    {
+      "name": "Shanghai Jiao Tong University",
+      "country": "China",
+      "city": "Shanghai"
+    },
+    {
+      "name": "Shanghai University of Engineering Science",
+      "country": "China",
+      "city": "Shanghai"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Shanghai Jiao Tong University",
+      "country": "China",
+      "city": "Shanghai"
+    },
+    {
+      "name": "Shanghai University of Engineering Science",
+      "country": "China",
+      "city": "Shanghai"
+    }
+  ]
+}
+extracted names:
+{'Shanghai Jiao Tong University', 'Shanghai University of Engineering Science'}
+paper name:  2201.00015v1.txt
+common:  ['https://ror.org/0557b9y08', 'https://ror.org/0220qvk04']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00016v2.txt
+
+Match found for substring: 'BEIHANG UNIVERSITY'
+['https://ror.org/00wk2mp56']
+Match found for substring: 'WASEDA UNIVERSITY'
+['https://ror.org/00ntfnx83']
+Match found for substring: 'UNIVERSITY OF SOUTHERN CALIFORNIA'
+['https://ror.org/03taz7m60']
+ TRANSLOG: A Unified Transformer based Framework for Log Anomaly Detection Hongcheng Guo1∗ Xingyu Lin4(cid:63) Jian Yang1 Yi Zhuang2 Jiaqi Bai1 Tieqiao Zheng3 Liangfan Zheng3 Weichao Hou3 Bo Zhang3 Zhoujun Li1† 1State Key Lab of Software Development Environment Beihang University 2Bio robot and human computer interaction laboratory Waseda University 3Cloudwise Research 4University of Southern California {hongchengguo jiaya jiaqi lizj}@buaa.edu.cn linxingy@usc.edu syouyi2020@asagi.waseda.jp {steven.zhengliangfan.zhengwilliam.houbowen.zhang}@cloudwise.com Abstract Log anomaly detection is a key component in the field of artificial intelligence for IT operations (AIOps). Considering log data of variant domains retraining the whole network for unknown domains is inefficient in real industrial scenarios especially for low resource domains. However previous deep models merely focused on extracting the semantics of log sequences in the same domain leading to poor generalization on multidomain logs. To alleviate this issue we propose a unified Transformer based framework for Log anomaly detection (TRANSLOG) which is comprised of the pretraining and adapter based tuning stage. Our model is first pretrained on the source domain to obtain shared semantic knowledge of log data. Then we transfer the pretrained model to the target domain via adapter based tuning. The proposed method is evaluated on three public datasets including one source domain and two target domains. Experimental results demonstrate that our simple yet efficient approach with fewer trainable parameters and lower training costs in the target domain achieves state of the art performance on three benchmarks1. 1 Introduction With the rapid development of large scale IT systems numerous companies have an increasing demand for high quality cloud services. Anomaly detection [Breier and Branisov´a 2015] is a critical substage to monitoring data peculiarly for logs which describe detailed system events at runtime and the intention of users in the large scale services [Zhang et al. 2015]. The field of artificial intelligence for IT operations (AIOps) [Dang et al. 2019] intends to empower IT operations by integrating advanced deep learning algorithms to meet these challenges which ensures the stability of company data and maintain high efficiency simultaneously. ∗Equal contribution. †Corresponding author. 1We will release the pretrained model and code. Figure 1: The same anomaly from multiple domains. The top part denotes the "Unusual End of Program" anomaly from three domains including BGL Thunderbird and Red Storm while the bottom part is the "Program Not Running" from four domains including BGL Thunderbird Spirit and Liberty. Large scale services are usually implemented by hundreds of developers it is error prone to detect anomalous logs from a local perspective. In this case some automatic detection methods based on machine learning are proposed [Xu et al. 2010]. Due to the development of IT services the volume of log data has grown to the point where traditional approaches are infeasible. Therefore research has turned to deep learning methods [Zhang et al. 2016; Du et al. 2017; Zhang et al. 2019; Meng et al. 2019]. As log messages are half structured and have their semantics which is similar to natural language corpus language models like LSTM and Transformer are leveraged to obtain semantics in logs. Recently proposed methods even adopt fashion pretrained models like BERT [Devlin et al. 2018] GPT2 [Radford et al. 2018] for better embedding representation. We observe that logs from different sources have the same anomalous categories. Despite being different in morphology and syntax logs of multiple domains are semantically similar. For example in Figure 1 three sources (BGL Thunderbird Red Storm) all have the anomaly called the unusual end of program thus we naturally think if the model can identify the BGL:data storage interruptrts: kernel terminatedfor reason 1004rts: bad message header: [...]Thunderbird: kernel: mptscsih: ioc0: attempting task abort! (sc=00000101bddee480)Red Storm: DMT 310 Command Aborted: SCSI cmd:2A LUN 2 DMT 310 T:299 a: [...]Unusual End of ProgramBGL: rts panic! stopping executionThunderbird: pbs mom: Bad file descriptor (9) in tm request job [job] not runningSpirit: kernel: GM: LANaiis not running. Allowing port=0 open for debuggingLiberty: kernel: GM: LANaiis not running. Allowing port=0 open for debuggingProgram Not Running
+  "extracted_institutions": [
+    {
+      "name": "Beihang University",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "Waseda University",
+      "country": "Japan",
+      "city": "Tokyo"
+    },
+    {
+      "name": "University of Southern California",
+      "country": "United States",
+      "city": "Los Angeles"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Beihang University",
+      "country": "China",
+      "city": "Beijing"
+    },
+    {
+      "name": "Waseda University",
+      "country": "Japan",
+      "city": "Tokyo"
+    },
+    {
+      "name": "University of Southern California",
+      "country": "United States",
+      "city": "Los Angeles"
+    }
+  ]
+}
+extracted names:
+{'University of Southern California', 'Beihang University', 'Waseda University'}
+paper name:  2201.00016v2.txt
+common:  ['https://ror.org/00ntfnx83', 'https://ror.org/00wk2mp56', 'https://ror.org/03taz7m60']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00017v1.txt
+
+Match found for substring: 'CHEMNITZ UNIVERSITY OF TECHNOLOGY'
+['https://ror.org/00a208s56']
+Match found for substring: 'LUND UNIVERSITY'
+['https://ror.org/012a77v79']
+ Fast ultrametric matrix vector multiplication Tobias Hofmann1 Andy Oertel2 Chemnitz University of Technology 1tobias.hofmann@math.tu chemnitz.de Lund University 2andy.oertel@cs.lth.se Abstract. We study the properties of ultrametric matrices aiming to design methods for fast ultrametric matrix vector multiplication. We show how to encode such a matrix as a tree structure in quadratic time and demonstrate how to use the resulting representation to perform matrix vector multiplications in linear time. Accompanying this article we provide an implementation of the proposed algorithms and present empirical results on their practical performance. Keywords. ultrametric matrices tree representations fast matrixvector multiplication MSC Subject classification. 05 08 15 04 15B99 68R10 05C50 1 Introduction Ultrametricity is a remarkable occasionally a little counterintuitive but often natural and interesting property. Examples in which ultrametric distances arise range from the p adic number system to phylogenetic trees which is illustrated nicely by Holly [10]. Accordingly ultrametric matrices appear in various mathematical fields. The monograph of Dellacherie Martínez and Martín [2] describes how ultrametric matrices are related to M matrices and underlines their relevance in discrete potential theory or the analysis of Markov chains. Another remarkable property established by Martínez Michon and San Martín in [13] is that ultrametric matrices are nonsingular and their inverses are strictly diagonally dominant Stieltjes matrices. We learned about their rich properties while investigating edgeconnectivity matrices whose off diagonal entries satisfy an ultrametric inequality. This is a classical result of Gomory and Hu [7] which links ultrametricity with 1
+{
+  "extracted_institutions": [
+    {
+      "name": "Chemnitz University of Technology",
+      "country": "Germany",
+      "city": "Chemnitz"
+    },
+    {
+      "name": "Lund University",
+      "country": "Sweden",
+      "city": "Lund"
+    }
+  ]
+}
+extracted names:
+{'Chemnitz University of Technology', 'Lund University'}
+paper name:  2201.00017v1.txt
+common:  ['https://ror.org/00a208s56', 'https://ror.org/012a77v79']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00018v1.txt
+
+Match found for substring: 'MATHEMATICAL INSTITUTE'
+['https://ror.org/02fhy7464']
+Match found for substring: 'UNIVERSITY OF OXFORD'
+['https://ror.org/052gg0110']
+Match found for substring: 'INFN SEZIONE DI MILANO'
+['https://ror.org/04w4m6z96']
+Match found for substring: 'INFN SEZIONE DI MILANO BICOCCA'
+['https://ror.org/03xejxm22']
+Match found for substring: 'UNIVERSITY OF PENNSYLVANIA'
+['https://ror.org/00b30xv10']
+ Relative Defects in Relative Theories: Trapped Higher Form Symmetries and Irregular Punctures in Class S Lakshya Bhardwaj1 Simone Giacomelli123 Max Hübner14 Sakura Schäfer Nameki1 1Mathematical Institute University of Oxford Andrew Wiles Building Woodstock Road Oxford OX2 6GG UK 2Dipartimento di Fisica Università di Milano Bicocca and 3 INFN sezione di Milano Bicocca Piazza della Scienza 3 I 20126 Milano Italy 4Department of Physics and Astronomy University of Pennsylvania Philadelphia PA 19104 USA A relative theory is a boundary condition of a higher dimensional topological quantum field theory (TQFT) and carries a non trivial defect group formed by mutually non local defects living in the relative theory. Prime examples are 6d N = (2 0) theories that are boundary conditions of 7d TQFTs with the defect group arising from surface defects. In this paper we study codimension two defects in 6d N = (2 0) theories and find that the line defects living inside these codimension two defects are mutually non local and hence also form a defect group. Thus codimension two defects in a 6d N = (2 0) theory are relative defects living inside a relative theory. These relative defects provide boundary conditions for topological defects of the 7d bulk TQFT. A codimension two defect carrying a non trivial defect group acts as an irregular puncture when used in the construction of 4d N = 2 Class S theories. The defect group associated to such an irregular puncture provides extra "trapped" contributions to the 1 form symmetries of the resulting Class S theories. We determine the defect groups associated to large classes of both conformal and non conformal irregular punctures. Along the way we discover many new classes of irregular punctures. A key role in the analysis of defect groups is played by two different geometric descriptions of the punctures in Type IIB string theory: one provided by isolated hypersurface singularities in Calabi Yau threefolds and the other provided by ALE fibrations with monodromies.
+{
+  "extracted_institutions": [
+    {
+      "name": "University of Oxford",
+      "country": "United Kingdom",
+      "city": "Oxford"
+    },
+    {
+      "name": "Università di Milano Bicocca",
+      "country": "Italy",
+      "city": "Milano"
+    },
+    {
+      "name": "University of Pennsylvania",
+      "country": "United States",
+      "city": "Philadelphia"
+    }
+  ]
+}
+extracted names:
+{'Università di Milano Bicocca', 'University of Oxford', 'University of Pennsylvania'}
+paper name:  2201.00018v1.txt
+common:  ['https://ror.org/00b30xv10', 'https://ror.org/052gg0110', 'https://ror.org/03xejxm22']
+overshoot:  ['https://ror.org/02fhy7464']
+missed:  ['https://ror.org/01ynf4891']
+
+
+validation of paper:2201.00019v2.txt
+
+Match found for substring: 'ADIYAMAN UNIVERSITY'
+['https://ror.org/02s4gkg68']
+Match found for substring: 'BOSTON UNIVERSITY'
+['https://ror.org/05qwgg493']
+Match found for substring: 'BROWN UNIVERSITY'
+['https://ror.org/05gq02987']
+Match found for substring: 'FERMI NATIONAL ACCELERATOR LABORATORY'
+['https://ror.org/020hgte69']
+Match found for substring: 'NAWI GRAZ'
+['https://ror.org/01mm16571']
+Match found for substring: 'UNIVERSITY OF GRAZ'
+['https://ror.org/01faaaf77']
+Match found for substring: 'HELSINKI INSTITUTE OF PHYSICS'
+['https://ror.org/01x2x1522']
+Match found for substring: 'UNIVERSITY OF HELSINKI'
+['https://ror.org/040af2s02']
+Match found for substring: 'UNIVERSITY OF IOWA'
+['https://ror.org/036jqmy94']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+Match found for substring: 'UNIVERSITY OF MARY'
+['https://ror.org/055f0jp24']
+Match found for substring: 'UNIVERSITY OF MARYLAND COLLEGE PARK'
+['https://ror.org/047s2c258']
+Match found for substring: 'NANJING UNIVERSITY'
+['https://ror.org/01rxvg760']
+Match found for substring: 'SHANGHAI JIAO TONG UNIVERSITY'
+['https://ror.org/0220qvk04']
+Match found for substring: 'PHENIKAA UNIVERSITY'
+['https://ror.org/03anxx281']
+Match found for substring: 'ISTANBUL UNIVERSITY'
+['https://ror.org/03a5qrr21']
+To appear in JHEP 2 2 0 2  n u J 8 1  ] x e p e h [  2 v 9 1 0 0 0 . 1 0 2 2 : v i X r a FACET: A new long lived particle detector in the very forward region of the CMS experiment S. Cercia1 D. Sunar Cercia1 D. Lazicb G. Landsbergc2 F. Ceruttid M. Sabaté Gilarted M.G. Albrowe2 J. Berryhille D.R. Greene J. Hirschauere S. Kulkarnif J.E. Brückeng L. Emediatoh A. Mestvirishvilih J. Nachtmanh Y. Onelh A. Penzoh O. Aydileki B. Hacisahinoglui S. Ozkorucuklui2 H. Serti C. Simseki C. Zorbilmezi I. Hosj1 N. Hadleyk A. Skujak M. Dul R. Fangl Z. Liul B. Isildakm1 and V.Q. Tranno aDepartment of Physics Adiyaman University 02040 Adiyaman Turkey bPhysics Department Boston University 590 Commonwealth Ave Boston MA 02215 U.S.A. cDepartment of Physics Brown University 182 Hope St Providence RI 02912 U.S.A. dCERN 1211 Geneva 23 Switzerland eFermi National Accelerator Laboratory PO Box 500 Batavia IL 60510 U.S.A. f Institute of Physics NAWI Graz University of Graz Universitätsplatz 5 A 8010 Graz Austria gHelsinki Institute of Physics University of Helsinki Gustaf Hällströmin katu 2 00560 Helsinki Finland hDepartment of Physics and Astronomy University of Iowa 203 Van Allen Hall Iowa City IA 52242 U.S.A. iPhysics Department Istanbul University Vezneciler Caddesi 34134 Istanbul Turkey jDepartment of Engineering Sciences Istanbul University Cerrahpasa 34320 Avcilar Istanbul Turkey kDepartment of Physics University of Maryland College Park MD 20742 U.S.A. lDepartment of Physics Nanjing University Nanjing 210093 China mDepartment of Natural and Mathematical Sciences Ozyegin University Orman Sk 13 34794 Istanbul Turkey nTsung Dao Lee Institute Shanghai Jiao Tong University Shanghai 200240 China oFaculty of Fundamental Sciences PHENIKAA University Yen Nghia Ha Dong Hanoi 12116 Vietnam 1Also at the Istanbul University. 2Corresponding author.
+{
+  "extracted_institutions": [
+    {
+      "name": "Adiyaman University",
+      "country": "Turkey",
+      "city": "Adiyaman"
+    },
+    {
+      "name": "Boston University",
+      "country": "U.S.A.",
+      "city": "Boston"
+    },
+    {
+      "name": "Brown University",
+      "country": "U.S.A.",
+      "city": "Providence"
+    },
+    {
+      "name": "CERN",
+      "country": "Switzerland",
+      "city": "Geneva"
+    },
+    {
+      "name": "Fermi National Accelerator Laboratory",
+      "country": "U.S.A.",
+      "city": "Batavia"
+    },
+    {
+      "name": "University of Graz",
+      "country": "Austria",
+      "city": "Graz"
+    },
+    {
+      "name": "University of Helsinki",
+      "country": "Finland",
+      "city": "Helsinki"
+    },
+    {
+      "name": "University of Iowa",
+      "country": "U.S.A.",
+      "city": "Iowa City"
+    },
+    {
+      "name": "Istanbul University",
+      "country": "Turkey",
+      "city": "Istanbul"
+    },
+    {
+      "name": "University of Maryland",
+      "country": "U.S.A.",
+      "city": "College Park"
+    },
+    {
+      "name": "Nanjing University",
+      "country": "China",
+      "city": "Nanjing"
+    },
+    {
+      "name": "Ozyegin University",
+      "country": "Turkey",
+      "city": "Istanbul"
+    },
+    {
+      "name": "Shanghai Jiao Tong University",
+      "country": "China",
+      "city": "Shanghai"
+    },
+    {
+      "name": "PHENIKAA University",
+      "country": "Vietnam",
+      "city": "Hanoi"
+    }
+  ]
+}
+extracted names:
+{'University of Maryland', 'Shanghai Jiao Tong University', 'University of Helsinki', 'PHENIKAA University', 'Boston University', 'Istanbul University', 'CERN', 'Brown University', 'University of Graz', 'University of Iowa', 'Nanjing University', 'Ozyegin University', 'Fermi National Accelerator Laboratory', 'Adiyaman University'}
+paper name:  2201.00019v2.txt
+common:  ['https://ror.org/01mm16571', 'https://ror.org/036jqmy94', 'https://ror.org/03a5qrr21', 'https://ror.org/02s4gkg68', 'https://ror.org/047s2c258', 'https://ror.org/01rxvg760', 'https://ror.org/0220qvk04', 'https://ror.org/05gq02987', 'https://ror.org/01jjhfr75', 'https://ror.org/05qwgg493', 'https://ror.org/03anxx281', 'https://ror.org/040af2s02', 'https://ror.org/01faaaf77', 'https://ror.org/01x2x1522', 'https://ror.org/020hgte69']
+overshoot:  []
+missed:  ['https://ror.org/01dzn5f42']
+
+
+validation of paper:2201.00020v2.txt
+
+Match found for substring: 'NANYANG TECHNOLOGICAL UNIVERSITY'
+['https://ror.org/02e7b5302']
+Match found for substring: 'INSTITUTE OF HIGH PERFORMANCE COMPUTING'
+['https://ror.org/02n0ejh50']
+Geometric Fluctuation of Conformal Hilbert Spaces and Multiple Graviton Modes in Fractional Quantum Hall Effect Wang Yuzhu1 and Yang Bo1 2 ∗ 1School of Physical and Mathematical Sciences Nanyang Technological University 639798 Singapore 2Institute of High Performance Computing A*STAR 138632 Singapore (Dated: January 10 2022) We develop the microscopic theory for the emergence of multiple graviton modes (GMs) in fractional quantum Hall (FQH) fluids and show explicitly these modes are associated with the geometric fluctuation of well defined conformal Hilbert spaces (CHS). These Hilbert spaces are hierarchical subspaces within a single Landau level each with emergent conformal symmetry and continuously parameterized by a unimodular metric. We show explicitly the multiple GMs originate from the spectral weights of the long wavelength GMP modes in each of the CHSs corresponding to the quantum fluctuation of each of its metric. For different FQH phases whether or not the spectral weight in a certain CHS is zero can be analytically derived. This leads to a number of statements about the number of GMs as well as merging and splitting of those modes which we verified numerically. We also discuss how the microscopic theory can serve as the basis for the additional Haldane modes in the effective field theory description and their experimental relevance to realistic electron electron interaction. Gravitons are hypothetical spin 2 bosons from the quantization of gravitational field the existence of which has not been confirmed by experiments and remained one of the most interesting unsolved mysteries in physics[1 2]. There also exist the analogous "graviton modes" in the fractional quantum Hall (FQH) droplet which is a two dimensional quantum fluid of electrons subject to a strong magnetic field at low temperature. As a typical manifestation of the interplay between topology and geometry the graviton modes are collective neutral excitations with spin 2 originating from the metric fluctuations emerging from the strong interactions between electrons[3 5]. While Lorentz invariance is absent in this (2 + 1) dimensional space time these 2D graviton modes encode topological information about their respective FQH phases and their dynamics lead to rich physics ranging from ground state incompressibility to the dynamical phase transitions of the low lying excitations[6 7]. The effective field theory studying these modes has been proposed by using the Newton Carton metric and various experimental proposals for the observation of these modes have been put forward[8 17]. The standard technique in probing neutral excitations is to use inelastic photon scattering[18 22]. The coupling between the graviton modes and the acoustic waves can also be used to simulate the behaviour of gravitons interacting with the gravitational waves[23]. Meanwhile the microscopic theory of the graviton modes with model Hamiltonians has also been established to provide insights for the experiments where model Hamiltonians for the graviton modes have been constructed for FQH fluids at different filling factors[7 24]. Recently numerical results have implied the signature of multiple graviton modes in FQH states the microscopic understanding of which is under development[25 26]. Given that most of the research so far on graviton modes are based on effective field theoretical descriptions and numerical analysis with model wavefunctions[26] a detailed microscopic theory is needed for a more complete characterisation of the emergence and interaction between different graviton modes. In this article we show analytically that multiple graviton modes (GM) is a generic feature for FQH fluids from the splitting of the long wavelength limit of the GMP mode[3] in different subspaces in a single LL. Using the analytic tools we developed earlier[7] we demonstrate that the number of GMs is dynamical in nature and is only meaningful when referring to specific interaction Hamiltonians. Each GM can be interpreted as the metric fluctuation of a conformal Hilbert space (or the null spaces of model Hamiltonians as explained later) within a single LL. For short range two body interactions we show all non Laughlin FQH states around ν = 1/(2n) with n > 1 (e.g. within the null space of V 2bdy V 2bdy 2k−1 Haldane pseudopotential interaction) including the interacting composite fermion (CF) states have at least two GMs. In particular the Jain states at ν = N/ (2nN ± 1) and the Pfaffian states at ν = 1/(2n) all have two GMs if n N > 1. The Laughlin states (N = 1) and the Jain states with n = 1 all have a single GM. This agrees with the special cases studied numerically in both[25 26] at ν = 2/7 2/9 1/4 at the same time providing an analytic explanation and geometric interpretation to their numerical observations. The microscopic theory can easily predict the chirality of the gravitons[17] without numerical computations. It also serves as the basis for the effective field theory where we show the necessity of additional Haldane modes depends on the proper identification of the base space of such theories. = (cid:80)n n k=1 ∗ yang.bo@ntu.edu.sg The cyclotron and guiding center metric  It is useful to first consider the simple case of the integer quantum 2 2 0 2  n a J 7  ] l e r t s . t a m d n o c [  2 v 0 2 0 0 0 . 1 0 2 2 : v i X r a
+{
+  "extracted_institutions": [
+    {
+      "name": "Nanyang Technological University",
+      "country": "Singapore",
+      "city": "Singapore"
+    },
+    {
+      "name": "Institute of High Performance Computing",
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  ]
+}
+extracted names:
+{'Institute of High Performance Computing', 'Nanyang Technological University'}
+paper name:  2201.00020v2.txt
+common:  ['https://ror.org/02e7b5302', 'https://ror.org/02n0ejh50']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00544v1.txt
+
+Match found for substring: 'UNITED STATES NAVAL ACADEMY'
+['https://ror.org/00znex860']
+Match found for substring: 'PRIVATE UNIVERSITY COLLEGE OF EDUCATION OF THE DIOCESE OF LINZ'
+['https://ror.org/00wb8n271']
+Match found for substring: 'UNIVERSITY OF SZEGED'
+['https://ror.org/01pnej532']
+Supporting Proving and Discovering Geometric Inequalities in GeoGebra by using Tarski Christopher W. Brown[0000 0001 8334 0980] Zolt´an Kov´acs[0000 0003 2512 5793] United States Naval Academy Annapolis MD USA wcbrown@usna.edu The Private University College of Education of the Diocese of Linz Linz Austria zoltan@geogebra.org R´obert Vajda[0000 0002 2439 6949] Bolyai Institute University of Szeged Szeged Hungary vajda@math.u szeged.hu We introduce a system of software tools that can automatically prove or discover geometric inequalities. The system called GeoGebra Discovery consisting of an extended version of GeoGebra a controller web service realgeom and the computational tool Tarski (with the extensive help of the QEPCAD B system) successfully solves several non trivial problems in Euclidean planar geometry related to inequalities. 1 Introduction For geometric equalities there are already integrated tools in some dynamic geometry systems (DGS). A well known application is GeoGebra it provides an automated reasoning toolset (ART) that supports symbolic check of equality of lengths of line segments in a geometric configuration or the equality of expressions. Both features are supported by the Relation tool or command or the low level commands Prove and ProveDetails directly [14]. GeoGebra's ART successfully proves hundreds of well known theorems in elementary planar geometry (see https://prover test.geogebra.org/job/GeoGebr aDiscovery provertest/66/artifact/fork/geogebra/test/scripts/benchmark/prover /html/all.html for a recent benchmark of 291 test cases) however all of these results are related to equalities. In this extended abstract we describe our current work that focuses on inequalities. In our work we partly use the same algebro geometric theory that plays a crucial role in GeoGebra's toolset based on the revolutionary work of Wu [26] Chou [7] and improved later by Recio and V´elez [20] with elimination theory. This is the required algebraic basis for gaining a conjecture on a possibly fixed ratio of two quantities if equality does not hold between them. For example the centroid of a triangle divides the medians in ratio 2 : 1 so here there is no equality between the parts but a fixed a ratio namely 2. Once the elimination method is able to provide the exact ratio the obtained conjecture becomes a mathematically proven proposition. On the other hand we partly use general purpose real quantifier elimination (RQE) methods to find the best possible geometric constants in the related inequalities if two expressions do not have a fixed ratio. Our implementation uses cylindrical algebraic decomposition (CAD) that promotes effective RQE. √ As a special case we can also directly prove geometric inequalities. For example theorems like the triangle inequality or the inequality s ≤ 3 3R (where s stands for the semiperimeter and R for the circumradius) can already be mechanically proven by our toolset in an intuitive way. Janici´c Kov´acs (Eds.): Automated Deduction in Geometry (ADG 2021) EPTCS 352 2021 pp. 156 166 doi:10.4204/EPTCS.352.18
+  "extracted_institutions": [
+    {
+      "name": "United States Naval Academy",
+      "country": "United States",
+      "city": "Annapolis"
+    },
+    {
+      "name": "The Private University College of Education of the Diocese of Linz",
+      "country": "Austria",
+      "city": "Linz"
+    },
+    {
+      "name": "University of Szeged",
+      "country": "Hungary",
+      "city": "Szeged"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "United States Naval Academy",
+      "country": "United States",
+      "city": "Annapolis"
+    },
+    {
+      "name": "The Private University College of Education of the Diocese of Linz",
+      "country": "Austria",
+      "city": "Linz"
+    },
+    {
+      "name": "University of Szeged",
+      "country": "Hungary",
+      "city": "Szeged"
+    }
+  ]
+}
+extracted names:
+{'United States Naval Academy', 'University of Szeged', 'The Private University College of Education of the Diocese of Linz'}
+paper name:  2201.00544v1.txt
+common:  ['https://ror.org/01pnej532', 'https://ror.org/00znex860', 'https://ror.org/00wb8n271']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00545v1.txt
+
+Match found for substring: 'PRIVATE UNIVERSITY COLLEGE OF EDUCATION OF THE DIOCESE OF LINZ'
+['https://ror.org/00wb8n271']
+Match found for substring: 'UNIVERSITY OF SZEGED'
+['https://ror.org/01pnej532']
+Parametric Root Finding for Supporting Proving and Discovering Geometric Inequalities in GeoGebra Zolt´an Kov´acs[0000 0003 2512 5793] The Private University College of Education of the Diocese of Linz Linz Austria zoltan@geogebra.org R´obert Vajda[0000 0002 2439 6949] Bolyai Institute University of Szeged Szeged Hungary vajda@math.u szeged.hu We introduced the package/subsystem GeoGebra Discovery to GeoGebra which supports the automated proving or discovering of elementary geometry inequalities. In this case study for inequality exploration problems related to isosceles and right angle triangle subclasses we demonstrate how our general real quantifier elimination (RQE) approach could be replaced by a parametric root finding (PRF) algorithm. The general RQE requires the full cell decomposition of a high dimensional space while the new method can avoid this expensive computation and can lead to practical speedups. To obtain a solution for a 1D exploration problem we compute a Grobner basis for the discriminant variety of the 1 dimensional parametric system and solve finitely many nonlinear real (NRA) satisfiability (SAT) problems. We illustrate the needed computations by examples. Since Grobner basis algorithms are available in Giac (the underlying free computer algebra system in GeoGebra) and freely available efficient NRA SAT solvers (SMT RAT Tarski Z3 etc.) can be linked to GeoGebra we hope that the method could be easily added to the existing reasoning tool set for educational purposes. 1 Introduction As we reported in our earlier paper [10] and recent works [3] the dynamic geometry system GeoGebra [8 9] supports an automated reasoning toolset (ART). In particular a GeoGebra user may try to prove or explore a relation between geometric quantities defined by a standard (planar) Euclidean construction. That is for instance we may wish to prove that in each non degenerate triangle the ratio of the sum of the medians and the perimeter of a triangle cannot exceed 1. To phrase it differently we may want to explore general elementary geometric inequalities related to Euclidean plane geometry constructions. Recently based on general real quantifier elimination (RQE)[5] the realgeom [15] tool supports this automated exploration in the background. However due to high complexity of the general RQE/CAD algorithms [7] and the big number of variables in the input RQE formula some of the well known and elementary results [1] are inaccessible with our approach and implemented tools. In this case study we want to replace the solution method based on general purpose RQE with a new approach where we may avoid the full cylindrical decomposition of a high dimensional space at least for a particular problem class. We hope that with the new method speedups can be obtained. 2 Parametric Real Root Finding (PRF) We will consider only two simple subclasses of elementary geometry inequality exploration challenges: Janici´c Kov´acs (Eds.): Automated Deduction in Geometry (ADG 2021) EPTCS 352 2021 pp. 167 172 doi:10.4204/EPTCS.352.19
+  "extracted_institutions": [
+    {
+      "name": "The Private University College of Education of the Diocese of Linz",
+      "country": "Austria",
+      "city": "Linz"
+    },
+    {
+      "name": "University of Szeged",
+      "country": "Hungary",
+      "city": "Szeged"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "The Private University College of Education of the Diocese of Linz",
+      "country": "Austria",
+      "city": "Linz"
+    },
+    {
+      "name": "University of Szeged",
+      "country": "Hungary",
+      "city": "Szeged"
+    }
+  ]
+}
+extracted names:
+{'University of Szeged', 'The Private University College of Education of the Diocese of Linz'}
+paper name:  2201.00545v1.txt
+common:  ['https://ror.org/01pnej532', 'https://ror.org/00wb8n271']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00546v1.txt
+
+Match found for substring: 'UNIVERSITY OF LUXEMBOURG'
+['https://ror.org/036x5ad56']
+ SMART: a Technology Readiness Methodology in the Frame of the NIS Directive Archana Kumari1 Stefan Schiffner2 and Sandra Schmitz1 1University of Luxembourg Esch sur Alzette Luxembourg Sandra.Schmitz@uni.lu 2 University of Munster Munster Germany Stefan.Schiffner@uni muenster.de Abstract An ever shorter technology lifecycle engendered the need for assessing new technologies w.r.t. their market readiness. Knowing the Technology readiness level (TRL) of a given target technology proved to be useful to mitigate risks such as cost overrun product roll out delays or early launch failures.1 Originally developed for space programmes by NASA TRL became a de facto standard among technology and manufacturing companies and even among research funding agencies.2 However while TRL assessments provide a systematic evaluation process resulting in meaningful metric they are one dimensional: they only answer the question if a technology can go into production. Hence they leave an inherent gap i.e. if a technology fulfils requirements with a certain quality. This gap becomes intolerable when this metric is applied software such as technological cybersecurity measures cf Mankins.3 With legislation such as the General Data Protection Regulation4 (GDPR) and the Network and Information Systems Directive5 (NIS D) making reference to state of the art when requiring appropriate protection measures software de (cid:63)The research for this article was funded by the Luxembourg National Research Fund (FNR) C18/IS/12639666/En CaViBS/Cole https://www.fnr.lu/projects/the eu nisdirective enhancing cybersecurity across vital business sectors encavibs/. 1Steven Hirshorn and Sharon Jefferies "Final Report of the NASA Technology Readiness Assessment (TRA) Study Team" (2016). 2Mih´aly H´eder "From NASA to EU: the evolution of the TRL scale in Public Sector Innovation" Innovation Journal (2017) Vol(22). 3John C Mankins "Technology Readiness Levels" white paper (1995) https://aiaa.kavi. com/apps/group_public/download.php/2212/TRLs_MankinsPaper_1995.pdf accessed 15 July 2021. 4Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data and repealing Directive 95/46/EC (General Data Protection Regulation) [2016] OJ L119/1 5Directive (EU) 2016/1148 of the European Parliament and of the Council of 6 July 2016 concerning measures for a high common level of security of network and information systems across the Union [2016] OJ L194/1. 1
+  "extracted_institutions": [
+    {
+      "name": "University of Luxembourg",
+      "country": "Luxembourg",
+      "city": "Esch sur Alzette"
+    },
+    {
+      "name": "University of Munster",
+      "country": "Germany",
+      "city": "Munster"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "University of Luxembourg",
+      "country": "Luxembourg",
+      "city": "Esch sur Alzette"
+    },
+    {
+      "name": "University of Munster",
+      "country": "Germany",
+      "city": "Munster"
+    }
+  ]
+}
+extracted names:
+{'University of Munster', 'University of Luxembourg'}
+paper name:  2201.00546v1.txt
+common:  ['https://ror.org/00pd74e08', 'https://ror.org/036x5ad56']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00547v2.txt
+
+Match found for substring: 'MASSACHUSETTS INSTITUTE OF TECHNOLOGY'
+['https://ror.org/042nb2s44']
+ Progress on Local Properties Problems of Difference Sets∗ Anqi Li† Abstract We derive several new bounds for the problem of difference sets with local properties such as establishing the super linear threshold of the problem. For our proofs we develop several new tools including a variant of higher moment energies and a Ramsey theoretic approach for the problem. 1 Introduction Erdős and Shelah [3] initiated the study of graphs with local properties. For parameters n k and ' they considered edge colorings of the complete graph Kn such that every Kk subgraph contains at least ' colors. They defined f(n k ') as the minimum number of colors that such an edge coloring can have. For example f(n 3 2) is the minimum number of colors that is required to color Kn so that it does not contain a monochromatic triangle. The value of f(n k 2) can be thought of as an inverse of Ramsey's theorem. In Ramsey's theorem we look for the largest n such that there exists a coloring of the edges of Kn with c colors and no monochromatic Kk. When studying f(n k 2) we are given the number of vertices n and instead look for the number of colors c. (cid:1). We usually consider n to be asymptotically large while By definition 1 ≤ f(n k ') ≤(cid:0)n k and ' are fixed constants. For asymptotically large n and a fixed k the linear threshold is the smallest ' for which f(n k ') = Ω(n). This value of ' is expressed as a function of k. Similarly the quadratic threshold is the smallest ' that satisfies f(n k ') = Θ(n2). The polynomial threshold is the smallest ' that satisfies f(n k ') = Ω(nε) for some ε > 0. Erdős and Gyárfás [4] identified the linear and quadratic thresholds to be ' = (cid:0)k and ' = (cid:0)k (cid:1) − k + 3 (cid:1) − bk/2c + 2 respectively. In the same paper they also observed that f(n k k) is polynomial in n. Conlon Fox Lee and Sudakov [2] proved that f(n k k − 1) is sub polynomial in n which established the polynomial threshold ' = k. Beyond these thresholds almost tight bounds for f(n k ') are known in other regimes. Particularly Pohoata and Sheffer [9] showed ! that for any integers k > m ≥ 2  ! 2 2 2 (cid:22) (cid:23) = Ω(cid:16) (cid:17) n1+ 1 m . f n k k 2 − m · k m + 1 + m + 1 (1) Probabilistic constructions of Erdős and Gyárfás [4] show that (1) is asymptotically tight up to sub polynomial factors. ∗This research project was done as part of the 2020 NYC Discrete Math REU supported by NSF awards DMS 1802059 DMS 1851420 DMS 1953141 and DMS 2028892. †Massachusetts Institute of Technology 77 Massachusetts Ave Cambridge MA 02139. anqili@mit.edu. Sup ported by MIT Department of Science. 1
+  "extracted_institutions": [
+    {
+      "name": "Massachusetts Institute of Technology",
+      "country": "United States",
+      "city": "Cambridge"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Massachusetts Institute of Technology",
+      "country": "United States",
+      "city": "Cambridge"
+    }
+  ]
+}
+extracted names:
+{'Massachusetts Institute of Technology'}
+paper name:  2201.00547v2.txt
+common:  ['https://ror.org/042nb2s44']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00548v1.txt
+
+Match found for substring: 'TSINGHUA UNIVERSITY'
+['https://ror.org/03cve4549']
+ Hybrid intelligence for dynamic job shop scheduling with deep reinforcement learning and attention mechanism Yunhui Zenga Zijun Liaob Yuanzhi Dai b Rong Wangb Xiu Lia and Bo Yuana aShenzhen International Graduate School Tsinghua University Shenzhen 518055 China; bSchool of Intelligent Systems Science and Engineering Jinan University Zhuhai 519070 China ARTICLE HISTORY Compiled January 4 2022 Abstract The dynamic job shop scheduling problem (DJSP) is a class of scheduling tasks that specifically consider the inherent uncertainties such as changing order requirements and possible machine breakdown in realistic smart manufacturing settings. Since traditional methods cannot dynamically generate effective scheduling strategies in face of the disturbance of environments we formulate the DJSP as a Markov decision process (MDP) to be tackled by reinforcement learning (RL). For this purpose we propose a flexible hybrid framework that takes disjunctive graphs as states and a set of general dispatching rules as the action space with minimum prior domain knowledge. The attention mechanism is used as the graph representation learning (GRL) module for the feature extraction of states and the double dueling deep Q network with prioritized replay and noisy networks (D3QPN) is employed to map each state to the most appropriate dispatching rule. Furthermore we present Gymjsp a public benchmark based on the well known OR Library to provide a standardized off theshelf facility for RL and DJSP research communities. Comprehensive experiments on various DJSP instances confirm that our proposed framework is superior to baseline algorithms with smaller makespan across all instances and provide empirical justification for the validity of the various components in the hybrid framework. KEYWORDS DJSP attention mechanism reinforcement learning hybrid intelligence benchmark 1. Introduction The job shop scheduling problem (JSP) aims to determine the optimal sequential assignments of machines to jobs consisting of a series of operations subject to one or more criteria such as production cost and makespan. It is a typical combinatorial optimization problem closely related to industrial scheduling and production control (Satyro et al. 2021) and has been proven to be non deterministic polynomial time hard (NP hard) (Garey Johnson and Sethi 1976) when the number of machines is greater than two. Furthermore the emergence of smart manufacturing calls for effective solutions for the dynamic job shop scheduling problem (DJSP) to confront the variabilities in production requirements consumption of time and available machines in the environment (Mohan Lanka and Rao 2019). Contact Author: Bo Yuan. Email: boyuan@ieee.org
+  "extracted_institutions": [
+    {
+      "name": "Tsinghua University",
+      "country": "China",
+      "city": "Shenzhen"
+    },
+    {
+      "name": "Jinan University",
+      "country": "China",
+      "city": "Zhuhai"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Tsinghua University",
+      "country": "China",
+      "city": "Shenzhen"
+    },
+    {
+      "name": "Jinan University",
+      "country": "China",
+      "city": "Zhuhai"
+    }
+  ]
+}
+extracted names:
+{'Jinan University', 'Tsinghua University'}
+paper name:  2201.00548v1.txt
+common:  ['https://ror.org/03cve4549', 'https://ror.org/02xe5ns62']
+overshoot:  ['https://ror.org/04bgbsx11']
+missed:  []
+
+
+validation of paper:2201.00549v1.txt
+
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARIS'
+['https://ror.org/042tfbd02']
+Match found for substring: 'INSTITUT POLYTECHNIQUE DE PARIS'
+['https://ror.org/042tfbd02']
+ Efficient enumeration algorithms for annotated grammars Antoine Amarilli LTCI T´el´ecom Paris Institut polytechnique de Paris antoine.amarilli@telecom paris.fr Louis Jachiet LTCI T´el´ecom Paris Institut polytechnique de Paris louis.jachiet@telecom paris.fr Mart´ın Munoz PUC & IMFD mmunos@uc.cl Cristian Riveros PUC & IMFD cristian.riveros@uc.cl We introduce annotated grammars an extension of context free grammars which allows annotations on terminals. Our model extends the standard notion of regular spanners and has the same expressiveness as the extraction grammars recently introduced by Peterfreund. We study the enumeration problem for annotated grammars: fixing a grammar and given a string as input enumerate all annotations of the string that form a word derivable from the grammar. Our first result is an algorithm for unambiguous annotated grammars which preprocesses the input string in cubic time and enumerates all annotations with output linear delay. This improves over Peterfreund's result which needs quintic time preprocessing to achieve this delay bound. We then study how we can reduce the preprocessing time while keeping the same delay bound by making additional assumptions on the grammar. Specifically we present a class of grammars which only have one derivation shape for all outputs for which we can enumerate with quadratic time preprocessing. We also give classes generalizing regular spanners for which linear time preprocessing suffices. 1
+  "extracted_institutions": [
+    {
+      "name": "LTCI T´el´ecom Paris",
+      "country": "France",
+      "city": "Paris"
+    },
+    {
+      "name": "Institut polytechnique de Paris",
+      "country": "France",
+      "city": "Paris"
+    },
+    {
+      "name": "PUC & IMFD",
+      "country": "Chile",
+      "city": ""
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "LTCI T´el´ecom Paris",
+      "country": "France",
+      "city": "Paris"
+    },
+    {
+      "name": "Institut polytechnique de Paris",
+      "country": "France",
+      "city": "Paris"
+    },
+    {
+      "name": "PUC & IMFD",
+      "country": "Chile",
+      "city": ""
+    }
+  ]
+}
+extracted names:
+{'Institut polytechnique de Paris', 'LTCI T´el´ecom Paris', 'PUC & IMFD'}
+paper name:  2201.00549v1.txt
+common:  ['https://ror.org/042tfbd02']
+overshoot:  []
+missed:  ['https://ror.org/04teye511']
+
+
+validation of paper:2201.00550v3.txt
+
+Match found for substring: 'CHANGSHU INSTITUTE OF TECHNOLOGY'
+['https://ror.org/05g6ben79']
+Match found for substring: 'SOUTHWEST UNIVERSITY'
+['https://ror.org/01kj4z117']
+On the proportion of vanishing elements in finite groups ∗ Yu Zeng† Dongfang Yang‡and Silvio Dolfi§ Abstract We prove that the function Pv(G) measuring the proportion of the elements of a finite group G that are zeros of irreducible characters of G takes very sparse values in a large segment of the [0 1] interval. 2 2 0 2  y a M 2 1  ]  . R G h t a m [  3 v 0 5 5 0 0 . 1 0 2 2 : v i X r a Keywords Character theory zeros of irreducible characters. 2020 MR Subject Classification 20C15. ∗Acknowledgement: The first and second authors gratefully acknowledge the support of China Scholarship Council (CSC). The third author was partially supported by INdAM GNSAGA. †Department of Mathematics Changshu Institute of Technology Changshu China. email: yuzeng2004@163.com ‡School of Mathematics and Statistics Southwest University Chongqing China. email: dfyang1228@163.com §Dipartimento di Matematica e Informatica U. Dini Universit`a di Firenze Italy. email: silvio.dolfi@unifi.it 1
+  "extracted_institutions": [
+    {
+      "name": "Changshu Institute of Technology",
+      "country": "China",
+      "city": "Changshu"
+    },
+    {
+      "name": "Southwest University",
+      "country": "China",
+      "city": "Chongqing"
+    },
+    {
+      "name": "Universit`a di Firenze",
+      "country": "Italy",
+      "city": "Florence"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Changshu Institute of Technology",
+      "country": "China",
+      "city": "Changshu"
+    },
+    {
+      "name": "Southwest University",
+      "country": "China",
+      "city": "Chongqing"
+    },
+    {
+      "name": "Universit`a di Firenze",
+      "country": "Italy",
+      "city": "Florence"
+    }
+  ]
+}
+extracted names:
+{'Changshu Institute of Technology', 'Universit`a di Firenze', 'Southwest University'}
+paper name:  2201.00550v3.txt
+common:  ['https://ror.org/01kj4z117', 'https://ror.org/05g6ben79']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00551v1.txt
+
+Match found for substring: 'HOHAI UNIVERSITY'
+['https://ror.org/01wd4xt90']
+Bootstrapping the deuteron Dong Bai1 ∗ 1College of Science Hohai University Nanjing 211100 Jiangsu China Bootstrap is a novel and ambitious paradigm for quantum physics. It aims to solve the target problems by exploiting theoretical constraints from general physical principles and self consistency conditions. The bootstrap philosophy dates back to the 1960s. Its real power has been recognized only recently in e.g. conformal field theories and relativistic scattering amplitudes. Inspired by [X. Han S. A. Hartnoll and J. Kruthoff Phys. Rev. Lett. 125 041601 (2020)] we report the first bootstrap results in low energy nuclear physics where deuteron with its Hamiltonian given by pionless effective field theory in harmonic oscillator space is solved by directly exploiting the most fundamental quantum mechanical requirement that probability should never be negative. Our study shows that the bootstrap method can be helpful in studying realistic nuclear systems. 2 2 0 2  n a J 3  ] h t l c u n [  1 v 1 5 5 0 0 . 1 0 2 2 : v i X r a I. INTRODUCTION Nonrelativistic quantum few and many body methods play a fundamental role in low energy nuclear theory [1 2]. It is always crucial to explore new methods and new paradigms. Some noticeable progress has been made very recently in this direction. Inspired by the huge success of artificial intelligence (AI) new variational methods based on artificial neural networks (ANNs) are put forward for few nucleon systems incorporating the latest advances in AI into conventional variational methods [3  5]. Also lots of interests are stimulated in developing new theoretical methods on quantum devices encouraged by the public accessibility of quantum computing clouds via the internet [6 20]. These achievements enrich our tools to study nuclear systems. Bootstrap is a novel and ambitious paradigm for quanIt was first advocated by Geoffrey Chew tum physics. in the 1960s as a potential solution to the problem of the strong interaction under the guidance of the philosophical thinking that quantum physics problems could be solved solely by exploiting general physical principles and self consistency conditions [21]. Although influential temporarily the bootstrap program turns out to be over ambitious and immature as a theory of the strong interaction. It is not competitive with quantum chromodynamics (QCD) discovered in the early 1970s and has been ignored largely by the community since then. It gets revived only recently as alternative yet powerful approaches to conformal field theories and relativistic scattering amplitudes resulting in new advances known as conformal bootstrap [22] and S matrix bootstrap [23] in literature. It is found that conformal bootstrap gives the most accurate predictions for critical exponents of three dimensional Ising model [24] while the S matrix bootstrap provides valuable bounds on free parameters in relativistic scattering amplitudes [25]. These bootstrap studies broaden our horizons significantly and reveal the hidden elegancy and beauty of relativistic quantum theories. It is desirable to continue expanding the applicable ∗ dbai@hhu.edu.cn scope of bootstrap. Inspired by progress on string theory [26 27] Han et al. take the key step towards generalizing bootstrap from relativistic quantum theories to nonrelativistic quantum mechanics [28]. They show that the quartic anharmonic oscillator can be solved by directly exploiting the most fundamental requirement in quantum mechanics i.e. probability should never be negative. Mathematically this is done by requiring the so called bootstrap matrix to be always positive semidefinite with its matrix elements obtained via some recursive relations (see Section II A for details). Their bootstrap method is soon applied to other quantum mechanical problems such as harmonic oscillator hydrogen double well potential and Bloch bands [29 35]. Besides intelligential novelty it is possible that these studies may eventually lead to an alternative formulation of quantum mechanics that will be important in the future. Historically the evolution from Newtonian mechanics to analytical mechanics lasting for several generations prepares the essential ground for the revolutionary advance from classical mechanics to quantum mechanics in the twentieth century. For quantum mechanics although born one hundred years ago it may still have some new alternative formulations to be explored which play the role of the springboard to new physics revolutions. Bootstrap is a candidate for such alternative formulations. Compared with some traditional methods it is prized for the capability of making manifest the full power of fundamental physical principles and theoretical self consistency. As mentioned before recursive relations are important in many previous quantum mechanical bootstrap studies thanks to which the bootstrap matrix elements could be determined up to a finite number of free parameters without solving Schrodinger equations. Although elegant the need for recursive relations restricts the form of potentials in Schrodinger equations to simple ones like polynomial and trigonometric potentials and thus narrows the applicable scope of quantum mechanical bootstrap method. At present quantum mechanical bootstrap method has not been used to study any realistic systems in low energy nuclear physics. Considering the complexity of nuclear forces it is no longer easy to work out recursive relations for bootstrap matrix elements. In this work we
+  "extracted_institutions": [
+    {
+      "name": "Hohai University",
+      "country": "China",
+      "city": "Nanjing"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Hohai University",
+      "country": "China",
+      "city": "Nanjing"
+    }
+  ]
+}
+extracted names:
+{'Hohai University'}
+paper name:  2201.00551v1.txt
+common:  ['https://ror.org/01wd4xt90']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00552v1.txt
+
+Match found for substring: 'HENAN UNIVERSITY'
+['https://ror.org/003xyzq10']
+Match found for substring: 'HUNAN NORMAL UNIVERSITY'
+['https://ror.org/053w1zy07']
+Canonical interpretation of the Ds0(2590)+ resonance Zhuo Gao1 Guan Ying Wang∗1 † Qi Fang Lu‡2 3 4 § Jingya Zhu1 and Gao Feng Zhao¶1 ∗∗ 1School of Physics and Electronics Henan University Kaifeng 475004 China 2 Department of Physics Hunan Normal University Changsha 410081 China 3 Synergetic Innovation Center for Quantum Effects and Applications (SICQEA) Changsha 410081China 4 Key Laboratory of Low Dimensional Quantum Structures and Quantum Control of Ministry of Education Changsha 410081 China (Dated: January 4 2022) 2 2 0 2  n a J 3  ] h p p e h [  1 v 2 5 5 0 0 . 1 0 2 2 : v i X r a The Ds0(2590)+ resonance observed by LHCb Collaboration is a strong candidate of the Ds(21S 0) state according to its spin parity and strong decay mode. However the measured mass seems relatively lower than the previous theoretical predictions which interests the coupled channel interpretations in the literature. In this work we adopt an alternate approach taking into account the screening effects in the potential model to describe the Ds0(2590)+ resonance. The mass spectrum and strong decays of the excited charmed strange mesons are investigated within the modified relativized quark model and 3P0 model. The calculated mass and width of the Ds0(2590)+ are consistent with the experimental observations which indicate that it can be reasonably interpreted as the Ds(21S 0) state. PACS numbers: Keywords: I. INTRODUCTION A heavy light meson is composed of one heavy quark and one light antiquark and acts as a hydrogen atom. Understanding the heavy light meson spectrum and searching for the missing resonances are important tasks in hadronic physics which provide us a good opportunity to deepen our understanding of the complicated non perturbative behavior of QCD in the low energy regime. Among of them the charmed strange sector is particularly interesting and has gained wide attentions since the mysterious D∗ s0(2317) and Ds1(2460) states observed by BaBar and CLEO Collaborations [1 2] have rather lower masses compared with the theoretical predictions in conventional quark models [3 9]. From the Review of Particle Physics [10] there exist twelve states in the charmed strange sector. The Ds and D∗ s are the ground states and Ds1(2536) and D∗ s2(2573) can be well understood as the P−wave states. The D∗ s1(2700) D∗ s1(2860) and D∗ s3(2860) can be assigned as the Ds(23S 1) Ds(13D1) and Ds(13D3) states respectively where the 2S − 1D mixing effect may be also significant for the vector mesons. The canonical interpretations of D∗ s0(2317) and Ds1(2460) are problematic in the traditional quark model while the X0(2900) and X1(2900) observed by LHCb Collaboration are undoubtedly exotic [11 12]. Moreover information on the DsJ(3040) state is quite limited which prevents us to reach a definite conclusion. It can be seen that the low lying charmed strange spectrum is far from being established. Recently the LHCb Collaboration observed a new excited ∗Corresponding author ‡Corresponding author ¶Corresponding author †Electronic address: wangguanying@henu.edu.cn §Electronic address: lvqifang@hunnu.edu.cn ∗∗Electronic address: 10110094@vip.henu.edu.cn resonance Ds0(2590)+ in the D+K+π− mass distribution of the B0 → D−D+K+π− decay [13]. Its mass width and spin parity are determined to be m = 2591± 6± 7 MeV Γ = 89± 16± 12 MeV and JP = 0− respectively. Based on these properties the LHCb Collaboration suggested that this state is a strong candidate for the radial excited Ds(21S 0) state. However the measured mass seems relatively lower than the previous theoretical predictions in the literature [3 9 14] which leads to different interpretations on the theoretical side. In Ref. [15] the authors investigated the mass and width of Ds0(2590)+ by solving the Bethe Salpeter equation and concluded that it can be hardly explained as Ds(21S 0) state. Within the semi relativistic potential model and chiral quark model the mass and width of Ds0(2590)+ are not consistent with that of Ds(21S 0) state [3]. In Ref. [16] the authors employ the unquenched quark model to describe the mass of Ds0(2590)+ by considering the mixture of the Ds(21S 0) state and D∗K component. Also the authors performed a coupled channel calculation including the D(∗)K(∗) D(∗) s η channels and found that the Ds0(2590) can be regarded as a bare Ds(21S 0) state plus dominant D∗K part [17]. These theoretical works suggest that the Ds0(2590)+ may be not a pure Ds(21S 0) state and the D∗K component should be significant. the P−wave charmed strange mesons is supposed to be higher than their charmed partners. The violation of S U(3) flavor symmetry for D∗ s0(2317) and Ds1(2460) resonances suggest that they are not pure P−wave c ¯s states and the coupledchannel effects are essential. Actually in the literature the coupled channel approach meson loop effects or the unquenched quark model has been widely discussed in the charmed strange sector to reduce the theoretically predicted masses [16 30] which mainly focused on the D∗ s0(2317) and Ds1(2460) resonances. However the situation of the Ds0(2590)+ is better. The mass gap between D∗ s1(2700) and Ds0(2590) is m[D∗ s1(2700)] − m[Ds0(2590)] = 123 MeV Based on the S U(3) light quark flavor symmetry s ω and D(∗) (1)
+{
+  "extracted_institutions": [
+    {
+      "name": "Henan University",
+      "country": "China",
+      "city": "Kaifeng"
+    },
+    {
+      "name": "Hunan Normal University",
+      "country": "China",
+      "city": "Changsha"
+    },
+    {
+      "name": "Synergetic Innovation Center for Quantum Effects and Applications (SICQEA)",
+      "country": "China",
+      "city": "Changsha"
+    },
+    {
+      "name": "Key Laboratory of Low Dimensional Quantum Structures and Quantum Control of Ministry of Education",
+      "country": "China",
+      "city": "Changsha"
+    }
+  ]
+}
+extracted names:
+{'Key Laboratory of Low Dimensional Quantum Structures and Quantum Control of Ministry of Education', 'Henan University', 'Synergetic Innovation Center for Quantum Effects and Applications (SICQEA)', 'Hunan Normal University'}
+paper name:  2201.00552v1.txt
+common:  ['https://ror.org/053w1zy07', 'https://ror.org/003xyzq10']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00553v2.txt
+
+Match found for substring: 'NANKAI UNIVERSITY'
+['https://ror.org/01y1kjr75']
+Nonlocal pseudospin dynamics in a quantum Ising chain K L Zhang and Z Song* School of Physics Nankai University Tianjin 300071 China *Author to whom any correspondence should be addressed. E mail: songtc@nankai.edu.cn 16 September 2022 Abstract. The existence of topological zero modes in nontrivial phase of quantum Ising chain results in not only the Kramers like degeneracy spectrum but also dynamic response for non Hermitian perturbation in the ordered phase (2021 Phys. Rev. Lett. 126 116401). In this work we investigate the possible response of the degeneracy spectrum for Hermitian perturbations. We provide a single particle description of the model in the ordered phase associating with an internal degree of freedom characterized as a pseudospin. The effective magnetic field arising from both local and nonlocal perturbations in terms of string operators acts on the pseudospin. We show that the action of string operator can be realized via a quench under the local perturbations. As an application any ground states and excited states for the Hamiltonian with perturbation can be selected to identify the quantum phase by adding the other perturbations to trigger a quench and measuring the Loschmidt echo. Keywords: transverse field Ising chain quench dynamics nonlocal pseudospin quantum phase transition thermal state 2 2 0 2  p e S 5 1   ] h p t n a u q [  2 v 3 5 5 0 0 . 1 0 2 2 : v i X r a
+  "extracted_institutions": [
+    {
+      "name": "Nankai University",
+      "country": "China",
+      "city": "Tianjin"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Nankai University",
+      "country": "China",
+      "city": "Tianjin"
+    }
+  ]
+}
+extracted names:
+{'Nankai University'}
+paper name:  2201.00553v2.txt
+common:  ['https://ror.org/01y1kjr75']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00554v1.txt
+
+Match found for substring: 'AALTO UNIVERSITY'
+['https://ror.org/020hwjq30']
+Match found for substring: 'UNIVERSITY OF OULU'
+['https://ror.org/03yj89h83']
+Ensuring high QoE for DASH based clients using deterministic network calculus in SDN networks Oussama El Marai∗ Jonathan Prados Garzon∗ Miloud Bagaa∗ and Tarik Taleb∗§ oussama.elmarai@aalto.fi jonathan.prados garzon@aalto.fi miloud.bagaa@aalto.fi tarik.taleb@aalto.fi ∗Aalto University Espoo Finland. §University of Oulu 90570 Oulu Finland. Abstract HTTP Adaptive Streaming (HAS) is becoming the defacto video delivery technology over best effort networks nowadays thanks to the myriad advantages it brings. However many studies have shown that HAS suffers from many Quality of Experience (QoE)related issues in the presence of competing players. This is mainly caused by the selfishness of the players resulting from the decentralized intelligence given to the player. Another limitation is the bottleneck link that could happen at any time during the streaming session and anywhere in the network. These issues may result in wobbling bandwidth perception by the players and could lead to missing the deadline for chunk downloads which result in the most annoying issue consisting of rebuffering events. In this paper we leverage the SoftwareDefined Networking paradigm to take advantage of the global view of the network and its powerful intelligence that allows reacting to the network changing conditions. Ultimately we aim at preventing the re buffering events resulting from deadline misses and ensuring high QoE for the accepted clients in the system. To this end we use Deterministic Network Calculus (DNC) to guarantee a maximum delay for the download of the video chunks while maximizing the perceived video quality. Simulation results show that the proposed solution ensures high efficiency for the accepted clients without any rebuffering events which result in high user QoE. Consequently it might be highly useful for scenarios where video chunks should be strictly downloaded on time or ensuring low delay with high user QoE such as serving video premium subscribers or remote control/driving of an autonomous vehicle in future 5G mobile networks. Index Terms DASH QoE Deterministic Network Calculus Video Streaming. I. INTRODUCTION Internet video traffic is already overwhelming current network's traffic mainly carried out over 4G and is expected to reach 82% by 2022 [1]. The massive proliferation of different kind of mobile devices and the faster and ubiquitous connectivity offered by 4G networks have played a key role in video traffic dominance. By 2022 mobile devices are expected to be the most popular to watch video [1]. Additionally the faster connectivity expected by 5G will essentially contribute to increasing the users' engagement for video watching which will result in almost doubling the amount of carried data over the network. As a result a huge pressure will be exerted on the underlying infrastructure which adversely impacts the user's Quality of Experience (QoE) [2]. Ensuring high user's QoE in Over the top (OTT) streaming services is a challenging process. It requires involving the different actors of an HAS based system namely the client server and network. Furthermore intelligence should be injected at each actor to give it in one hand the autonomy to react to the changing conditions and on the other hand allowing cooperation and interaction between the different actors by information among inter changing crucial themselves in order to efficiently utilize the resources and achieve user satisfaction. The first actor in a streaming system that we want to add intelligence is the player or the consumer of the video stream. This intelligence should give it the ability to adapt to the network conditions and select adequate video quality in a way to avoid video stalls and maximize its QoE. One highly interesting technology that enables such intelligence is HAS. The latter is a new paradigm that has shown its efficiency in delivering video content on a large scale. It rapidly becomes the predominant the contemporary web thanks to its myriad advantages among which the adaptability to network conditions the large scale deployment and the cost effectiveness by re using existing infrastructure. This approach sounds interesting and enable high flexibility but entails selfishness since each player independently tries to increase its representation to get higher QoE. This philosophy generates unwanted behavior such as oscillations that harms the overall performance of the system in a multi players scheme. video delivery technique in The second actor in a streaming system is the server. In HASbased system the server's role is very simple and limited. It consists of handling the client's HTTP requests and supplying the requested content in HTTP responses. This allows for better scalability and easier deployment. However important information is available at the server such as the number of connected clients and the server's bandwidth that could be helpful to achieve higher system performance. Hence injecting intelligence at the server [3] [4] is highly important for the overall outcome. The last actor consists of the network through which the video traffic is carried out. In fact it is the most important actor that has a direct impact on the client's decision. Given the limited resources of the network even though considering the great advances in the network bandwidth provided by 4G and 5G networks and the increasing demand for video traffic exerting high pressure the need to incorporate intelligence to the network becomes a must with the ultimate objective of providing higher QoS. Software Defined Networking (SDN) is a new paradigm that enables such intelligence through OpenFlow protocol [5] [9]. It consists of decoupling the control plane from the data plane in computer networks. By doing can programmatically change their routers' policies that influence the traffic direction through the controller. Depending on the situation in the network and the policy of the ISP the controller makes decisions on how to route the traffic in the network by pushing rules to the switches. This approach Providers Service so Internet (ISPs)
+{
+  "extracted_institutions": [
+    {
+      "name": "Aalto University",
+      "country": "Finland",
+      "city": "Espoo"
+    },
+    {
+      "name": "University of Oulu",
+      "country": "Finland",
+      "city": "Oulu"
+    }
+  ]
+}
+extracted names:
+{'University of Oulu', 'Aalto University'}
+paper name:  2201.00554v1.txt
+common:  ['https://ror.org/03yj89h83', 'https://ror.org/020hwjq30']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00555v1.txt
+
+Match found for substring: 'AALTO UNIVERSITY'
+['https://ror.org/020hwjq30']
+Match found for substring: 'BEIJING UNIVERSITY OF POSTS AND TELECOMMUNICATION'
+['https://ror.org/04w9fbh59']
+Match found for substring: 'BEIJING UNIVERSITY OF POSTS AND TELECOMMUNICATIONS'
+['https://ror.org/04w9fbh59']
+Deterministic Service Function Chaining over Beyond 5G Edge Fabric Hao Yu∗ Tarik Taleb∗† and Jiawei Zhang‡ ∗Aalto University Espoo Finland. †Oulu University Oulu Finland. ‡Beijing University of Posts and Telecommunications Beijing China. Abstract Along with the increasing demand for latencysensitive services and applications Deterministic Network (DetNet) concept has been recently proposed to investigate deterministic latency assurance for services featured with bounded latency requirements in 5G edge networks. The Network Function Virtualization (NFV) technology enables Internet Service Providers (ISPs) to flexibly place Virtual Network Functions (VNFs) achieving performance and cost benefits. Then Service Function Chains (SFC) are formed by steering traffic through a series of VNF instances in a predefined order. Moreover the required network resources and placement of VNF instances along SFC should be optimized to meet the deterministic latency requirements. Therefore it is significant for ISPs to determine an optimal SFC deployment strategy to ensure network performance while improving the network revenue. In this paper we jointly investigate the resource allocation and SFC placement in 5G edge networks for deterministic latency assurance. We formulate this problem as a mathematic programming model with the objective of maximizing the overall network profit for ISP. Furthermore a novel Deterministic SFC deployment (Det SFCD) algorithm is proposed to efficiently embed SFC requests with deterministic latency assurance. The performance evaluation results show that the proposed algorithm can provide better performance in terms of SFC request acceptance rate network cost reduction and network resource efficiency compared with benchmark strategy. Index Terms Deterministic Networks Service Function Chain Network Function Virtualization Quality of Service Resource Orchestration I. INTRODUCTION 5G or beyond 5G are supposed to support various emerging vertical industries e.g. automotive intelligent manufacturing which impose unique requirements regarding flexibility reliability and especially strict QoS guarantee. Deterministic end to end latency bound and lower jitter should be provided by provisioning appropriate network resources to the critical services. To this end Deterministic Network (DetNet) [1] concept has been recently proposed by the IETF DetNet Working Group to initiate the study of deterministic data paths for real time applications (e.g. industrial automation) with lower packet delay variation and bounded end to end latency [2]. We extend this concept into 5G edge networks which facilitate flexible and low latency network services. With the advent of Network Function Virtualization (NFV) [3] [4] which decouples traditional network functions (e.g. firewalls load balancers) from dedicated hardware to Virtual Network Functions (VNFs) running on commercial servers for low expense and efficient management network services can be customized to satisfy the various service requirements in terms of bandwidth latency and reliability by Internet Service Provides (ISPs). Moreover to meet the ultra low latency requirements VNFs are pushed to the edge of the networks for further latency reduction. When dealing with the service requests from 5G mobile users it is often needed to steer the traffic from the cell sites (CSs) to edge servers by traversing the VNFs concatenated in a specified order which is defined as Service Function Chain (SFC) [5] [6] [7]. Despite such advantages of applying NFV in 5G edge environments some challenges still remain for SFC placement and resource allocation at network edge to ensure the deterministic performance and high efficiency. First due to the finite physical resources (e.g. bandwidth memory and CPU) in the network the optimal resource allocation and path selection should be performed optimally to achieve higher resource efficiency and to avoid resource bottleneck. Second how to ensure that the service latency is bounded within a deterministic scope also remains a problem yet to be solved [8]. It is desirable to design a joint resource allocation and SFC placement algorithm for deterministic latency assurance due to the above challenges. In this paper we formulate the problem of joint resource allocation and SFC placement in the 5G edge environment. Note that we will employ NFV concepts in open and smart radio access network (O RAN) [9] the baseband processing units in the new O RAN architecture can be implemented as RAN VNFs instantiated at the edge servers. The deployment of VNF instances needs to consume network resources which will incur the increasing Capital Expense (CAPEX) so it is beneficial to increase the revenue of ISPs by optimizing the resource allocation and placement of SFC. The SFC deployment and resource management has drawn much research attention. The authors in [10] studied the joint SFC deployment and resource management problem (JSDRM) in heterogeneous edge environments to minimize the total system latency and proposed a scheme based on a game model to jointly deploy SFCs and manage resources. The authors in [11] [12] also investigated the resource re allocation of SFC strategy due to different mobility patterns. Different from the existing work aiming at minimizing the service latency and network cost in the literature deterministic latency assurance [2] [13] is more crucial for the packets of the time critical flows.
+  "extracted_institutions": [
+    {
+      "name": "Aalto University",
+      "country": "Finland",
+      "city": "Espoo"
+    },
+    {
+      "name": "Oulu University",
+      "country": "Finland",
+      "city": "Oulu"
+    },
+    {
+      "name": "Beijing University of Posts and Telecommunications",
+      "country": "China",
+      "city": "Beijing"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Aalto University",
+      "country": "Finland",
+      "city": "Espoo"
+    },
+    {
+      "name": "Oulu University",
+      "country": "Finland",
+      "city": "Oulu"
+    },
+    {
+      "name": "Beijing University of Posts and Telecommunications",
+      "country": "China",
+      "city": "Beijing"
+    }
+  ]
+}
+extracted names:
+{'Oulu University', 'Aalto University', 'Beijing University of Posts and Telecommunications'}
+paper name:  2201.00555v1.txt
+common:  ['https://ror.org/04w9fbh59', 'https://ror.org/020hwjq30']
+overshoot:  []
+missed:  ['https://ror.org/03yj89h83']
+
+
+validation of paper:2201.00556v3.txt
+
+Match found for substring: 'LABORATOIRE DE PHYSIQUE THÉORIQUE'
+['https://ror.org/01w0hda30']
+Match found for substring: 'DONOSTIA INTERNATIONAL PHYSICS CENTER'
+['https://ror.org/02e24yw40']
+Match found for substring: 'CENTRE FOR QUANTUM TECHNOLOGIES'
+['https://ror.org/01mgdzc49']
+Match found for substring: 'NATIONAL UNIVERSITY OF SINGAPORE'
+['https://ror.org/01tgyzw49']
+Topological order in random interacting Ising Majorana chains stabilized by many body localization Nicolas Laflorencie1 2 Gabriel Lemarié1 3 4 and Nicolas Macé1 1Laboratoire de Physique Théorique Université de Toulouse CNRS UPS France 2Donostia International Physics Center Paseo Manuel de Lardizabal 4 E 20018 San Sebastián Spain 3MajuLab CNRS UCA SU NUS NTU International Joint Research Unit Singapore 4Centre for Quantum Technologies National University of Singapore Singapore We numerically explore Z2 symmetric random interacting Ising/Majorana chains at high energy. A very rich phase diagram emerges with two topologically distinct many body localization (MBL) regimes separated by a much broader thermal phase than previously found. This is a striking consequence of the avalanche theory. We further find MBL spin glass order always associated to a many body spectral pairing presumably signalling a strong zero mode operator which opens fascinating perspectives for MBL protected topological qubits. Main results  In order to address these critical questions we build on shift invert exact diagonalization to explore the Z2 symmetric disordered and interacting Ising Majorana (IM) chain model Eq. (2) for which we provide the infinitetemperature phase diagram in Fig. 1. The Kramers Wannier duality [31] leads to symmetric phase boundaries with two different MBL regimes in agreement with earlier works [22 23]. However the global shape reported in Fig. 1 sharply contrasts with those previous findings: we observe the opening of a broad ergodic window in the g → 0 limit as a direct consequence of the avalanche criterion when applied to the noninteracting typical localization length ξ > ξ∗ ≡ (ln 2)−1 [28]. We also demonstrate that the MBL quantum SG order exhibits cat states for all energies with a global double degeneracy of the many body spectrum between the two parity sectors. This is an example of MBL protected topological order with localized Majorana edge states and we remarkably identify a unique phase having both MBL SG and a paired spectrum and hence a single transition towards ergodicity occurring when the typical localization length also exceeds the avalanche threshold ξ∗. This global parity degeneracy is presumably associated to a strong zero mode (SZM) operator [26 32] which opens the possibility to realize MBL protected topological qubits with infinite coherence time at any temperature. (cid:88) i HTFI = Jiσx i σx i+1 + hiσz i (1) Introduction  Many body localization (MBL) in quantum interacting systems has attracted a lot of attention over the past two decades [1 10]. While the first (analytical) studies addressed the fate of the non interacting Anderson insulator against weak interactions [3 4] most of the subsequent numerical studies have focused on strongly interacting onedimensional (1D) models such as the random field Heisenberg chain [6 8] for which there is a global consensus for an ergodicity breaking transition [8 11 14]. In addition to convincing experimental observations [15 18] the existence of MBL has also been proven by Imbrie [19] for interacting random Ising chains governed byHImbrie = HTFI+Vx. Here i σz further perturbed by interactions of the form Vx =(cid:80) P =(cid:81) is the non interacting transverse field Ising (TFI) chain model i σx i Γx i that explicitly breaks the Z2 symmetry of the TFI model. So far a few works [20 24] have considered MBL physics with Z2 preserving interactions i.e. where the parity operator i commutes with the interacting Hamiltonian. However the parity symmetry potentially allows for topologically distinct MBL regimes: (i) a featureless localized phase with unbroken parity and (ii) a Z2 broken quantum spin glass order for which the observation of MBL protected topological order at all energies associated with Majorana edge states has remained elusive since the seminal work of Huse et al. [25]. Very recently two simultaneous works [22 23] have numerically studied the high energy properties of the Z2 symmetric random interacting Ising/Majorana (IM) chain model HIM = i + g(cid:0)σz (cid:1) . (2) i σx i+1 + hiσz (cid:88) Jiσx i σz i+1 + σx i σx i+2 i They detected two distinct MBL phases but without evidence of topological order such as spectral pairing [26] separated by an intervening ergodic region which was further argued [23] to shrink into a single point of infinite randomness criticality (IRC) [27] in the limit of vanishing interaction strength. Despite the strong interest triggered by these studies some important issues remain widely open raising two crucial questions: (i) what does the avalanche theory of MBL transitions [28] imply for this class of systems ? and (ii) can MBL help to stabilize coherent topological qubits [29 30] ? FIG. 1. Infinite temperature phase diagram of the random interacting Ising Majorana chain model Eq. (2) obtained using shift invert exact diagonalization. In the plane δ − g (δ = ln J − ln h g the interaction) a broad ergodic phase intervenes between two MBL regimes: a featureless paramagnet (MBL PM) and a spin glass order (MBL SG) with topological order signalled by a many body spectral pairing. For δ < δ∗ = ln 2 the non interacting localization length exceeds the avalanche threshold ξ∗ = 1/δ∗ (see text). 2 2 0 2  g u A 4  ] n n s i d . t a m d n o c [  3 v 6 5 5 0 0 . 1 0 2 2 : v i X r a δgδ*=ln2evenoddSpectral pairing ⋯⟩±⋯⟩ ⋯⟩MBLSGMBLPM 8 6 4 2024680.51ERGODIC−δ*
+  "extracted_institutions": [
+    {
+      "name": "Laboratoire de Physique Théorique Université de Toulouse",
+      "country": "France",
+      "city": "Toulouse"
+    },
+    {
+      "name": "CNRS",
+      "country": "France",
+      "city": ""
+    },
+    {
+      "name": "UPS",
+      "country": "France",
+      "city": ""
+    },
+    {
+      "name": "Donostia International Physics Center",
+      "country": "Spain",
+      "city": "San Sebastián"
+    },
+    {
+      "name": "MajuLab",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "NUS",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "NTU",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "Centre for Quantum Technologies National University of Singapore",
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Laboratoire de Physique Théorique Université de Toulouse",
+      "country": "France",
+      "city": "Toulouse"
+    },
+    {
+      "name": "CNRS",
+      "country": "France",
+      "city": ""
+    },
+    {
+      "name": "UPS",
+      "country": "France",
+      "city": ""
+    },
+    {
+      "name": "Donostia International Physics Center",
+      "country": "Spain",
+      "city": "San Sebastián"
+    },
+    {
+      "name": "MajuLab",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "NUS",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "NTU",
+      "country": "Singapore",
+      "city": ""
+    },
+    {
+      "name": "Centre for Quantum Technologies National University of Singapore",
+      "country": "Singapore",
+      "city": "Singapore"
+    }
+  ]
+}
+extracted names:
+{'Donostia International Physics Center', 'NTU', 'NUS', 'CNRS', 'Centre for Quantum Technologies National University of Singapore', 'Laboratoire de Physique Théorique Université de Toulouse', 'MajuLab', 'UPS'}
+paper name:  2201.00556v3.txt
+common:  ['https://ror.org/01mgdzc49', 'https://ror.org/01w0hda30', 'https://ror.org/01tgyzw49', 'https://ror.org/02e24yw40']
+overshoot:  []
+missed:  ['https://ror.org/027jrtw17', 'https://ror.org/004raaa70']
+
+
+validation of paper:2201.00557v1.txt
+
+Match found for substring: 'FAR EASTERN FEDERAL UNIVERSITY'
+['https://ror.org/0412y9z21']
+Scattering of a plane wave by an inhomogeneous 1D dielectric layer with gradient refractive index N.A. Vanyushkin A.H. Gevorgyan S.S. Golik Far Eastern Federal University 10 Ajax Bay Russky Island Vladivostok 690922 Russia Abstract We propose a new method for calculating reflection and transmission coefficients for an arbitrarily polarized electromagnetic plane wave incident on a one dimensional dielectric medium of finite thickness and with dielectric permittivity being an arbitrary continuous function of the coordinate. We have shown that the problem of plane wave scattering by an inhomogeneous layer is reduced to a system of first order differential equations that contain the derivative of the refractive index or dielectric permittivity of the layer which can be used for example when searching for an analytical solution. This method also makes it easy to obtain the distribution of the field strength within the layer. The reflection spectra and field distribution obtained using this method were compared with the analytical solution based on Mathieu functions.  1. Introduction The problem of electromagnetic wave propagation in a one dimensional isotropic medium with an arbitrary or random distribution of the refractive index has practical applications in many fields. It can be solved using many methods such as classical methods for solving ordinary differential equations integral equations method transfer matrix and scattering matrix methods Green's function method invariant immersion method phase function method semiclassical method etc. [1 12]. Nevertheless various new methods of solving this problem continue to be developed in recent years [13 17]. Each of these methods has its advantages and disadvantages. The choice of one or another method is usually determined by the problem formulation namely which aspect of the problem is of the greatest interest the computational complexity and the possibility of obtaining analytical expressions. Usually the problem of electromagnetic wave propagation through a layered medium is reduced to a linear boundary problem for the field amplitude inside the medium. However if only the amplitudes of the transmitted and reflected waves are to be found then the problem can be reduced to the Cauchy problem for differential equations for transmission and reflection coefficients.  and In [1819] a method for solving this system of equations by a suitable choice of two functions which are combinations of coefficients was proposed and generalized. The main advantage of this method as compared to standard methods from a computational point of view is that the solution of the system of two linear first order differential equations is easier than the wave equation. Note that there is a similar method proposed by Bovard [20] which is also based on solving a system of two coupled linear differential equations. The purpose of this paper is to continue the development of the method developed by [18] namely the problem of scattering of an electromagnetic wave by an inhomogeneous layer taking into account the spatial gradient of the refractive index will be considered. 2. Problem statement and solution Let us consider the reflection and transmission of a plane electromagnetic wave through an inhomogeneous layer (Fig. 1) which is located between the planes and its and TRTR0z=zL=
+  "extracted_institutions": [
+    {
+      "name": "Far Eastern Federal University",
+      "country": "Russia",
+      "city": "Vladivostok"
+    }
+  ]
+JSON decoding failed: Extra data: line 1 column 27 (char 26)
+revised Json:{
+  "extracted_institutions": [
+    {
+      "name": "Far Eastern Federal University",
+      "country": "Russia",
+      "city": "Vladivostok"
+    }
+  ]
+}
+extracted names:
+{'Far Eastern Federal University'}
+paper name:  2201.00557v1.txt
+common:  ['https://ror.org/0412y9z21']
+overshoot:  []
+missed:  []
+
+
+validation of paper:2201.00558v1.txt
+
+Match found for substring: 'UNIVERSITY OF INDONESIA'
+['https://ror.org/0116zj450']
+ Which Student is Best? A Comprehensive Knowledge Distillation Exam for Task Specific BERT Models Made Nindyatama Nityasyaa Haryo Akbarianto Wibowoa Rendi Chevia Radityo Eko Prasojoab and Alham Fikri Ajia aKata.ai Research Team Jakarta Indonesia bUniversity of Indonesia Depok Indonesia ARTICLE INFO Keywords: Knowledge Distillation Text Classification Sequence Labeling BERT Indonesian ABSTRACT We perform knowledge distillation (KD) benchmark from task specific BERT base teacher models to various student models: BiLSTM CNN BERT Tiny BERT Mini and BERT Small. Our experiment involves 12 datasets grouped in two tasks: text classification and sequence labeling in the Indonesian language. We also compare various aspects of distillations including the usage of word embeddings and unlabeled data augmentation. Our experiments show that despite the rising popularity of Transformer based models using BiLSTM and CNN student models provide the best trade off between performance and computational resource (CPU RAM and storage) compared to pruned BERT models. We further propose some quick wins on performing KD to produce small NLP models via efficient KD training mechanisms involving simple choices of loss functions word embeddings and unlabeled data preparation. 1. Introduction In recent years Deep Learning (DL) models have been widely utilized to solve Natural Language Processing (NLP) problems like text classification sequence labeling and machine translation. Given a large amount of labeled data DL can train a highly generalizable model thanks to its internal complexity and depth. In NLP the data (or lack thereof) itself is an infamous problem especially in low resource languages. The current common solution to this problem is by (1) pretraining  to perform a large scale representation learning of textual data leveraging the abundance of unlabeled text data from the Internet and then (2) fine tuning  to carry the parameters learned from the representation learning step and continuing training with the real labeled data on the specific problem we want to solve. The general intermediate model as a result of the pretraining step is usually called a language model (LM). Pretraining an LM typically requires significantly more data and computational resources than finetuning it and therefore takes longer. However an LM can be fine tuned into several models serving different purposes therefore potentially reducing the overall training time and cost. Due to this benefit several studies have focused on improving the pretraining step. To this end there is a trend of rising size and complexity of the resulted language models starting from distributed representation learning of words like word2vec (Mikolov Sutskever Chen Corrado and Dean 2013) and GloVe (Pennington Socher and Manning 2014) subword information enrichment (Bojanowski made@kata.ai (M.N. Nityasya); haryo@kata.ai (H.A. Wibowo); rendi.chevi@kata.ai (R. Chevi); ridho@kata.ai (R.E. Prasojo); aji@kata.ai (A.F. Aji) 0000 0001 7457 2165 (H.A. Wibowo); 0000 0002 7917 6556 (R. Chevi); 0000 0002 5148 7299 (R.E. Prasojo); 0000 0001 7665 0673 (A.F. Aji) ORCID(s): 0000 0002 5570 4676 (M.N. Nityasya); Grave Joulin and Mikolov 2017) contextual representation using Recurrent Neural Networks (RNNs) (Peters Neumann Iyyer Gardner Clark Lee and Zettlemoyer 2018) and finally the Transformer based models (Vaswani Shazeer Parmar Uszkoreit Jones Gomez Kaiser and Polosukhin 2017) that ranges from hundreds of millions to billions of trainable parameters. Transformer (Vaswani et al. 2017) like RNN uses an encoder decoder architecture and therefore is originally designed for sequence to sequence learning like machine translation.Howeverpreviousworkdiscoveredseveralways to utilize Transformer to train language models such as (1) autoregressive models trained using only the decoder blocks of Transformer like GPT (Radford Narasimhan Salimans and Sutskever a) GPT 2 (Radford Wu Child Luan Amodei Sutskever et al. b) and GPT 3 (Brown Mann Ryder Subbiah Kaplan Dhariwal Neelakantan Shyam Sastry Askell et al. 2020) (2) masked language models using only the encoder blocks like BERT (Devlin Chang Lee and Toutanova 2019) and its variants such as RoBERTa (Liu Ott Goyal Du Joshi Chen Levy Lewis Zettlemoyer and Stoyanov 2019) and ELECTRA (Duan Matthey Saraiva Watters Burgess Lerchner and Higgins 2020) and (3) a combination of both like BART (Lewis Liu Goyal Ghazvininejad Mohamed Levy Stoyanov and Zettlemoyer 2020) and T5 (Raffel Shazeer Roberts Lee Narang Matena Zhou Li and Liu 2019). There is a similar trend that further fosters the notion of "bigger is better" in Transformer based LMs. Evidently common benchmark such as GLUE (Wang Singh Michael Hill Levy and Bowman 2018) shows that the larger version of a model (e.g. BERT large; GPT 3) outperforms the smaller ones (e.g. BERT base and BERT small; GPT 2 and GPT) almost universally in terms of several performance metrics such as Precision Recall and F1 score on various NLP tasks. Nityasya et al.: Preprint submitted to Elsevier Page 1 of 14
+{
+  "extracted_institutions": [
+    {
+      "name": "University of Indonesia",
+      "country": "Indonesia",
+      "city": "Depok"
+    },
+    {
+      "name": "Kata.ai Research Team",
+      "country": "Indonesia",
+      "city": "Jakarta"
+    }
+  ]
+}
+extracted names:
+{'Kata.ai Research Team', 'University of Indonesia'}
+paper name:  2201.00558v1.txt
+common:  ['https://ror.org/0116zj450']
+overshoot:  []
+missed:  []
+
+
+overall size =  92
+hit_cnt =  82
+miss_cnt =  10
+overshoot_cnt =  3
+acc_rate =  0.8913043478260869
+miss_rate =  0.10869565217391304
+overshoot_rate =  0.03260869565217391
+
+
+
+
+Process finished with exit code 0

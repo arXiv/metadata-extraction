@@ -9,15 +9,15 @@ import time
 conn = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
-    password="your pwd for mysql",
+    password="",
     database="InstExtraction"
 )
 
 
-# 设置您的API密钥
+# Set the API Key
 def callModel(text:str) -> set:
   client = OpenAI(
-    api_key='your api-key',  # this is also the default, it can be omitted
+    api_key='',  # this is also the default, it can be omitted
   )
 
   result = set()

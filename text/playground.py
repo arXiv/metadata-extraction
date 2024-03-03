@@ -44,7 +44,7 @@ substring = "National Yang Ming Chiao Tung University"
 text_lower = text.lower()
 substring_lower = substring.lower()
 
-# 使用find()方法查找子字符串，不区分大小写
+# 使用fi# 使用find()方法查找子字符串，不区分大小写nd()方法查找子字符串，不区分大小写
 index = text_lower.find(substring_lower)
 
 if index != -1:
@@ -52,4 +52,6 @@ if index != -1:
     print(text[index])
 else:
     print(f"未找到子字符串 '{substring}'")
+
+
 
