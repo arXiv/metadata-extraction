@@ -1,5 +1,8 @@
 # self defined
 
+# mysql database and elastic resource
+resource
+
 # original ror data
 *ror-data.csv
 
