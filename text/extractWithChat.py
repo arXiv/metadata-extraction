@@ -4,7 +4,8 @@ import openai
 from openai import OpenAI
 import mysql.connector
 import time
-
+from models import institution
+from text.models.institution import Institution
 
 conn = mysql.connector.connect(
     host="127.0.0.1",
@@ -21,27 +22,6 @@ def callModel(text:str) -> set:
   )
 
   result = set()
-
-  # 构建请求数据
-  prompt = text
-  # model = "gpt-3.5-turbo" # 模型名称
-  #
-  # # 调用OpenAI API
-  # response = client.chat.completions.create(
-  #   model=model,
-  #   messages=[
-  #     {"role": "system",
-  #      "content": "You are a specialized model trained to extract institution names from academic papers. Return the result in json format，only return the json object, if nothing is get, return an emptry object"},
-  #     {"role": "user", "content": prompt}
-  #   ]
-  # )
-  # # Print the response content
-  # print("token cost:" + str(response.usage.total_tokens))
-  # print(response)
-  # message = response.choices[0].message
-  # print(message)
-  # json_data = json.loads(message.content)
-  # institution_names = list(json_data.values())[0]
 
   thread = client.beta.threads.create()
 
@@ -99,13 +79,17 @@ def callModel(text:str) -> set:
       return result
 
   names = [institution["name"] for institution in institutionInfo["extracted_institutions"]]
+  institutions = []
+  for ins in institutionInfo["extracted_institutions"]:
+    if ins["name"] != 'null':
+      inst = Institution(ins["name"],ins["city"],ins["country"])
+      institutions.append(inst)
 
-  institution_names = [name for name in names if name != 'null']
 
   client.beta.threads.delete(thread.id)
 
-  for name in institution_names:
-    result.add(name)
+  for inst in institutions:
+    result.add(inst)
   return result
 
 
