@@ -140,6 +140,8 @@ def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
         wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
         source_text = pre_format(wrapped_file.read())
         return source_text
+
+
 # -
 
 # ## Check a file with parse errors
@@ -147,18 +149,18 @@ def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
 # + active=""
 #
 
-# + tags=[] active=""
-# infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
-#
-# text = source_from_tar(infile_path)
-# pyperclip.copy(text)
-# soup = soup_from_tar(infile_path, tolerance=1)
-#
-#
-# title = soup.find('title')
-# if title: print(f"{title.name}: {title.text}")
-# for sec in soup.find_all('section'):
-#     print(f' {sec.name}: {sec.text}')
+# + tags=[]
+infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+
+text = source_from_tar(infile_path)
+pyperclip.copy(text)
+soup = soup_from_tar(infile_path, tolerance=1)
+
+
+title = soup.find('title')
+if title: print(f"{title.name}: {title.text}")
+for sec in soup.find_all('section'):
+    print(f' {sec.name}: {sec.text}')
 # -
 
 
@@ -168,7 +170,7 @@ def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
 # ## Quick check a folder of tar files
 
 # + tags=[]
-LOCAL_DATA_PATH = './data/2201_00_all/'
+LOCAL_DATA_PATH = './data/2201_01_all/'
 
 # + tags=[]
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
@@ -181,12 +183,12 @@ err_files = {}
 
 TOLERANCE = 1
 
-def update_counts(text):
+def update_counts(text, tar_file):
     global inc_alt_count
     global inc_graphics_count
-    if "alt=" in text:
+    if "\tensor=" in text:
         inc_alt_count += 1
-        print("Found alt in {tar_file}")
+        print(f"Found alt in {tar_file}")
         
     if r"\usepackage{graphicx}" in text:
         inc_graphics_count += 1
@@ -198,7 +200,7 @@ with tqdm(total=files_count, desc="errors") as err_prog:
         try:
             text = source_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
             utf_count += 1
-            update_counts(text)
+            update_counts(text, tar_file)
             continue
         except EOFError as eof:
             err_files[tar_file] = type(eof)
@@ -217,7 +219,7 @@ with tqdm(total=files_count, desc="errors") as err_prog:
         try:
             text = source_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
             latin_count += 1
-            update_counts(text)
+            update_counts(text, tar_file)
             continue
         except KeyboardInterrupt as KB_err:
             break
@@ -239,7 +241,7 @@ err_files
 print(f"{files_count} processed, {inc_graphics_count} used graphicx package, {inc_alt_count} used alt.")
 # -
 
-source_from_tar('./data/2201_00_all/2201.00718v1.tar.gz', encoding='utf-8', tolerance=TOLERANCE)
+source_from_tar('./data/2301/2301.01083v2.tar.gz', encoding='utf-8', tolerance=TOLERANCE)
 
 
 
@@ -247,10 +249,26 @@ source_from_tar('./data/2201_00_all/2201.00718v1.tar.gz', encoding='utf-8', tole
 
 # + [markdown] tags=[]
 # ## Scratch below here
+# -
 
+
+
+
+# +
+infile_path = "./data/2201_00_all/2201.00740v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+#infile_path = "./data/2201_01_all/2201.01050v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+
+text = source_from_tar(infile_path)
+pyperclip.copy(text)
+soup = soup_from_tar(infile_path, tolerance=1)
+
+title = soup.find('title')
+if title: print(f"{title.name}: {title.text}")
+for sec in soup.find_all('section'):
+    print(f' {sec.name}: {sec.text}')
 
 # + tags=[]
-infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
@@ -630,9 +648,67 @@ $1\le k< \frac n2 $
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
 # + tags=[]
+# math nested in text in math
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+min_example=r"""
+$$
+\sum_{S: |S|=\lfloor q/2 \rfloor,\lceil q/2 \rceil} \beta_S \geq  \begin{cases} 
+0.76 & \quad \text{if $q=5$}\\
+0.80  & \quad \text{if $q\geq 7$}.
+\end{cases},
+$$
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=1)
+#print(min_example)
+# + tags=[]
+# math nested in text in math
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+min_example=r"""
+
+
+
+
+\begin{figure}
+\centering
+\begin{minipage}[b]{0.4\textwidth}
+
+\end{minipage}
+\qquad
+\begin{minipage}[b]{0.2\textwidth}
+\begin{tikzpicture}[scale=0.8] \draw (-2,-1)--(-2,0)--(0,1) (-3,-2.2)--(-3,0.2)--(-1,0.2)--(-1,-2.2)--(-3,-2.2) (2,0)--(2,-1) (-2.5,-2) to[out=120,in=220] (-2,0) (-1.5,-2) to[out=60,in=320] (-2,0); \draw[dotted] (-2.5,-2)--(-1.5,-2); \draw[very thick] (0,-1)--(0,1)--(2,0); \draw[dashed] (-2.5,-2)--(-2,-1)--(-1.5,-2); \draw[fill=white] (-2,0) circle [radius=3pt] (-2,-1) circle [radius=3pt] (2,-1) circle [radius=3pt]; \draw[fill=black] (2,0) circle [radius=3pt] (0,1) circle [radius=3pt] (0,0) circle [radius=3pt] (0,-1) circle [radius=3pt] (-2.5,-2) circle [radius=3pt] (-1.5,-2) circle [radius=3pt]; \node[above] at (0,1) {$u\in T$}; \node[left] at (-2,0) {$v_1$}; \node[right] at (0,0) {$v_2$}; \node[right] at (2,0) {$v_3$}; \node[left] at (-2,-1) {$x_1$}; \node[right] at (0,-1) {$x_2$}; \node[right] at (2,-1) {$x_3$}; \node[left] at (-2.5,-2) {$y$}; \node[right] at (-1.5,-2) {$y'$};\node[above] at (-2,0.3) {$$};
+\end{tikzpicture}
+\end{minipage}
+
+\end{figure}
+
+
+We first compute a $\leq$$1$-part solution, $2$-part solution and $3$-part solution for $(G,T,w) $ of maximum weight. By Lemmas~\ref{l-1part},~\ref{l-2part} and~\ref{l-3part}, respectively, this takes polynomial time. 
+
+
+
+
+
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=1)
+#print(min_example)
+# + tags=[]
 import pandas as pd
 import numpy as np
 pd.DataFrame(np.random.randint(0,100,size=(10, 3)), columns=list('ABC')).to_csv('~/Expire/test_console_upload.csv')
+# +
+byte_string = b"Hello World"
+# byte_string.lower?
 # -
+
+
+b'\Xc3\x80'.lower()
+
+b_string = b"Hello World"
+
+b_string.hex()
+
+bin(int(b'A'.hex(),16))
+
+bin(int(b'a'.hex(),16))
 
 
