@@ -146,6 +146,48 @@ def source_from_tar(tar_path, encoding='utf-8'):
         return source_text
 
 
+# +
+def find_bad(current_text_lines):
+    mid = int(len(current_text_lines)/2)
+    part_a = current_text_lines[0:mid]
+    part_b = current_text_lines[mid:]
+    if next(swap):
+        part_b, part_a = part_a, part_b
+    bad = "\"
+    try:
+        soup = TS.TexSoup("\n".join(part_a), tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
+    except KeyboardInterrupt:
+        raise
+    except:
+        return part_a
+    try:
+        soup = TS.TexSoup("\n".join(part_b), tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
+    except KeyboardInterrupt:
+        raise
+    except:
+        return part_b
+    return "--"
+    
+
+def find_bad_lines(tar_path, encoding='utf-8'):
+    tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
+    with tarfile.open(tar_path, 'r') as in_tar:
+        fp = in_tar.extractfile(tex_main)
+        wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
+        source_text = pre_format(wrapped_file.read())
+        current_text = source_text.splitlines()
+
+    while len(current_text) > 1:
+        bad_half = find_bad(current_text)
+        if current_text == bad_half:
+            break
+        current_text = bad_half
+        
+    return bad_half
+
+
+# -
+
 # ## Check a file with parse errors
 
 # + active=""
