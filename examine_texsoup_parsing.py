@@ -13,7 +13,7 @@
 #     name: python3
 # ---
 
-# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@develop-main
+# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@nested-math
 # #! pip install --editable /Users/cjc73/gits/arxiv/TexSoup/
 
 #import zipfile
@@ -35,6 +35,10 @@ InteractiveShell.ast_node_interactivity = "all"
 
 import TexSoup as TS
 from TexSoup.tokens import MATH_ENV_NAMES
+# -
+
+TS.__file__
+
 
 TS.__file__
 
@@ -93,7 +97,7 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
         tar_path: A gzipped tar archive of a directory containing tex source and support files.
     '''
     
-    tex_names = set(["paper.tex", "main.tex", "ms.tex", "article.tex"])
+    tex_names = set(["paper", "main", "ms.", "article"])
 
     with tarfile.open(tar_path, 'r') as in_tar:
         tex_files = [f for f in in_tar.getnames() if f.endswith('.tex')]
@@ -104,12 +108,13 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
 
         main_files = {}
         for tf in tex_files:
-            has_main_name = tf in tex_names
+            depth = len(tf.split('/')) - 1
+            has_main_name = any(kw in tf for kw in tex_names)
             fp = in_tar.extractfile(tf)
             wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
             # does it have a doc class?
             # get the type
-            main_files[tf] = find_doc_class(wrapped_file, name_match = has_main_name)
+            main_files[tf] = find_doc_class(wrapped_file, name_match = has_main_name) - depth 
             wrapped_file.close() 
         
         # got one file with doc class
@@ -159,7 +164,6 @@ if title: print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
 # -
-
 
 
 
@@ -224,7 +228,7 @@ infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.0
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
-soup = soup_from_tar(infile_path, encoding='utf-8', tolerance=TOLERANCE)
+soup = soup_from_tar(infile_path, tolerance=1)
 
 
 title = soup.find('title')
