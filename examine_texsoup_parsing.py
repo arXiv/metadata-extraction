@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.4
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -16,7 +16,6 @@
 # %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@develop-main
 # #! pip install --editable /Users/cjc73/gits/arxiv/TexSoup/
 
-# + tags=[]
 #import zipfile
 import tarfile
 import io
@@ -25,30 +24,27 @@ import os
 import regex as re
 import glob
 import pandas as pd
-# -
 
 import pyperclip   #copy text to clipboard for inspecting
 
-# + tags=[]
 from tqdm.auto import tqdm
 
-# + tags=[]
 from IPython.core.interactiveshell import InteractiveShell
 # pretty print all cell's output and not just the last one
 InteractiveShell.ast_node_interactivity = "all"
 
-# + tags=[]
 import TexSoup as TS
 from TexSoup.tokens import MATH_ENV_NAMES
 
-# + tags=[]
-#importlib.reload(TS)
+TS.__file__
 
-# + tags=[]
+# +
+#importlib.reload(TS)
+# -
+
 LOCAL_DATA_PATH = './data/2201_00_all/'
 
 
-# + tags=[]
 def pre_format(text):
     '''Apply some substititions to make LaTeX easier to parse'''
     source_text = (
@@ -72,7 +68,7 @@ def pre_format(text):
     #return '\n'.join(clean_lines)
 
 
-# + tags=[]
+# +
 def find_doc_class(wrapped_file, name_match=False):
     '''Search for document class related lines in a file  and return a code to represent the type'''
     doc_class_pat = re.compile(r"^\s*\\document(?:style|class)")
@@ -124,7 +120,8 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
         return(max(main_files, key=main_files.get))
 
 
-# + tags=[]
+# -
+
 def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
@@ -135,7 +132,6 @@ def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
         return soup
 
 
-# + tags=[]
 def source_from_tar(tar_path, encoding='utf-8'):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
@@ -145,14 +141,12 @@ def source_from_tar(tar_path, encoding='utf-8'):
         return source_text
 
 
-# -
-
 # ## Check a file with parse errors
 
 # + active=""
 #
 
-# + tags=[]
+# +
 infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
@@ -172,14 +166,14 @@ for sec in soup.find_all('section'):
 
 # ## Quick check a folder of tar files
 
-# + tags=[]
+# +
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
 files_count = len(files)
 utf_count = 0
 latin_count = 0 
 err_files = {}
 
-TOLERANCE = 1
+TOLERANCE = 0
 
 with tqdm(total=files_count, desc="errors") as err_prog:
     for tar_file in tqdm(files, desc="Progress", display=True):
@@ -212,19 +206,21 @@ with tqdm(total=files_count, desc="errors") as err_prog:
             err_files[tar_file] = type(e)
             _ = err_prog.update(1)
             pass
+# -
 
 
-# + tags=[]
 print(f"{files_count} processed, {len(err_files)} failures.")
 print(f"UTF8: {utf_count}; Latin1: {latin_count}")
 err_files
 
-# + [markdown] tags=[]
 # ## Scratch below here
 
 
-# + tags=[]
-infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+
+
+# +
+TOLERANCE = 0
+infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
@@ -235,8 +231,8 @@ title = soup.find('title')
 if title: print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
+# -
 
-# + tags=[]
 tar_path = "./data/2201_samp/2201.00008v2.tar.gz"
 encoding = "utf-8"
 with tarfile.open(tar_path, 'r') as in_tar:
@@ -262,10 +258,9 @@ with tarfile.open(tar_path, 'r') as in_tar:
     # account for multi-file submissions
     #return(max(main_files, key=main_files.get))
 
-# + tags=[]
 main_files
 
-# + tags=[]
+# +
 doc_class_pat = re.compile(r"^\s*\\document(?:style|class)")
 
 with tarfile.open(tar_path, 'r', encoding='utf-8') as in_tar:
@@ -276,20 +271,18 @@ with tarfile.open(tar_path, 'r', encoding='utf-8') as in_tar:
         if doc_class_pat.search(line):
             print(line)
             break
-
-
-# + tags=[]
-next(wrapped_file)
-
-# + tags=[]
-
 # -
 
 
+next(wrapped_file)
 
 
 
-# + tags=[] active=""
+
+
+
+
+# + active=""
 # # Discover the file list:
 # input_zip = '2201.00007v1.zip'
 # infile_path = os.path.join(LOCAL_DATA_PATH, input_zip)
@@ -300,7 +293,7 @@ next(wrapped_file)
 #             if not '/.' in file_info.filename:
 #                 print(file_info.filename)
 
-# + tags=[] active=""
+# + active=""
 # main_tex = '2201.00007v1/main.tex'
 # with zipfile.ZipFile(infile_path, "r") as in_zip:
 #     with in_zip.open('2201.00007v1/main.tex') as in_tex:
@@ -310,16 +303,16 @@ next(wrapped_file)
 #         soup = TS.TexSoup(source_text)
 
 
-# + tags=[] active=""
+# + active=""
 # title = soup.find('title')
 # print(f"{title.name}: {title.text}")
 # for sec in soup.find_all('section'):
 #     print(f' {sec.name}: {sec.text}')
 #     
 #
+# -
 
 
-# + tags=[]
 min_example=r"""
 \documentclass{article}
 \begin{document}
@@ -328,16 +321,12 @@ min_example=r"""
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
-# + tags=[]
 TS.TexSoup(r'\newcommand{\bra}[1]{\left\langle#1\right|}')
 
 
-# + tags=[]
 TS.TexSoup(r'\def\be{\foo{equation}}')
 
-# + tags=[]
 TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
-# -
 min_example = r"\newenvironment{inlinemath}{$}{$}".strip()
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
@@ -346,7 +335,7 @@ min_example = r"In practice, the matrix $\left [ 4 \right]\Inv\M{D}^{(1)}_n $".s
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
 
-# + tags=[]
+# +
 min_example = r"In practice, the matrix $\left[ 4 \right]\Inv\M{D}^{(1)}_n $"
 
 
@@ -359,7 +348,7 @@ buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(r'\left[ 4 \rig
 TS.reader.read_command(buf, n_required_args=-1, mode='mode:math', skip=1 )
 
 
-# + tags=[]
+# +
 min_example = r"$ t \in [0,1] $$ t \in [0,1] $"
 
 
@@ -377,20 +366,18 @@ TS.reader.read_command(buf, n_required_args=-1, mode='mode:math', skip=3, tolera
 
 buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
 TS.read(buf, tolerance=1)
+# -
 
 
-# + tags=[]
 with pd.option_context('display.max.columns', None, 'display.max_colwidth', 0):
     pd.DataFrame({'char':char_codes, 'code':(x.category for x in char_codes)}).transpose()
     pd.DataFrame({'tokens':tokens})
 
-# + tags=[]
 min_example = r"In practice, the matrix $\left [\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n $"
 print(min_example)
 TS.TexSoup(pre_format(min_example))
 TS.TexSoup(min_example)
 
-# + tags=[]
 min_example=r"""
 \documentclass{article}
 \begin{document}
@@ -400,23 +387,19 @@ min_example=r"""
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
 
-# + tags=[]
 min_example=r"""
 \def\bean {\begin{foo}}  \def\eean {\end{foo}}
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 TS.TexSoup(min_example)
 print(min_example)
-# + tags=[]
 min_example=r"""
 we {use $A=8B$ and $s=1$, then the scalar field becomes same with (\Ref{scalarfield}) and
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #TS.TexSoup(min_example)
 print(min_example)
-# + tags=[]
 print(pre_format(min_example))
-# + tags=[]
 BRACKETS_DELIMITERS = {
     '(', ')', '<', '>', '[', ']', '{', '}', r'\{', r'\}', '.' '|', r'\langle',
     r'\rangle', r'\lfloor', r'\rfloor', r'\lceil', r'\rceil', r'\ulcorner',
@@ -429,24 +412,20 @@ PUNCTUATION_COMMANDS = {command + opt_space + bracket
                         for opt_space in {'', ' '}
                         for bracket in BRACKETS_DELIMITERS.union({'|', '.'})}
 PUNCTUATION_COMMANDS
-# -
 
 
 
 
-# + tags=[]
 min_example=r"""
 \def\bean {\begin{eqnarray*}}  \def\eean {\end{eqnarray*}}
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
-# + tags=[]
 min_example=r"""
 the interval $t\in[0,1)$. 
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
-# + tags=[]
 min_example=r"""
 
 
@@ -482,13 +461,11 @@ The following characterizations of UAL chains are all equivalent:
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 \newcommand\const{\operatorname{const}}
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 \newcommand{\beq}{\begin{equation}}
 \newcommand{\eeq}{\end{equation}}
@@ -501,7 +478,6 @@ derivation $\CA\mapsto [\CB,\CA]$.
 """.strip().replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 \[
 r_p=d(p,\cdot)\colon \Gamma \to [0,\infty)|~ p \in M\}
@@ -509,13 +485,11 @@ r_p=d(p,\cdot)\colon \Gamma \to [0,\infty)|~ p \in M\}
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 $\bigl[ a \bigr)$
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 
 $\varepsilon\in]0,\varepsilon_\star[$,  
@@ -523,7 +497,6 @@ $\varepsilon\in]0,\varepsilon_\star[$,
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
 \[
 i\colon [0,\infty) 
@@ -533,13 +506,11 @@ TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
 
 
-# + tags=[]
 min_example=r"""
 \newcommand\1{{\mathds 1}}
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # !! This bug was specific to my fork
 min_example=r"""
 \newcommand{\linebreakand}{%
@@ -550,13 +521,11 @@ min_example=r"""
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 min_example=r"""
  $S \subseteq \{0\} \bigcup [1,\infty) $ if $z^*_2=1$.  
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # two inline math envs next to eachother
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
@@ -564,7 +533,6 @@ $\rm{W_{cyc} }\geq 0$$\;\;\square$
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
@@ -572,14 +540,12 @@ min_example=r"""
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # does not handle missing optional braces around arguments
 min_example=r"""
 $\sqrt {\frac 3 2} >p >1$
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
@@ -587,7 +553,6 @@ min_example=r"""
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
@@ -595,7 +560,6 @@ $\frac{j+1+\epsilon}{m^{\alpha}}[$
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
 # \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
@@ -603,10 +567,29 @@ $1\le k< \frac n2 $
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# + tags=[]
+# \verb{char}...{char} is also an issue for parser
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+min_example=r"""
+\begin{equation}
+\begin{aligned}[t]
+[T\tensor*[]{]}{_{\CT}^{\sp}} \\
+[T]{_{\CT}^{\sp}}
+\end{aligned}
+\end{equation}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=1)
+#print(min_example)
+# +
+# \verb{char}...{char} is also an issue for parser
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+with open('./data/test.txt', 'r') as infile:
+    min_example=infile.read().strip()
+
+TS.TexSoup(pre_format(min_example), tolerance=0)
+#print(min_example)
+# -
 import pandas as pd
 import numpy as np
 pd.DataFrame(np.random.randint(0,100,size=(10, 3)), columns=list('ABC')).to_csv('~/Expire/test_console_upload.csv')
-# -
 
 
