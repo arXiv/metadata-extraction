@@ -13,7 +13,7 @@
 #     name: python3
 # ---
 
-# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@nested-math
+# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@develop-main
 # #! pip install --editable /Users/cjc73/gits/arxiv/TexSoup/
 
 #import zipfile
@@ -24,6 +24,7 @@ import os
 import regex as re
 import glob
 import pandas as pd
+import itertools as itr
 
 import pyperclip   #copy text to clipboard for inspecting
 
@@ -147,13 +148,15 @@ def source_from_tar(tar_path, encoding='utf-8'):
 
 
 # +
+swap = itr.cycle((True, False))
+
 def find_bad(current_text_lines):
     mid = int(len(current_text_lines)/2)
     part_a = current_text_lines[0:mid]
     part_b = current_text_lines[mid:]
     if next(swap):
         part_b, part_a = part_a, part_b
-    bad = "\"
+    bad = ""
     try:
         soup = TS.TexSoup("\n".join(part_a), tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
     except KeyboardInterrupt:
@@ -186,12 +189,53 @@ def find_bad_lines(tar_path, encoding='utf-8'):
     return bad_half
 
 
+# +
+def show_context(text_path, offset, context_size=50):
+    try: 
+        with open(text_path, 'r', encoding='utf-8') as file:
+            file.seek(offset)
+            context = file.read(context_size)
+            return context
+            # Is it unicode?
+    except UnicodeDecodeError as ue:
+        pass
+    try:
+        with open(text_path, 'r', encoding='latin-1') as file:
+            file.seek(offset)
+            context = file.read(context_size)
+            return context
+    except: 
+        raise
+
+# file_path = 'Ising_v2.tex'
+# offset_position = 805
+# context = show_context(file_path, offset_position)
+# print("Error context at offset 805:", context)
+
+
 # -
+
+show_context(infile_path, 8584)
 
 # ## Check a file with parse errors
 
-# + active=""
-#
+min_example=r"""
+{\subsection}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+try:
+    TS.TexSoup(pre_format(min_example), tolerance=0)
+except AssertionError as e:
+    print(e)
+#print(min_example)
+
+min_example=r"""
+\renewcommand{\tilde}{\widetilde}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+try:
+    TS.TexSoup(pre_format(min_example), tolerance=0)
+except AssertionError as e:
+    print(e)
+#print(min_example)
 
 # +
 infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
@@ -261,16 +305,16 @@ err_files
 
 # ## Scratch below here
 
-
+show_context(infile_path, 8584)
 
 
 # +
 TOLERANCE = 0
-infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+infile_path = "./data/2201_00_all/2201.00468v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
-soup = soup_from_tar(infile_path, tolerance=1)
+soup = soup_from_tar(infile_path, tolerance=TOLERANCE)
 
 
 title = soup.find('title')
@@ -278,6 +322,14 @@ if title: print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
 # -
+
+soup.find_all('section')
+
+soup
+
+find_bad_lines(infile_path, encoding='utf-8')
+
+
 
 tar_path = "./data/2201_samp/2201.00008v2.tar.gz"
 encoding = "utf-8"
@@ -634,8 +686,19 @@ with open('./data/test.txt', 'r') as infile:
 TS.TexSoup(pre_format(min_example), tolerance=0)
 #print(min_example)
 # -
+# \verb{char}...{char} is also an issue for parser
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+min_example=r"""
+\def\f{\frac}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=0)
+#print(min_example)
 import pandas as pd
 import numpy as np
 pd.DataFrame(np.random.randint(0,100,size=(10, 3)), columns=list('ABC')).to_csv('~/Expire/test_console_upload.csv')
 
-
+min_example=r"""
+\renewcommand{\subsection}[1]{{\textit{#1.~}}}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=0)
+#print(min_example)
