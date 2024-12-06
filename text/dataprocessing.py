@@ -1,6 +1,6 @@
 import compare
 import csv
-
+import re
 nameMap = {}
 trie = compare.Trie()
 commonWords = compare.Trie()
@@ -26,7 +26,8 @@ def process_line(elements):
                         trie.insert(name[:-1],id)
         c += 1
 
-def test_paper(file_path,jdugeFirst: bool):
+def test_paper(file_path, jdugeFirst: bool):
+
     with open(file_path, 'r', encoding='utf-8') as file:
         file_contents = file.read()
 
@@ -44,39 +45,31 @@ def test_paper(file_path,jdugeFirst: bool):
     text = text.replace("-", " ")
     text = text.replace("  ", " ")
     text = text.replace("  "," ")
-    print(text)
+    text = text.replace("∗","")
+    text = re.sub(r'[^A-Za-z0-9 ]', '', text) 
+    #print(text)
+    # with open('paper.txt', 'a', encoding='utf-8') as file:
+    #     file.write(text)
+    #     file.write("\n")  # 如果需要在字符串后添加换行符
+    #     file.write("-------------------------------------------------------------------------------------------------\n")
 
     result = set()
-    i = 0
-    startIdx = 2
-    while i < len(text):
-        for k in range(i,i+startIdx):
-            tempResult = []
-            for j in range(k+1, len(text)+1):
-                substring = text[k:j]
-                #print(substring)
-                rlt = trie.search(substring)
-                if rlt:
-                    if rlt.is_word:
-                        if len(rlt.matchedIds) > 3:
-                            continue
-                        print(f"Match found for substring: '{substring}'")
-                        print(rlt.matchedIds)
-                        tempResult.clear()
-                        tempResult.extend(rlt.matchedIds)
-
-                else:
-                    if len(tempResult) > 0:
-                        result.update(tempResult)
-                        i = j-1
-                    else:
-                        while i < len(text) and text[i] != ' ':
-                            i += 1
-                    break
-            if len(tempResult) > 0:
+    words = text.split()
+    
+    # Iterate over possible lengths from max_len down to min_len
+    for i in range(len(words) - 1):  # Outer loop for starting index
+        for n in range(2, min(10, len(words) - i), 1):  # Inner loop for sub-sentence length
+            substring = ' '.join(words[i:i+n])  # Join the n contiguous words into a sub-sentence
+            rlt = trie.search(substring)
+            if rlt and rlt.is_word and len(rlt.matchedIds) <= 1:
+                result.update(rlt.matchedIds)
                 break
-        i += 1
+            if(rlt):
+                continue
+            else:
+                break
     return result
+
 
 def init_trie():
     # build trie of common english words
