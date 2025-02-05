@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.5
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -15,7 +15,6 @@
 
 
 
-# + tags=[]
 #import zipfile
 import tarfile
 import io
@@ -24,26 +23,20 @@ import os
 import regex as re
 import glob
 
-# + tags=[]
 from tqdm.auto import tqdm
 
-# + tags=[]
 from IPython.core.interactiveshell import InteractiveShell
 # pretty print all cell's output and not just the last one
 InteractiveShell.ast_node_interactivity = "all"
 
-# + tags=[]
 import TexSoup as TS
 #importlib.reload(TS)
-# -
 
 
 
-# + tags=[]
 LOCAL_DATA_PATH = './data/2201_01_all'
 
 
-# + tags=[]
 def pre_format(text):
     '''Apply some substititions to make LaTeX easier to parse'''
     source_text = (
@@ -64,7 +57,7 @@ def pre_format(text):
     #return '\n'.join(clean_lines)
 
 
-# + tags=[]
+# +
 def find_doc_class(wrapped_file, name_match=False):
     '''Search for document class related lines in a file  and return a code to represent the type'''
     doc_class_pat = re.compile(r"^\s*\\document(?:style|class)")
@@ -125,7 +118,6 @@ MATH_ENV_NAMES = (
 )
 
 
-# + tags=[]
 def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
@@ -136,7 +128,6 @@ def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
         return soup
 
 
-# + tags=[]
 def source_from_tar(tar_path, encoding='utf-8'):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
@@ -146,15 +137,17 @@ def source_from_tar(tar_path, encoding='utf-8'):
         return source_text
 
 
-# -
-
 # ## Quick check a folder of tar files
 
 os.path.join(LOCAL_DATA_PATH, '*.tar.gz')
 
-# + tags=[]
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
-# -
+
+
+len(files)
+
+
+
 
 
 err_files = {}
@@ -177,7 +170,7 @@ if 'err_files' in locals():
 
 
 
-# + tags=[]
+# +
 files_count = len(files)
 utf_count = 0
 latin_count = 0 
@@ -216,18 +209,17 @@ with tqdm(total=files_count, desc="errors") as err_prog:
             err_files[tar_file] = type(e)
             _ = err_prog.update(1)
             pass
+# -
 
 
-# + tags=[]
 print(f"{files_count} processed, {len(err_files)} failures.")
 print(f"UTF8: {utf_count}; Latin1: {latin_count}")
 err_files
 
-# + [markdown] tags=[]
 # ## Scratch below here
 
 
-# + tags=[]
+# +
 infile_path = "./data/2201_samp/2201.00092v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
@@ -243,7 +235,6 @@ for sec in soup.find_all('section'):
 
 
 
-# + tags=[]
 tar_path = "./data/2201_samp/2201.00008v2.tar.gz"
 encoding = "utf-8"
 with tarfile.open(tar_path, 'r') as in_tar:
@@ -269,10 +260,9 @@ with tarfile.open(tar_path, 'r') as in_tar:
     # account for multi-file submissions
     #return(max(main_files, key=main_files.get))
 
-# + tags=[]
 main_files
 
-# + tags=[]
+# +
 doc_class_pat = re.compile(r"^\s*\\document(?:style|class)")
 
 with tarfile.open(tar_path, 'r', encoding='utf-8') as in_tar:
@@ -283,20 +273,18 @@ with tarfile.open(tar_path, 'r', encoding='utf-8') as in_tar:
         if doc_class_pat.search(line):
             print(line)
             break
-
-
-# + tags=[]
-next(wrapped_file)
-
-# + tags=[]
-
 # -
 
 
+next(wrapped_file)
 
 
 
-# + tags=[] active=""
+
+
+
+
+# + active=""
 # # Discover the file list:
 # input_zip = '2201.00007v1.zip'
 # infile_path = os.path.join(LOCAL_DATA_PATH, input_zip)
@@ -307,7 +295,7 @@ next(wrapped_file)
 #             if not '/.' in file_info.filename:
 #                 print(file_info.filename)
 
-# + tags=[] active=""
+# + active=""
 # main_tex = '2201.00007v1/main.tex'
 # with zipfile.ZipFile(infile_path, "r") as in_zip:
 #     with in_zip.open('2201.00007v1/main.tex') as in_tex:
@@ -317,16 +305,16 @@ next(wrapped_file)
 #         soup = TS.TexSoup(source_text)
 
 
-# + tags=[] active=""
+# + active=""
 # title = soup.find('title')
 # print(f"{title.name}: {title.text}")
 # for sec in soup.find_all('section'):
 #     print(f' {sec.name}: {sec.text}')
 #     
 #
+# -
 
 
-# + tags=[]
 min_example=r"""
 \documentclass{article}
 \begin{document}
@@ -335,36 +323,27 @@ min_example=r"""
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
-# + tags=[]
 TS.TexSoup(r'\newcommand{\bra}[1]{\left\langle#1\right|}')
 
 
-# + tags=[]
 TS.TexSoup(r'\def\be{\foo{equation}}')
 
-# + tags=[]
 TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
-# + tags=[]
 r"In practice, the matrix $\left [\M{D}^{(1)}_n(\M{D}^{(1)}_n)\Tra\right]\Inv\M{D}^{(1)}_n$"
-# + tags=[]
 In practice, the matrix $\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra\right]\Inv\M{D}^{(1) }_n$ is pre-computed and cached for repeated use.
 
 
 
-# + tags=[]
 min_example=r"""
 $\left [\M{D}^{(1) }_n(\M{D}^{(1) }_n)\Tra \right] $
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #TS.TexSoup(min_example)
 #print(min_example)
-# + tags=[]
 print(pre_format(min_example))
-# -
 print()
 
 
-# + tags=[]
 min_example=r"""
 \documentclass{article}
 \begin{document}
@@ -373,7 +352,6 @@ min_example=r"""
 """.strip() #.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example))
 #print(min_example)
-# -
 TS.TexSoup(r'\renewcommand{\shorttitle}{Avoiding Catastrophe}')
 
 

@@ -13,8 +13,7 @@
 #     name: python3
 # ---
 
-# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@develop-main
-# #! pip install --editable /Users/cjc73/gits/arxiv/TexSoup/
+
 
 #import zipfile
 import tarfile
@@ -24,9 +23,8 @@ import os
 import regex as re
 import glob
 import pandas as pd
-
-import pathlib
-import collections as coll
+import itertools as itr
+import pprint
 
 import pyperclip   #copy text to clipboard for inspecting
 
@@ -38,11 +36,19 @@ InteractiveShell.ast_node_interactivity = "all"
 
 import TexSoup as TS
 from TexSoup.tokens import MATH_ENV_NAMES
+# -
 
+TS.__file__
+
+
+TS.__file__
 
 # +
 #importlib.reload(TS)
 # -
+
+LOCAL_DATA_PATH = './data/2201_00_all/'
+
 
 def pre_format(text):
     '''Apply some substititions to make LaTeX easier to parse'''
@@ -92,7 +98,7 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
         tar_path: A gzipped tar archive of a directory containing tex source and support files.
     '''
     
-    tex_names = set(["paper.tex", "main.tex", "ms.tex", "article.tex"])
+    tex_names = set(["paper", "main", "ms.", "article"])
 
     with tarfile.open(tar_path, 'r') as in_tar:
         tex_files = [f for f in in_tar.getnames() if f.endswith('.tex')]
@@ -103,12 +109,13 @@ def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
 
         main_files = {}
         for tf in tex_files:
-            has_main_name = tf in tex_names
+            depth = len(tf.split('/')) - 1
+            has_main_name = any(kw in tf for kw in tex_names)
             fp = in_tar.extractfile(tf)
             wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
             # does it have a doc class?
             # get the type
-            main_files[tf] = find_doc_class(wrapped_file, name_match = has_main_name)
+            main_files[tf] = find_doc_class(wrapped_file, name_match = has_main_name) - depth 
             wrapped_file.close() 
         
         # got one file with doc class
@@ -131,7 +138,7 @@ def soup_from_tar(tar_path, encoding='utf-8', tolerance=0):
         return soup
 
 
-def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
+def source_from_tar(tar_path, encoding='utf-8'):
     tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
     with tarfile.open(tar_path, 'r') as in_tar:
         fp = in_tar.extractfile(tex_main)
@@ -140,23 +147,98 @@ def source_from_tar(tar_path, encoding='utf-8', tolerance=None):
         return source_text
 
 
+# +
+swap = itr.cycle((True, False))
+
+def find_bad(current_text_lines):
+    mid = int(len(current_text_lines)/2)
+    part_a = current_text_lines[0:mid]
+    part_b = current_text_lines[mid:]
+    if next(swap):
+        part_b, part_a = part_a, part_b
+    bad = ""
+    try:
+        soup = TS.TexSoup("\n".join(part_a), tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
+    except KeyboardInterrupt:
+        raise
+    except:
+        return part_a
+    try:
+        soup = TS.TexSoup("\n".join(part_b), tolerance=tolerance, skip_envs=MATH_ENV_NAMES)
+    except KeyboardInterrupt:
+        raise
+    except:
+        return part_b
+    return "--"
+    
+
+def find_bad_lines(tar_path, encoding='utf-8'):
+    tex_main = find_main_tex_source_in_tar(tar_path, encoding=encoding)
+    with tarfile.open(tar_path, 'r') as in_tar:
+        fp = in_tar.extractfile(tex_main)
+        wrapped_file = io.TextIOWrapper(fp, newline=None, encoding=encoding) #universal newlines
+        source_text = pre_format(wrapped_file.read())
+        current_text = source_text.splitlines()
+
+    while len(current_text) > 1:
+        bad_half = find_bad(current_text)
+        if current_text == bad_half:
+            break
+        current_text = bad_half
+        
+    return bad_half
+
+
+# +
+def show_context(text_path, offset, context_size=50):
+    try: 
+        with open(text_path, 'r', encoding='utf-8') as file:
+            file.seek(offset)
+            context = file.read(context_size)
+            return context
+            # Is it unicode?
+    except UnicodeDecodeError as ue:
+        pass
+    try:
+        with open(text_path, 'r', encoding='latin-1') as file:
+            file.seek(offset)
+            context = file.read(context_size)
+            return context
+    except: 
+        raise
+
+# file_path = 'Ising_v2.tex'
+# offset_position = 805
+# context = show_context(file_path, offset_position)
+# print("Error context at offset 805:", context)
+
+
+# -
+
+show_context(infile_path, 8584)
+
 # ## Check a file with parse errors
+
+min_example=r"""
+{\subsection}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+try:
+    TS.TexSoup(pre_format(min_example), tolerance=0)
+except AssertionError as e:
+    print(e)
+#print(min_example)
+
+min_example=r"""
+\renewcommand{\tilde}{\widetilde}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+try:
+    TS.TexSoup(pre_format(min_example), tolerance=0)
+except AssertionError as e:
+    print(e)
+#print(min_example)
 
 # +
 infile_path = "./data/2201_00_all/2201.00001v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
-
-text = source_from_tar(infile_path)
-pyperclip.copy(text)
-soup = soup_from_tar(infile_path, tolerance=1)
-
-
-title = soup.find('title')
-if title: print(f"{title.name}: {title.text}")
-for sec in soup.find_all('section'):
-    print(f' {sec.name}: {sec.text}')
-
-# +
-infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
@@ -172,46 +254,23 @@ for sec in soup.find_all('section'):
 
 
 
-
 # ## Quick check a folder of tar files
-
-LOCAL_DATA_PATH = '/Volumes/Neptune/scratch/2311'
-
-files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
-files_count = len(files)
-files_count
-ufiles = set(pathlib.Path(x).name.strip("tar.gz").split('v')[0] for x in files)
-len(ufiles)
 
 # +
 files = glob.glob(f'{LOCAL_DATA_PATH}/*.tar.gz')
 files_count = len(files)
 utf_count = 0
 latin_count = 0 
-inc_graphics_count = 0
-inc_alt_count = 0
 err_files = {}
 
-TOLERANCE = 1
-
-def update_counts(text, tar_file):
-    global inc_alt_count
-    global inc_graphics_count
-    if "alt=" in text:
-        inc_alt_count += 1
-        print(f"Found alt in {tar_file}")
-        
-    if r"\usepackage{graphicx}" in text:
-        inc_graphics_count += 1
+TOLERANCE = 0
 
 with tqdm(total=files_count, desc="errors") as err_prog:
     for tar_file in tqdm(files, desc="Progress", display=True):
         # Is it unicode?
-        text = ""
         try:
-            text = source_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
+            soup = soup_from_tar(tar_file, encoding='utf-8', tolerance=TOLERANCE)
             utf_count += 1
-            update_counts(text, tar_file)
             continue
         except EOFError as eof:
             err_files[tar_file] = type(eof)
@@ -228,9 +287,8 @@ with tqdm(total=files_count, desc="errors") as err_prog:
 
         # Is it something else?
         try:
-            text = source_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
+            soup = soup_from_tar(tar_file, encoding='latin-1', tolerance=TOLERANCE)
             latin_count += 1
-            update_counts(text, tar_file)
             continue
         except KeyboardInterrupt as KB_err:
             break
@@ -238,9 +296,6 @@ with tqdm(total=files_count, desc="errors") as err_prog:
             err_files[tar_file] = type(e)
             _ = err_prog.update(1)
             pass
-            
-
-            
 # -
 
 
@@ -248,38 +303,18 @@ print(f"{files_count} processed, {len(err_files)} failures.")
 print(f"UTF8: {utf_count}; Latin1: {latin_count}")
 err_files
 
-print(f"{files_count} processed, {inc_graphics_count} used graphicx package, {inc_alt_count} used alt.")
-
-source_from_tar('./data/2301/2301.01083v2.tar.gz', encoding='utf-8', tolerance=TOLERANCE)
-
-
-
-
-
 # ## Scratch below here
 
-
+show_context(infile_path, 8584)
 
 
 # +
-infile_path = "./data/2201_00_all/2201.00740v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
-#infile_path = "./data/2201_01_all/2201.01050v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
+TOLERANCE = 0
+infile_path = "/Volumes/Neptune/scratch/2404/2404.08812v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
 
 text = source_from_tar(infile_path)
 pyperclip.copy(text)
-soup = soup_from_tar(infile_path, tolerance=1)
-
-title = soup.find('title')
-if title: print(f"{title.name}: {title.text}")
-for sec in soup.find_all('section'):
-    print(f' {sec.name}: {sec.text}')
-
-# +
-infile_path = "./data/2201_00_all/2201.00430v1.tar.gz" #'./data/2201_samp/2201.00048v1.tar.gz'
-
-text = source_from_tar(infile_path)
-pyperclip.copy(text)
-soup = soup_from_tar(infile_path, encoding='utf-8', tolerance=TOLERANCE)
+soup = soup_from_tar(infile_path, tolerance=TOLERANCE)
 
 
 title = soup.find('title')
@@ -287,6 +322,14 @@ if title: print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
 # -
+
+soup.find_all('section')
+
+soup
+
+find_bad_lines(infile_path, encoding='utf-8')
+
+
 
 tar_path = "./data/2201_samp/2201.00008v2.tar.gz"
 encoding = "utf-8"
@@ -401,6 +444,54 @@ char_codes = list(TS.category.categorize(min_example))
 
 buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(r'\left[ 4 \right]')))
 TS.reader.read_command(buf, n_required_args=-1, mode='mode:math', skip=1 )
+
+
+# +
+min_example=r"""
+\renewcommand{\subsection}[1]{{\textit{#1.~}}}""".strip()
+
+cats = TS.category.categorize(min_example)
+tokens = list(TS.tokens.tokenize(cats))
+
+char_codes = list(TS.category.categorize(min_example))
+
+with pd.option_context('display.max.columns', None, 'display.max_colwidth', 0):
+    pd.DataFrame({'char':char_codes, 'code':(x.category for x in char_codes)}).transpose()
+    pd.DataFrame({'tokens':tokens})
+
+print("Cmd Math Mode")
+buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
+rd_cmd = TS.reader.read_command(buf, n_required_args=2, n_optional_args=2, mode='mode:math', tolerance=1)
+pprint.pp(rd_cmd)
+
+print("Cmd Non Math")
+buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
+rd_cmd = TS.reader.read_command(buf,  n_required_args=2, n_optional_args=2, tolerance=1)
+pprint.pp(rd_cmd)
+
+print("Reader")
+buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
+rd = TS.read(buf, tolerance=1)
+pprint.pp(rd)
+
+# +
+min_example = r"\subsection[Background Info]{Background}"
+
+
+cats = TS.category.categorize(min_example)
+tokens = list(TS.tokens.tokenize(cats))
+
+char_codes = list(TS.category.categorize(min_example))
+
+with pd.option_context('display.max.columns', None, 'display.max_colwidth', 0):
+    pd.DataFrame({'char':char_codes, 'code':(x.category for x in char_codes)}).transpose()
+    pd.DataFrame({'tokens':tokens})
+
+buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
+TS.reader.read_command(buf, n_required_args=-1, mode='mode:math', skip=3, tolerance=1)
+
+buf = TS.reader.Buffer(TS.tokens.tokenize(TS.category.categorize(min_example)))
+TS.read(buf, tolerance=1)
 
 
 # +
@@ -622,65 +713,40 @@ $1\le k< \frac n2 $
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# math nested in text in math
+# \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
-$$
-\sum_{S: |S|=\lfloor q/2 \rfloor,\lceil q/2 \rceil} \beta_S \geq  \begin{cases} 
-0.76 & \quad \text{if $q=5$}\\
-0.80  & \quad \text{if $q\geq 7$}.
-\end{cases},
-$$
+\begin{equation}
+\begin{aligned}[t]
+[T\tensor*[]{]}{_{\CT}^{\sp}} \\
+[T]{_{\CT}^{\sp}}
+\end{aligned}
+\end{equation}
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
 TS.TexSoup(pre_format(min_example), tolerance=1)
 #print(min_example)
-# math nested in text in math
+# +
+# \verb{char}...{char} is also an issue for parser
+# !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
+with open('./data/test.txt', 'r') as infile:
+    min_example=infile.read().strip()
+
+TS.TexSoup(pre_format(min_example), tolerance=0)
+#print(min_example)
+# -
+# \verb{char}...{char} is also an issue for parser
 # !! probably not fixable given the approach used in TexSoup (needs stateful tokenization)
 min_example=r"""
-
-
-
-
-\begin{figure}
-\centering
-\begin{minipage}[b]{0.4\textwidth}
-
-\end{minipage}
-\qquad
-\begin{minipage}[b]{0.2\textwidth}
-\begin{tikzpicture}[scale=0.8] \draw (-2,-1)--(-2,0)--(0,1) (-3,-2.2)--(-3,0.2)--(-1,0.2)--(-1,-2.2)--(-3,-2.2) (2,0)--(2,-1) (-2.5,-2) to[out=120,in=220] (-2,0) (-1.5,-2) to[out=60,in=320] (-2,0); \draw[dotted] (-2.5,-2)--(-1.5,-2); \draw[very thick] (0,-1)--(0,1)--(2,0); \draw[dashed] (-2.5,-2)--(-2,-1)--(-1.5,-2); \draw[fill=white] (-2,0) circle [radius=3pt] (-2,-1) circle [radius=3pt] (2,-1) circle [radius=3pt]; \draw[fill=black] (2,0) circle [radius=3pt] (0,1) circle [radius=3pt] (0,0) circle [radius=3pt] (0,-1) circle [radius=3pt] (-2.5,-2) circle [radius=3pt] (-1.5,-2) circle [radius=3pt]; \node[above] at (0,1) {$u\in T$}; \node[left] at (-2,0) {$v_1$}; \node[right] at (0,0) {$v_2$}; \node[right] at (2,0) {$v_3$}; \node[left] at (-2,-1) {$x_1$}; \node[right] at (0,-1) {$x_2$}; \node[right] at (2,-1) {$x_3$}; \node[left] at (-2.5,-2) {$y$}; \node[right] at (-1.5,-2) {$y'$};\node[above] at (-2,0.3) {$$};
-\end{tikzpicture}
-\end{minipage}
-
-\end{figure}
-
-
-We first compute a $\leq$$1$-part solution, $2$-part solution and $3$-part solution for $(G,T,w) $ of maximum weight. By Lemmas~\ref{l-1part},~\ref{l-2part} and~\ref{l-3part}, respectively, this takes polynomial time. 
-
-
-
-
-
+\def\f{\frac}
 """.strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
-TS.TexSoup(pre_format(min_example), tolerance=1)
+TS.TexSoup(pre_format(min_example), tolerance=0)
 #print(min_example)
 import pandas as pd
 import numpy as np
 pd.DataFrame(np.random.randint(0,100,size=(10, 3)), columns=list('ABC')).to_csv('~/Expire/test_console_upload.csv')
-# +
-byte_string = b"Hello World"
-# byte_string.lower?
-# -
 
-
-b'\Xc3\x80'.lower()
-
-b_string = b"Hello World"
-
-b_string.hex()
-
-bin(int(b'A'.hex(),16))
-
-bin(int(b'a'.hex(),16))
-
-
+min_example=r"""
+\renewcommand{\subsection}[1]{{\textit{#1.~}}}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+TS.TexSoup(pre_format(min_example), tolerance=0)
+#print(min_example)
