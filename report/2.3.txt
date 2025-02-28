@@ -1,0 +1,7 @@
+Got stuck on two problems.
+
+The original code was developed on txt files. No idea about where do they find the txt.
+
+The dataset on google drive missed a lot of papers.
+Only 8 percent of paper in scopus dataset can be found. MOreover, version issue.
+
