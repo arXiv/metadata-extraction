@@ -1,9 +1,18 @@
-
+from openai import OpenAI
 class LLMExtractor:
-    # def __init__(self, model="en_core_web_sm"):
-        # self.nlp = spacy.load(model)
+    def __init__(self):
+        self.client = OpenAI()
 
     def extract_affiliations(self, text: str) -> set:
-        # doc = self.nlp(text)
-        # affiliations = {ent.text for ent in doc.ents if ent.label_ == "ORG"}
+        completion = self.client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{
+                "role": "user",
+                "content": "Write a one-sentence bedtime story about a unicorn."
+            }]
+        )
+
+        print(completion.choices[0].message.content)
         return None
+    
+
