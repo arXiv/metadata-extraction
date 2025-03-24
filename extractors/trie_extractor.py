@@ -27,18 +27,22 @@ class TrieExtractor:
                 
 
     def insertTrie(self, elements):
-            id = elements[0]
-            official = elements[1]
-            aliases = elements[2].split(';')
-            names = [official] + aliases
-            for c, name in enumerate(names):
-                name = normalize_text(name)
-                # Ensure name is non-empty, contains at least 2 words, and meets other conditions
-                if name and len(name.split()) >= 2 and (c == 0 or len(name) > 11):
-                    if not self.common_words.search(name) and "FOUND" not in name:
-                        self.trie.insert(name, id)
-                        if name.endswith('S') and "UNIVERSITY" in name:
-                            self.trie.insert(name[:-1], id)
+        id = elements[0]
+        official = elements[1]
+        aliases = elements[2].split(';')
+        names = [official] + aliases
+        for c, name in enumerate(names):
+            name = normalize_text(name)
+            # Ensure name is non-empty, contains at least 2 words, and meets other conditions
+            if name and len(name.split()) >= 2 and (c == 0 or len(name) > 11):
+                if not self.common_words.search(name) and "FOUND" not in name:
+                    self.trie.insert(name, id)
+                    if name.endswith('S') and "UNIVERSITY" in name:
+                        self.trie.insert(name[:-1], id)
+                    # If name starts with "THE", also insert name without the beginning "THE"
+                    if name.startswith("THE ") and len(name.split()) >= 3:
+                        name_without_the = " ".join(name.split()[1:])
+                        self.trie.insert(name_without_the, id)
 
 
     def extract_affiliations_from_content(self, text: str) -> set:
