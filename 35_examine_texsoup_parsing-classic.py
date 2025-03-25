@@ -6,14 +6,15 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.14.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-
+# %pip install --force-reinstall --no-deps git+https://github.com/chrisjcameron/TexSoup.git@mixed-args
+# #! pip install --editable /Users/cjc73/gits/arxiv/TexSoup/
 
 #import zipfile
 import tarfile
