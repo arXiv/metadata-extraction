@@ -8,7 +8,7 @@ from tqdm import tqdm
 from extractors.trie_extractor import TrieExtractor
 from utils.file_reader import read_file
 
-class GenericTester:
+class Tester:
     """
     Tester for extraction tasks.
     - Extracts ground truth from a CSV.

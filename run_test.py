@@ -1,5 +1,5 @@
 import os
-from test.tester import GenericTester
+from test.tester import Tester
 from extractors.trie_extractor import TrieExtractor
 
 # Define required file paths.
@@ -15,7 +15,7 @@ extractor = TrieExtractor(
 )
 
 # Instantiate the tester.
-tester = GenericTester(
+tester = Tester(
     scopus_csv_path=scopus_csv_path,
     extractor=extractor,
     text_folder_path=text_folder_path,
