@@ -45,7 +45,6 @@ tagged_outputs/
 output.txt                  # Extracted pre-abstract content
 filtered_files_with_content_macro.txt # Filtered valid papers
 institution_output_with_ror.json # Predicted ROR results
-final_affiliations_2000_parallel.json # Parallel results to compare
 evaluation_details.json      # Detailed evaluation results
 ```
 
