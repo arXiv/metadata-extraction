@@ -13,7 +13,7 @@ unused_papers
 ### ====================== ###
 
 # larger files
-data/*
+
 
 # macOS
 *.DS_Store
