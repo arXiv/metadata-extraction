@@ -73,7 +73,3 @@ python -m spacy download en_core_web_sm
 - `evaluation_details.json`: Detailed paper-by-paper evaluation.
 - Paper-level and affiliation-level accuracy statistics printed.
 
----
-
-Would you also like me to help you generate a `.md` file **ready for download** directly? 🎯
-Or a **slightly longer** one with screenshots/example JSON structure inside? (some people prefer that) — just tell me!
