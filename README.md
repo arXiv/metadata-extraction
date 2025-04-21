@@ -14,7 +14,7 @@ This project extracts institution names from arXiv papers using two different me
 
 ## Usage
 
-Below is the code snippet that shows how to use the extractor:
+Below is the code snippet that shows how to extract institutions from a specific file:
 
 ```python
 from extractors.trie_extractor import TrieExtractor
@@ -41,15 +41,33 @@ if __name__ == "__main__":
     main("data/2201_00_text/2201.00001v1.txt", method="trie")
 ```
 
-## Evaluation
+Below is the code snippet that shows how to extract institutions in batch from a csv file:
 
-The evaluation of the extractor is performed in two key steps:
+```python
+import os
+from test.tester import Tester
+from extractors.trie_extractor import TrieExtractor
 
-1. **Extract Ground Truth:**  
-   Scopus papers are already annotated with institution names. By matching the Scopus ID to ROR IDs, the process generates a `groundTruth.json` file (for example, under `data/2201.00_scopus_931`). In this JSON file, each key is an arXiv ID and the corresponding value is a list of institution names.
+# Define required file paths.
+scopus_csv_path = os.path.join("data", "2311_scopus_17416.csv")
+text_folder_path = os.path.join("data", "2311_text")
+default_output_dir = os.path.join("data", "2311_scopus_17416")
 
-2. **Run Extraction:**  
-   The extraction process runs over the arXiv paper texts and generates a `result.json` file. Here, the key is the arXiv ID and the value is a list of institution names extracted from the text.
+# Initialize your extractor (example: TrieExtractor).
+extractor = TrieExtractor(
+    data_path=os.path.join("data", "1.34_extracted_ror_data.csv"),
+    common_words_path=os.path.join("data", "common_english_words.txt")
+)
+
+extractor.extract_from_csv(scopus_csv_path, text_folder_path, default_output_dir)
+```
+ 
+
+## Basic Evaluation
+
+Scopus papers are already annotated with institution names. By matching the Scopus ID to ROR IDs with `test/extract_groundTruth.ipynb`, the process generates a `groundTruth.json` file (for example, under `data/2201.00_scopus_931`). 
+In this JSON file, each key is an arXiv ID and the corresponding value is a list of institution names.
+
 
 By comparing `result.json` and `groundTruth.json`, the following metrics are calculated:
 - **Accuracy:** The proportion of correctly extracted institution names compared to the ground truth.
@@ -67,65 +85,24 @@ Below is the complete code snippet illustrating these steps:
 ```python
 import os
 from test.tester import Tester
-from extractors.trie_extractor import TrieExtractor
 
-# Define required file paths.
-scopus_csv_path = os.path.join("data", "2201.00_scopus_931.csv")
-text_folder_path = os.path.join("data", "2201_00_text")
-mapping_csv_path = os.path.join("matching_data", "matched_results_ror_api.csv")
-blacklist_path = os.path.join("data", "blacklist_parent_organizations.txt")
+tester = Tester("data/2311_scopus_17416", "groundTruth.json", "result_trie.json")
+metrics, mismatches = tester.evaluate()
 
-# Initialize your extractor (example: TrieExtractor).
-extractor = TrieExtractor(
-    data_path=os.path.join("data", "1.34_extracted_ror_data.csv"),
-    common_words_path=os.path.join("data", "common_english_words.txt")
-)
-
-# Instantiate the tester.
-tester = Tester(
-    scopus_csv_path=scopus_csv_path,
-    extractor=extractor,
-    text_folder_path=text_folder_path,
-    paper_id_column="ArXiv Id"
-)
-
-# Step 1: Extract Ground Truth
-# Scopus papers are annotated with institution names, which are matched to ROR IDs.
-# This generates a groundTruth.json file (e.g., under data/2201.00_scopus_931) where the key is the arXiv id
-# and the value is a list of institution names.
-tester.extract_ground_truth(
-    mapping_csv_path=mapping_csv_path,
-    blacklist_path=blacklist_path,
-    institution_col="Primary Org Name"
-)
-
-# Step 2: Run Extraction
-# This step extracts institution names from the paper texts and generates a result.json file,
-# where each key is the arXiv id and the value is a list of institution names.
-result_data = tester.run_extraction()
-
-# Compare extraction results with ground truth.
-metrics, mismatches = tester.compare_results(result_data)
-
-# Display evaluation metrics.
-print("Evaluation Metrics:")
-print("Total ground truth ROR IDs:", metrics['total_ground_truth_ROR_IDs'])
-print("Correct extractions:", metrics['correct_extractions'])
-print("Wrong extractions:", metrics['wrong_extractions'])
-print("Accuracy: {:.2%}".format(metrics['accuracy']))
-print("Wrong extraction rate: {:.2%}".format(metrics['wrong_extraction_rate']))
-
-# Save mismatches to CSV.
-tester.save_mismatches_to_csv(mismatches)
-
-# Report the top 5 most common missing and extra ROR IDs.
-most_common_missing, most_common_extra = tester.get_top_common_mismatches(mismatches, top_n=5)
-print("\nMost frequent missing ROR IDs (Top 5):")
-for ror_id, count in most_common_missing:
-    print(f"ROR ID: {ror_id}, Count: {count}")
-print("\nMost frequent extra ROR IDs (Top 5):")
-for ror_id, count in most_common_extra:
-    print(f"ROR ID: {ror_id}, Count: {count}")
+print("Metrics:", metrics)
+print(f"Number of mismatches: {len(mismatches)}")
 ```
 
+## Basic Evaluation 
+To further evaluate results from LLM or combined results from LLM and Trie, run `test/combine_results.ipynb` and `test/combine_results_vip.ipynb`. And use code snippet below to evaluate the result:
 
+```python
+import os
+from test.tester import Tester
+
+tester = Tester("data/2311_scopus_17416", "vip_groundTruth.json", "vip_result_combined.json")
+metrics, mismatches = tester.evaluate()
+
+print("Metrics:", metrics)
+print(f"Number of mismatches: {len(mismatches)}")
+```
