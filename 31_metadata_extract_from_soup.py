@@ -214,9 +214,29 @@ def show_context(text_path, offset, context_size=50):
 # print("Error context at offset 805:", context)
 
 
-# +
-#show_context(infile_path, 8584)
 # -
+
+# from TexSoup examples
+def everything(tex_tree):
+    """
+    Accepts a list of Union[TexNode,Token] and returns a nested list
+    of strings of the entire source document.
+    """
+    result = []
+    for tex_code in tex_tree:
+        if isinstance(tex_code, TS.data.TexEnv):
+            result.append([tex_code.begin + str(tex_code.args), everything(tex_code.all), tex_code.end])
+        elif isinstance(tex_code, TS.data.TexCmd):
+            result.append(["\\" + tex_code.name + str(tex_code.args)])
+        elif isinstance(tex_code, TS.data.TexText):
+            result.append(tex_code.string)
+        elif isinstance(tex_code, TS.data.TexGroup):
+            result.append(["{", everything(TS.TexSoup(tex_code.value).expr.all), "}"])
+        else:
+            result.append([str(tex_code)])
+
+    return result
+
 
 # ## Check a file with parse errors
 
@@ -317,6 +337,54 @@ if title: print(f"{title.name}: {title.text}")
 for sec in soup.find_all('section'):
     print(f' {sec.name}: {sec.text}')
 # -
+soup.find_all('author')
+
+# +
+
+tex_text = everything(soup.find('author'))
+print("LaTeX Contents:\n== == ==\n\n")
+pprint.pprint(tex_text)
+# -
+
+auth_block = soup.find('author')
+auth_block
+auth_block.contents
+auth_block.children
+auth_block.decendents
+auth_block.text
+
+dir(auth_block)
+
+# +
+soup = soup_from_tar(infile_path, tolerance=0)
+auth_block = soup.find('author')
+auth_block
+
+SKIP_COMMENTS = set([25, 27])
+decendants = auth_block.contents
+for item in decendants:
+    cat = item.category or None
+    name = None if cat is None else cat.name
+    if cat in SKIP_COMMENTS:
+        continue
+    if cat is None:
+        if item.name.lower == 'and':
+            item_content = '\n'
+        else:
+            item_content = " ".join(x.string for x in item.args)
+    else:
+        item_content = item.strip()
+    #print(f"{name} - {cat}: {item_content}")
+    print(f"{item_content}")
+# -
+
+min_example = r"""\author{ Yequan Zhao\textsuperscript{\rm 1, \rm *}, Xian Xiao\textsuperscript{\rm 2, \rm *}, Xinling Yu\textsuperscript{\rm 1}, Ziyue Liu\textsuperscript{\rm 1}, Zhixiong Chen\textsuperscript{\rm 1}, \\ \textbf{Geza Kurczveil\textsuperscript{\rm 2}, Raymond G. Beausoleil\textsuperscript{\rm 2}, Zheng Zhang\textsuperscript{\rm 1}} \\ \textsuperscript{\rm 1} University of California, Santa Barbara\\ \textsuperscript{\rm 2} Hewlett Packard Labs, Hewlett Packard Enterprise\\ \textsuperscript{\rm *} Equal Contributions }
+""".strip()
+chili = TS.TexSoup(pre_format(min_example), tolerance=0)
+
+
+dir(item.category)
+
 min_example=r"""
 \author*[4,5]{\fnm{Honghao} \sur{Gao}}\email{honghaogao@gachon.ac.kr; gaohonghao@shu.edu.cn}
 """.strip()
@@ -397,6 +465,16 @@ min_example=r"""
 soup = TS.TexSoup(pre_format(min_example), tolerance=0)
 print(soup)
 #print(min_example)
+
+
+
+# to check
+2311.17003 - 2311.15126 - 2311.17128 - 2311.17604 - 2311.06461 - 2311.17452 - 2311.15533 - 2311.15053 - 2311.01092 - 2311.04879 - 2311.16876 - 2311.03586 - 2311.08866 - 2311.10963 - 2311.13332 - 2311.05371 - 2311.00579 - 2311.03335 - 2311.00611 - 2311.14756 - 2311.00869 - 2311.09129 - 2311.03405 - 2311.04777 - 2311.17901 - 2311.05062 - 2311.15826 - 2311.11958 - 2311.14495 - 2311.01928 - 2311.05445 - 2311.08159 - 2311.18305 - 2311.16518 - 2311.15776 - 2311.00147 - 2311.01449 - 2311.13637 - 2311.03550 - 2311.04837 - 2311.16039 - 2311.05795 - 2311.13555 - 2311.16942 - 2311.18598 - 2311.17866 - 2311.16084 - 2311.17926 - 2311.14321 - 2311.16728 - 2311.03079 - 2311.02628 - 2311.11210 - 2311.18254 - 2311.11786 - 2311.02079 - 2311.17123 - 2311.17657 - 2311.16956 - 2311.09543 - 2311.12771 - 2311.18248 - 2311.07439 - 2311.05251 - 2311.11135 - 2311.09033 - 2311.01038 - 2311.14796 - 2311.14523 - 2311.06214 - 2311.15827 - 2311.08877 - 2311.00528 - 2311.14845 - 2311.0
+
+
+
+
+
 
 # ## Quick check a folder of tar files
 
