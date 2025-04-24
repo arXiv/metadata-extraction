@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.16.1
+#       jupytext_version: 1.14.4
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -92,7 +92,7 @@ def find_doc_class(wrapped_file, name_match=False):
     return 0 #main_files[tf] = 0
 
 
-def find_main_tex_source_in_tar(tar_path, encoding='uft-8'):
+def find_main_tex_source_in_tar(tar_path, encoding='utf-8'):
     '''Identify the main Tex file in a tarfile.
     
     Args:
