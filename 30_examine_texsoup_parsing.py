@@ -213,12 +213,40 @@ def show_context(text_path, offset, context_size=50):
 # context = show_context(file_path, offset_position)
 # print("Error context at offset 805:", context)
 
-
 # +
 #show_context(infile_path, 8584)
 # -
 
 # ## Check a file with parse errors
+
+
+
+
+
+
+
+
+
+
+
+min_example=r"""
+\newcounter{savenumi}
+\newenvironment{savenumerate}{\begin{enumerate}
+\setcounter{enumi}{\value{savenumi}}}{\end{enumerate}
+\setcounter{savenumi}{\value{enumi}}}
+\newtheorem{theoremfoo}{Theorem}[section] %by chapter in report style
+\newenvironment{theorem}{\pagebreak[1]\begin{theoremfoo}}{\end{theoremfoo}}
+\newenvironment{repeatedtheorem}[1]{\vskip 6pt
+\noindent
+{\bf Theorem #1}\ \em
+}{}
+""".strip()#.replace('\\}\\', '\\} \\').replace(')}', ') }')
+tsoup = TS.TexSoup(min_example, tolerance=0)
+print(tsoup)
+#print(min_example)
+for item in tsoup.all:
+    print("-----")
+    print(item)
 
 min_example=r"""
 $\braket{\mathcal N_N^\ell}$
